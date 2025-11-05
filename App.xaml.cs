@@ -45,13 +45,31 @@ public partial class App : Application
         services.AddSingleton<MqttSettings>(sp =>
         {
             var logService = sp.GetRequiredService<LogService>();
+            var encryptionService = sp.GetRequiredService<EncryptionService>();
             var configFilePath = "config.json";
             try
             {
                 if (File.Exists(configFilePath))
                 {
                     var json = File.ReadAllText(configFilePath);
-                    return JsonConvert.DeserializeObject<MqttSettings>(json) ?? new MqttSettings();
+                    var settings = JsonConvert.DeserializeObject<MqttSettings>(json) ?? new MqttSettings();
+
+                    // 解密密码（如果已加密）
+                    if (!string.IsNullOrEmpty(settings.Password))
+                    {
+                        try
+                        {
+                            settings.Password = encryptionService.Decrypt(settings.Password);
+                        }
+                        catch (Exception decryptEx)
+                        {
+                            logService.LogException(decryptEx, "解密密码失败，可能需要重新设置密码");
+                            // 解密失败时清空密码，用户需要重新输入
+                            settings.Password = null;
+                        }
+                    }
+
+                    return settings;
                 }
             }
             catch (Exception ex)
@@ -66,6 +84,7 @@ public partial class App : Application
 
         // Register Services
         services.AddSingleton<LogService>();
+        services.AddSingleton<EncryptionService>();
         services.AddSingleton<CsvDataStorageService>();
         services.AddSingleton<MqttService>();
         services.AddSingleton<DataProcessingService>();
@@ -77,7 +96,10 @@ public partial class App : Application
         services.AddSingleton<TableViewModel>();
         services.AddSingleton<ChartViewModel>();
         services.AddSingleton<CommandSenderViewModel>();
-        services.AddTransient<SettingsViewModel>(sp => new SettingsViewModel(sp.GetRequiredService<LogService>(), sp.GetRequiredService<MqttSettings>())); // Transient for new instance each time
+        services.AddTransient<SettingsViewModel>(sp => new SettingsViewModel(
+            sp.GetRequiredService<LogService>(),
+            sp.GetRequiredService<EncryptionService>(),
+            sp.GetRequiredService<MqttSettings>())); // Transient for new instance each time
 
         // Register Views
         services.AddSingleton<LogView>();
