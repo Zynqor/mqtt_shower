@@ -309,6 +309,12 @@ public class CommandSenderViewModel : INotifyPropertyChanged
                 {
                     historyItem.Status = statusText;
                     historyItem.ResponseTime = DateTime.Now;
+
+                    // 如果有返回结果，序列化为JSON字符串显示
+                    if (response.Result != null && response.Result.Count > 0)
+                    {
+                        historyItem.Result = JsonConvert.SerializeObject(response.Result);
+                    }
                 }
             }
         });
@@ -388,6 +394,7 @@ public class CommandHistoryItem : INotifyPropertyChanged
 {
     private string _status = string.Empty;
     private DateTime? _responseTime;
+    private string _result = string.Empty;
 
     public DateTime Time { get; set; }
     public string DeviceId { get; set; } = string.Empty;
@@ -410,6 +417,16 @@ public class CommandHistoryItem : INotifyPropertyChanged
         set
         {
             _responseTime = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public string Result
+    {
+        get => _result;
+        set
+        {
+            _result = value;
             OnPropertyChanged();
         }
     }
