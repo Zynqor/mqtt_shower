@@ -48,15 +48,13 @@ public class CommandSenderViewModel : INotifyPropertyChanged
             {
                 _selectedCommandTemplate = value;
                 OnPropertyChanged();
-                OnCommandTemplateChanged();
+                if (_selectedCommandTemplate != null)
+                {
+                    _logService.LogInfo($"选中命令: {_selectedCommandTemplate.Description}");
+                }
             }
         }
     }
-
-    /// <summary>
-    /// 当前命令的参数列表（用于UI绑定）
-    /// </summary>
-    public ObservableCollection<CommandParameter> CurrentParameters { get; } = new();
 
     /// <summary>
     /// 命令历史记录
@@ -172,38 +170,6 @@ public class CommandSenderViewModel : INotifyPropertyChanged
     }
 
     /// <summary>
-    /// 当选中的命令模板改变时
-    /// </summary>
-    private void OnCommandTemplateChanged()
-    {
-        CurrentParameters.Clear();
-
-        if (SelectedCommandTemplate != null)
-        {
-            // 更新命令名称
-            CommandName = SelectedCommandTemplate.Name;
-
-            // 加载参数列表（创建新的副本，避免共享引用）
-            if (SelectedCommandTemplate.Parameters != null)
-            {
-                foreach (var param in SelectedCommandTemplate.Parameters)
-                {
-                    var paramCopy = new CommandParameter
-                    {
-                        Name = param.Name,
-                        Type = param.Type,
-                        Description = param.Description,
-                        Value = param.Value
-                    };
-                    CurrentParameters.Add(paramCopy);
-                }
-            }
-
-            _logService.LogInfo($"选中命令: {SelectedCommandTemplate.Name} ({SelectedCommandTemplate.Description})");
-        }
-    }
-
-    /// <summary>
     /// 发送命令
     /// </summary>
     private async void OnSendCommand()
@@ -217,9 +183,9 @@ public class CommandSenderViewModel : INotifyPropertyChanged
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(CommandName))
+        if (SelectedCommandTemplate == null)
         {
-            var message = "请输入命令名称";
+            var message = "请选择要发送的命令";
             _logService.LogWarning(message);
             MessageBox.Show(message, "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
@@ -252,42 +218,20 @@ public class CommandSenderViewModel : INotifyPropertyChanged
                 }
             }
 
-            // 构建命令参数对象
-            object? commandParams = null;
-            if (CurrentParameters.Count > 0)
-            {
-                var paramsDict = new Dictionary<string, object>();
-                foreach (var param in CurrentParameters)
-                {
-                    if (!string.IsNullOrWhiteSpace(param.Value))
-                    {
-                        // 根据参数类型转换值
-                        object paramValue = param.Type.ToLower() switch
-                        {
-                            "number" => double.TryParse(param.Value, out var numVal) ? numVal : param.Value,
-                            "boolean" => bool.TryParse(param.Value, out var boolVal) ? boolVal : param.Value,
-                            _ => param.Value // string 或其他类型
-                        };
-                        paramsDict[param.Name] = paramValue;
-                    }
-                }
-                commandParams = paramsDict.Count > 0 ? paramsDict : null;
-            }
-
-            // 构建命令请求
+            // 构建命令请求（直接使用模板中预配置的参数）
             var commandRequest = new CommandRequest
             {
                 CommandId = Guid.NewGuid().ToString(),
-                CommandName = CommandName.Trim(),
+                CommandName = SelectedCommandTemplate.CommandName,
                 Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
-                Params = commandParams
+                Params = SelectedCommandTemplate.Parameters
             };
 
             // 记录待处理命令
             var commandState = new CommandState
             {
                 CommandId = commandRequest.CommandId,
-                CommandName = commandRequest.CommandName,
+                CommandName = SelectedCommandTemplate.Description, // 使用描述更友好
                 DeviceId = SelectedDeviceId,
                 SentTime = DateTime.Now,
                 Status = "待响应"
@@ -311,7 +255,7 @@ public class CommandSenderViewModel : INotifyPropertyChanged
                 {
                     Time = DateTime.Now,
                     DeviceId = SelectedDeviceId,
-                    CommandName = CommandName.Trim(),
+                    CommandName = SelectedCommandTemplate.Description, // 显示描述
                     CommandId = commandRequest.CommandId,
                     Status = "待响应"
                 };
@@ -324,7 +268,7 @@ public class CommandSenderViewModel : INotifyPropertyChanged
                 }
             });
 
-            _logService.LogInfo($"已发送命令 [{CommandName}] 到设备 [{SelectedDeviceId}]，命令ID: {commandRequest.CommandId}");
+            _logService.LogInfo($"已发送命令 [{SelectedCommandTemplate.Description}] ({SelectedCommandTemplate.CommandName}) 到设备 [{SelectedDeviceId}]，命令ID: {commandRequest.CommandId}");
         }
         catch (Exception ex)
         {

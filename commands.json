@@ -1,73 +1,108 @@
 [
   {
-    "Name": "setThreshold",
-    "Description": "设置设备阈值参数",
-    "Parameters": [
-      {
-        "Name": "metricName",
-        "Type": "string",
-        "Description": "测点名称",
-        "Value": "temperature"
-      },
-      {
-        "Name": "thresholdValue",
-        "Type": "number",
-        "Description": "阈值",
-        "Value": "100"
-      }
-    ]
+    "Description": "查询一天的数据",
+    "CommandName": "queryData",
+    "Parameters": {
+      "days": 1,
+      "format": "json"
+    }
   },
   {
-    "Name": "restart",
+    "Description": "查询三天的数据",
+    "CommandName": "queryData",
+    "Parameters": {
+      "days": 3,
+      "format": "json"
+    }
+  },
+  {
+    "Description": "查询七天的数据",
+    "CommandName": "queryData",
+    "Parameters": {
+      "days": 7,
+      "format": "json"
+    }
+  },
+  {
     "Description": "重启设备",
-    "Parameters": []
+    "CommandName": "restart",
+    "Parameters": {}
   },
   {
-    "Name": "updateInterval",
-    "Description": "更新数据上报间隔",
-    "Parameters": [
-      {
-        "Name": "intervalSeconds",
-        "Type": "number",
-        "Description": "上报间隔（秒）",
-        "Value": "60"
-      }
-    ]
+    "Description": "设置上报间隔为30秒",
+    "CommandName": "updateInterval",
+    "Parameters": {
+      "intervalSeconds": 30
+    }
   },
   {
-    "Name": "calibrate",
-    "Description": "校准传感器",
-    "Parameters": [
-      {
-        "Name": "sensorType",
-        "Type": "string",
-        "Description": "传感器类型",
-        "Value": "temperature"
-      },
-      {
-        "Name": "offset",
-        "Type": "number",
-        "Description": "校准偏移量",
-        "Value": "0"
-      }
-    ]
+    "Description": "设置上报间隔为60秒",
+    "CommandName": "updateInterval",
+    "Parameters": {
+      "intervalSeconds": 60
+    }
   },
   {
-    "Name": "enableMetric",
-    "Description": "启用或禁用指定测点",
-    "Parameters": [
-      {
-        "Name": "metricName",
-        "Type": "string",
-        "Description": "测点名称",
-        "Value": "temperature"
-      },
-      {
-        "Name": "enabled",
-        "Type": "boolean",
-        "Description": "是否启用",
-        "Value": "true"
-      }
-    ]
+    "Description": "设置上报间隔为5分钟",
+    "CommandName": "updateInterval",
+    "Parameters": {
+      "intervalSeconds": 300
+    }
+  },
+  {
+    "Description": "设置温度阈值为30度",
+    "CommandName": "setThreshold",
+    "Parameters": {
+      "metricName": "temperature",
+      "thresholdValue": 30
+    }
+  },
+  {
+    "Description": "设置温度阈值为50度",
+    "CommandName": "setThreshold",
+    "Parameters": {
+      "metricName": "temperature",
+      "thresholdValue": 50
+    }
+  },
+  {
+    "Description": "设置湿度阈值为70%",
+    "CommandName": "setThreshold",
+    "Parameters": {
+      "metricName": "humidity",
+      "thresholdValue": 70
+    }
+  },
+  {
+    "Description": "校准温度传感器（偏移+2）",
+    "CommandName": "calibrate",
+    "Parameters": {
+      "sensorType": "temperature",
+      "offset": 2
+    }
+  },
+  {
+    "Description": "校准温度传感器（偏移-2）",
+    "CommandName": "calibrate",
+    "Parameters": {
+      "sensorType": "temperature",
+      "offset": -2
+    }
+  },
+  {
+    "Description": "启用温度监测",
+    "CommandName": "enableMetric",
+    "Parameters": {
+      "metricName": "temperature",
+      "enabled": true
+    }
+  },
+  {
+    "Description": "禁用温度监测",
+    "CommandName": "enableMetric",
+    "Parameters": {
+      "metricName": "temperature",
+      "enabled": false
+    }
   }
 ]

@@ -101,7 +101,7 @@
 
                 <!-- 标题 -->
                 <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
-                          Text="命令发送（高级版）" FontSize="16" FontWeight="SemiBold"
+                          Text="命令发送（极简版）" FontSize="16" FontWeight="SemiBold"
                           Foreground="#212529" Margin="0,0,0,20"/>
 
                 <!-- 设备ID -->
@@ -110,48 +110,23 @@
                           Foreground="#495057" FontSize="13" Margin="0,0,10,12"/>
                 <TextBox Grid.Row="1" Grid.Column="1"
                         Text="{Binding SelectedDeviceId, UpdateSourceTrigger=PropertyChanged}"
-                        Height="36" Margin="0,0,0,12"/>
+                        Height="36" Margin="0,0,0,12"
+                        FontSize="13"/>
 
-                <!-- 选择命令模板 -->
+                <!-- 选择命令 -->
                 <TextBlock Grid.Row="2" Grid.Column="0"
-                          Text="选择命令:" VerticalAlignment="Center"
+                          Text="选择操作:" VerticalAlignment="Center"
                           Foreground="#495057" FontSize="13" Margin="0,0,10,12"/>
                 <ComboBox Grid.Row="2" Grid.Column="1"
                          ItemsSource="{Binding CommandTemplates}"
                          SelectedItem="{Binding SelectedCommandTemplate}"
-                         DisplayMemberPath="DisplayText"
-                         Height="36" Margin="0,0,0,12"
+                         DisplayMemberPath="Description"
+                         Height="36" Margin="0,0,0,20"
                          FontSize="13"/>
 
-                <!-- 命令参数区域 -->
-                <TextBlock Grid.Row="3" Grid.Column="0"
-                          Text="命令参数:" VerticalAlignment="Top"
-                          Foreground="#495057" FontSize="13" Margin="0,5,10,12"/>
-                <ItemsControl Grid.Row="3" Grid.Column="1"
-                             ItemsSource="{Binding CurrentParameters}"
-                             Margin="0,0,0,12">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Margin="0,0,0,10">
-                                <TextBlock Text="{Binding Description, StringFormat='{}{0} ({1}):', FallbackValue='参数'}"
-                                          Foreground="#495057" FontSize="12" Margin="0,0,0,5">
-                                    <TextBlock.Text>
-                                        <MultiBinding StringFormat="{}{0} ({1}):">
-                                            <Binding Path="Description"/>
-                                            <Binding Path="Name"/>
-                                        </MultiBinding>
-                                    </TextBlock.Text>
-                                </TextBlock>
-                                <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
-                                        Height="32" Padding="8,6"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-
-                <!-- 参数说明 -->
-                <TextBlock Grid.Row="4" Grid.Column="1"
-                          Text="从上方下拉列表选择命令，系统将自动显示对应的参数输入框"
+                <!-- 说明文本 -->
+                <TextBlock Grid.Row="3" Grid.Column="1"
+                          Text="选择操作后直接点击发送，所有参数已预配置"
                           TextWrapping="Wrap" Foreground="#6C757D" FontSize="11"
                           Margin="0,0,0,15"/>
 
