@@ -177,7 +177,8 @@
                          BorderThickness="0"
                          RowHeight="35"
                          ColumnHeaderHeight="40"
-                         HorizontalGridLinesBrush="#E9ECEF">
+                         HorizontalGridLinesBrush="#E9ECEF"
+                         MouseDoubleClick="CommandHistory_MouseDoubleClick">
                     <DataGrid.ColumnHeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
                             <Setter Property="Background" Value="#F8F9FA"/>
