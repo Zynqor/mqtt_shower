@@ -73,12 +73,23 @@ public class MqttService : INotifyPropertyChanged
     /// <summary>
     /// 连接到 MQTT 服务器
     /// </summary>
-    public async Task ConnectAsync(string server, int port, string? username = null, string? password = null, string? clientId = null)
+    public async Task ConnectAsync(
+        string server,
+        int port,
+        string? username = null,
+        string? password = null,
+        string? clientId = null,
+        bool useTls = false,
+        string? caCertPath = null,
+        string? clientCertPath = null,
+        string? clientKeyPath = null,
+        bool ignoreCertErrors = false)
     {
         try
         {
             CurrentState = ConnectionState.Connecting;
-            _logService.LogInfo($"正在连接到 MQTT 服务器 {server}:{port}...");
+            var protocol = useTls ? "mqtts" : "mqtt";
+            _logService.LogInfo($"正在连接到 MQTT 服务器 {protocol}://{server}:{port}...");
 
             // 创建 MQTT 客户端
             var factory = new MqttFactory();
@@ -93,6 +104,68 @@ public class MqttService : INotifyPropertyChanged
             if (!string.IsNullOrEmpty(username))
             {
                 clientOptions.WithCredentials(username, password);
+            }
+
+            // 配置 TLS/SSL
+            if (useTls)
+            {
+                _logService.LogInfo("启用 TLS/SSL 加密连接");
+
+                var tlsOptions = new MqttClientOptionsBuilderTlsParameters
+                {
+                    UseTls = true,
+                    SslProtocol = System.Security.Authentication.SslProtocols.Tls12 | System.Security.Authentication.SslProtocols.Tls13
+                };
+
+                // 如果忽略证书错误（仅用于测试）
+                if (ignoreCertErrors)
+                {
+                    _logService.LogWarning("警告：已启用忽略证书错误，这在生产环境中不安全！");
+                    tlsOptions.CertificateValidationHandler = _ => true;
+                }
+
+                // 加载证书
+                var certificates = new List<System.Security.Cryptography.X509Certificates.X509Certificate2>();
+
+                // 加载 CA 证书
+                if (!string.IsNullOrEmpty(caCertPath))
+                {
+                    if (!File.Exists(caCertPath))
+                    {
+                        throw new FileNotFoundException($"CA证书文件不存在: {caCertPath}");
+                    }
+                    _logService.LogInfo($"加载 CA 证书: {caCertPath}");
+                    certificates.Add(new System.Security.Cryptography.X509Certificates.X509Certificate2(caCertPath));
+                }
+
+                // 加载客户端证书和私钥（双向认证）
+                if (!string.IsNullOrEmpty(clientCertPath) && !string.IsNullOrEmpty(clientKeyPath))
+                {
+                    if (!File.Exists(clientCertPath))
+                    {
+                        throw new FileNotFoundException($"客户端证书文件不存在: {clientCertPath}");
+                    }
+                    if (!File.Exists(clientKeyPath))
+                    {
+                        throw new FileNotFoundException($"客户端私钥文件不存在: {clientKeyPath}");
+                    }
+
+                    _logService.LogInfo($"加载客户端证书: {clientCertPath}");
+                    _logService.LogInfo($"加载客户端私钥: {clientKeyPath}");
+
+                    // 读取证书和私钥并合并
+                    var clientCert = System.Security.Cryptography.X509Certificates.X509Certificate2.CreateFromPemFile(
+                        clientCertPath,
+                        clientKeyPath);
+                    certificates.Add(clientCert);
+                }
+
+                if (certificates.Any())
+                {
+                    tlsOptions.Certificates = certificates;
+                }
+
+                clientOptions.WithTls(tlsOptions);
             }
 
             // 配置托管客户端选项（支持自动重连）

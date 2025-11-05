@@ -282,7 +282,12 @@ public class MainViewModel : INotifyPropertyChanged
                 settings.Port,
                 settings.Username,
                 settings.Password,
-                settings.ClientId);
+                settings.ClientId,
+                settings.UseTls,
+                settings.CaCertificatePath,
+                settings.ClientCertificatePath,
+                settings.ClientKeyPath,
+                settings.IgnoreCertificateErrors);
 
             // 重新加载并订阅配置文件中的所有 Topics
             // 这样确保每次连接都使用最新的配置
