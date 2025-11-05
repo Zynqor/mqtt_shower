@@ -2,6 +2,7 @@ using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Media;
 using MqttMonitor.ViewModels;
 
@@ -12,6 +13,8 @@ namespace MqttMonitor.Views;
 /// </summary>
 public partial class LogView : UserControl
 {
+    private double _fontSize = 11; // 初始字体大小
+
     public LogView(LogViewModel viewModel)
     {
         InitializeComponent();
@@ -21,6 +24,31 @@ public partial class LogView : UserControl
         if (DataContext is LogViewModel logViewModel)
         {
             logViewModel.Logs.CollectionChanged += Logs_CollectionChanged;
+        }
+
+        // 添加鼠标滚轮事件处理，支持 Ctrl+滚轮缩放
+        LogListBox.PreviewMouseWheel += LogListBox_PreviewMouseWheel;
+    }
+
+    /// <summary>
+    /// 处理 Ctrl+滚轮缩放字体
+    /// </summary>
+    private void LogListBox_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+    {
+        if (Keyboard.Modifiers == ModifierKeys.Control)
+        {
+            // 根据滚轮方向调整字体大小
+            if (e.Delta > 0)
+            {
+                _fontSize = Math.Min(_fontSize + 1, 32); // 最大32
+            }
+            else
+            {
+                _fontSize = Math.Max(_fontSize - 1, 6); // 最小6
+            }
+
+            LogListBox.FontSize = _fontSize;
+            e.Handled = true; // 阻止默认滚动行为
         }
     }
 

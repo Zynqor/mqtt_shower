@@ -125,6 +125,9 @@
                 <Separator/>
                 <MenuItem Header="退出(_X)" Command="{Binding ExitCommand}"/>
             </MenuItem>
+            <MenuItem Header="帮助(_H)" Padding="10,5">
+                <MenuItem Header="联系我们(_C)" Command="{Binding ShowContactUsCommand}"/>
+            </MenuItem>
         </Menu>
 
         <!-- 状态栏 -->

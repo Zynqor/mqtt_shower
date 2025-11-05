@@ -1,3 +1,5 @@
+using System.IO;
+
 namespace MqttMonitor.Services;
 
 /// <summary>
@@ -5,10 +7,23 @@ namespace MqttMonitor.Services;
 /// </summary>
 public class LogService
 {
+    private readonly string _logDirectory = "logs";
+    private string? _currentLogFile;
+    private string? _currentDate;
+
     /// <summary>
     /// 当有新日志时触发的事件
     /// </summary>
     public event Action<string>? OnLogReceived;
+
+    public LogService()
+    {
+        // 确保logs目录存在
+        if (!Directory.Exists(_logDirectory))
+        {
+            Directory.CreateDirectory(_logDirectory);
+        }
+    }
 
     /// <summary>
     /// 记录日志消息，附加时间戳并触发事件
@@ -16,8 +31,40 @@ public class LogService
     /// <param name="message">日志消息</param>
     public void Log(string message)
     {
-        var timestampedMessage = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] {message}";
+        var now = DateTime.Now;
+        var timestampedMessage = $"[{now:yyyy-MM-dd HH:mm:ss.fff}] {message}";
         OnLogReceived?.Invoke(timestampedMessage);
+
+        // 写入日志文件
+        WriteToFile(timestampedMessage, now);
+    }
+
+    /// <summary>
+    /// 将日志写入文件
+    /// </summary>
+    private void WriteToFile(string message, DateTime now)
+    {
+        try
+        {
+            var dateString = now.ToString("yyyy-MM-dd");
+
+            // 如果是新的一天，更新日志文件路径
+            if (_currentDate != dateString)
+            {
+                _currentDate = dateString;
+                _currentLogFile = Path.Combine(_logDirectory, $"log_{dateString}.txt");
+            }
+
+            // 追加日志到文件
+            if (_currentLogFile != null)
+            {
+                File.AppendAllText(_currentLogFile, timestampedMessage + Environment.NewLine);
+            }
+        }
+        catch
+        {
+            // 忽略文件写入错误，避免影响程序运行
+        }
     }
 
     /// <summary>

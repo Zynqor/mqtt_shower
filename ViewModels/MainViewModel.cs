@@ -113,6 +113,7 @@ public class MainViewModel : INotifyPropertyChanged
     public ICommand ExitCommand { get; }
     public ICommand ShowSettingsCommand { get; }
     public ICommand ShowChartSettingsCommand { get; }
+    public ICommand ShowContactUsCommand { get; }
     public ICommand ClearDataCommand { get; }
     public ICommand ShowChartViewCommand { get; }
     public ICommand ShowTableViewCommand { get; }
@@ -137,6 +138,7 @@ public class MainViewModel : INotifyPropertyChanged
         ExitCommand = new RelayCommand(OnExit);
         ShowSettingsCommand = new RelayCommand(OnShowSettings);
         ShowChartSettingsCommand = new RelayCommand(OnShowChartSettings);
+        ShowContactUsCommand = new RelayCommand(OnShowContactUs);
         ClearDataCommand = new RelayCommand(OnClearData);
         ShowChartViewCommand = new RelayCommand(() => SelectedTabIndex = 0);
         ShowTableViewCommand = new RelayCommand(() => SelectedTabIndex = 1);
@@ -225,6 +227,19 @@ public class MainViewModel : INotifyPropertyChanged
         {
             chartSettingsWindow.Owner = System.Windows.Application.Current.MainWindow;
             chartSettingsWindow.ShowDialog();
+        }
+    }
+
+    /// <summary>
+    /// 显示联系我们窗口
+    /// </summary>
+    private void OnShowContactUs()
+    {
+        var contactUsWindow = App.ServiceProvider?.GetService<ContactUsWindow>();
+        if (contactUsWindow != null)
+        {
+            contactUsWindow.Owner = System.Windows.Application.Current.MainWindow;
+            contactUsWindow.ShowDialog();
         }
     }
 
