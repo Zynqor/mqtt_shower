@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -6,12 +7,21 @@ namespace MqttMonitor.Services;
 
 /// <summary>
 /// 密码加密/解密服务
-/// 使用 Windows Data Protection API (DPAPI) 进行加密
+/// 使用 AES 对称加密，密钥固定在代码中
+/// 适用于本地配置文件的简单加密，可跨机器、跨用户使用
 /// </summary>
 public class EncryptionService
 {
     // 用于标识加密数据的前缀
     private const string EncryptedPrefix = "ENCRYPTED:";
+
+    // 固定的加密密钥 (32字节 = 256位)
+    // 注意：这是硬编码的密钥，适用于本地配置文件的简单混淆
+    // 不适用于需要高安全性的场景
+    private static readonly byte[] EncryptionKey = Encoding.UTF8.GetBytes("MqttMonitor2025!SecureConfig!!OK");
+
+    // 固定的IV (16字节)
+    private static readonly byte[] EncryptionIV = Encoding.UTF8.GetBytes("MqttMonitor2025!");
 
     /// <summary>
     /// 加密字符串
@@ -25,18 +35,27 @@ public class EncryptionService
 
         try
         {
-            // 将字符串转换为字节数组
-            byte[] plainBytes = Encoding.UTF8.GetBytes(plainText);
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = EncryptionKey;
+                aes.IV = EncryptionIV;
+                aes.Mode = CipherMode.CBC;
+                aes.Padding = PaddingMode.PKCS7;
 
-            // 使用 DPAPI 加密（仅当前用户可以解密）
-            byte[] encryptedBytes = ProtectedData.Protect(
-                plainBytes,
-                null, // 可选的额外熵
-                DataProtectionScope.CurrentUser // 仅当前用户可解密
-            );
+                using (var encryptor = aes.CreateEncryptor())
+                using (var ms = new MemoryStream())
+                {
+                    using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+                    {
+                        byte[] plainBytes = Encoding.UTF8.GetBytes(plainText);
+                        cs.Write(plainBytes, 0, plainBytes.Length);
+                        cs.FlushFinalBlock(); // 确保所有数据被写入
+                    }
 
-            // 转换为 Base64 并添加前缀标识
-            return EncryptedPrefix + Convert.ToBase64String(encryptedBytes);
+                    byte[] encrypted = ms.ToArray();
+                    return EncryptedPrefix + Convert.ToBase64String(encrypted);
+                }
+            }
         }
         catch (Exception ex)
         {
@@ -64,20 +83,30 @@ public class EncryptionService
             string base64 = encryptedText.Substring(EncryptedPrefix.Length);
             byte[] encryptedBytes = Convert.FromBase64String(base64);
 
-            // 使用 DPAPI 解密
-            byte[] plainBytes = ProtectedData.Unprotect(
-                encryptedBytes,
-                null, // 使用相同的熵（这里是null）
-                DataProtectionScope.CurrentUser
-            );
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = EncryptionKey;
+                aes.IV = EncryptionIV;
+                aes.Mode = CipherMode.CBC;
+                aes.Padding = PaddingMode.PKCS7;
 
-            // 转换回字符串
-            return Encoding.UTF8.GetString(plainBytes);
+                using (var decryptor = aes.CreateDecryptor())
+                using (var ms = new MemoryStream(encryptedBytes))
+                using (var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
+                {
+                    using (var resultMs = new MemoryStream())
+                    {
+                        cs.CopyTo(resultMs);
+                        byte[] decryptedBytes = resultMs.ToArray();
+                        return Encoding.UTF8.GetString(decryptedBytes);
+                    }
+                }
+            }
         }
         catch (Exception ex)
         {
-            // 如果解密失败，可能是数据损坏或在不同用户/机器上运行
-            throw new InvalidOperationException("解密失败，可能是密码数据损坏或在不同的用户账户下运行", ex);
+            // 如果解密失败，可能是数据损坏
+            throw new InvalidOperationException("解密失败，可能是密码数据损坏", ex);
         }
     }
 

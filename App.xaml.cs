@@ -100,6 +100,10 @@ public partial class App : Application
             sp.GetRequiredService<LogService>(),
             sp.GetRequiredService<EncryptionService>(),
             sp.GetRequiredService<MqttSettings>())); // Transient for new instance each time
+        services.AddTransient<ChartSettingsViewModel>(sp => new ChartSettingsViewModel(
+            sp.GetRequiredService<LogService>(),
+            sp.GetRequiredService<MqttSettings>(),
+            sp.GetRequiredService<EncryptionService>())); // Transient for new instance each time
 
         // Register Views
         services.AddSingleton<LogView>();
@@ -107,6 +111,8 @@ public partial class App : Application
         services.AddSingleton<ChartView>();
         services.AddSingleton<CommandSenderView>();
         services.AddTransient<SettingsWindow>(); // Transient for new instance each time
+        services.AddTransient<ChartSettingsWindow>(); // Transient for new instance each time
+        services.AddTransient<ContactUsWindow>(); // Transient for new instance each time
     }
 
     protected override void OnExit(ExitEventArgs e)

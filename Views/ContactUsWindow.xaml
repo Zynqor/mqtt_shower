@@ -1,0 +1,84 @@
+<Window x:Class="MqttMonitor.Views.ContactUsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="联系我们" Height="440" Width="500"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+    <Window.Resources>
+        <!-- TextBox样式 (只读但可复制) -->
+        <Style TargetType="TextBox" x:Key="ReadOnlyTextBoxStyle">
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="BorderBrush" Value="#CED4DA"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="Background" Value="#F8F9FA"/>
+            <Setter Property="Cursor" Value="IBeam"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="2"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- 标题 -->
+        <TextBlock Grid.Row="0" Text="联系方式"
+                   FontSize="18" FontWeight="Bold"
+                   Margin="0,0,0,20"/>
+
+        <!-- 联系信息 -->
+        <StackPanel Grid.Row="1">
+            <!-- 公司名称 -->
+            <Label Content="公司名称:" FontWeight="Bold" FontSize="13"/>
+            <TextBox Text="{Binding CompanyName, Mode=OneWay}"
+                     Style="{StaticResource ReadOnlyTextBoxStyle}"
+                     Height="55" Margin="0,0,0,15"
+                     VerticalContentAlignment="Center"/>
+
+            <!-- 公司地址 -->
+            <Label Content="公司地址:" FontWeight="Bold" FontSize="13"/>
+            <TextBox Text="{Binding CompanyAddress, Mode=OneWay}"
+                     Style="{StaticResource ReadOnlyTextBoxStyle}"
+                     Height="55" Margin="0,0,0,15"
+                     VerticalContentAlignment="Center"/>
+
+            <!-- 联系电话 -->
+            <Label Content="联系电话:" FontWeight="Bold" FontSize="13"/>
+            <TextBox Text="{Binding CompanyPhone, Mode=OneWay}"
+                     Style="{StaticResource ReadOnlyTextBoxStyle}"
+                     Height="55" Margin="0,0,0,15"
+                     VerticalContentAlignment="Center"/>
+
+            <!-- 电子邮箱 -->
+            <Label Content="电子邮箱:" FontWeight="Bold" FontSize="13"/>
+            <TextBox Text="{Binding CompanyEmail, Mode=OneWay}"
+                     Style="{StaticResource ReadOnlyTextBoxStyle}"
+                     Height="55" Margin="0,0,0,0"
+                     VerticalContentAlignment="Center"/>
+        </StackPanel>
+
+        <!-- 提示文本 -->
+        <TextBlock Grid.Row="2"
+                   Text="提示：您可以选中并复制以上信息"
+                   Foreground="Gray" FontSize="11"
+                   HorizontalAlignment="Center" Margin="0,15,0,0"/>
+    </Grid>
+</Window>

@@ -18,6 +18,7 @@ public class MainViewModel : INotifyPropertyChanged
     private readonly DataProcessingService _dataProcessingService;
     private readonly LogService _logService;
     private readonly CsvDataStorageService _csvStorageService;
+    private readonly EncryptionService _encryptionService;
     private string _connectionStatusText = "未连接";
     private bool _isConnecting = false;
     private int _selectedTabIndex = 0;
@@ -111,6 +112,8 @@ public class MainViewModel : INotifyPropertyChanged
     // 命令
     public ICommand ExitCommand { get; }
     public ICommand ShowSettingsCommand { get; }
+    public ICommand ShowChartSettingsCommand { get; }
+    public ICommand ShowContactUsCommand { get; }
     public ICommand ClearDataCommand { get; }
     public ICommand ShowChartViewCommand { get; }
     public ICommand ShowTableViewCommand { get; }
@@ -120,12 +123,13 @@ public class MainViewModel : INotifyPropertyChanged
     public ICommand SubscribeTopicCommand { get; }
     public ICommand UnsubscribeTopicCommand { get; }
 
-    public MainViewModel(MqttService mqttService, DataProcessingService dataProcessingService, LogService logService, CsvDataStorageService csvStorageService)
+    public MainViewModel(MqttService mqttService, DataProcessingService dataProcessingService, LogService logService, CsvDataStorageService csvStorageService, EncryptionService encryptionService)
     {
         _mqttService = mqttService;
         _dataProcessingService = dataProcessingService;
         _logService = logService;
         _csvStorageService = csvStorageService;
+        _encryptionService = encryptionService;
 
         // 订阅 MQTT 服务的属性变化
         _mqttService.PropertyChanged += OnMqttServicePropertyChanged;
@@ -133,6 +137,8 @@ public class MainViewModel : INotifyPropertyChanged
         // 初始化命令
         ExitCommand = new RelayCommand(OnExit);
         ShowSettingsCommand = new RelayCommand(OnShowSettings);
+        ShowChartSettingsCommand = new RelayCommand(OnShowChartSettings);
+        ShowContactUsCommand = new RelayCommand(OnShowContactUs);
         ClearDataCommand = new RelayCommand(OnClearData);
         ShowChartViewCommand = new RelayCommand(() => SelectedTabIndex = 0);
         ShowTableViewCommand = new RelayCommand(() => SelectedTabIndex = 1);
@@ -212,6 +218,32 @@ public class MainViewModel : INotifyPropertyChanged
     }
 
     /// <summary>
+    /// 显示图表设置窗口
+    /// </summary>
+    private void OnShowChartSettings()
+    {
+        var chartSettingsWindow = App.ServiceProvider?.GetService<ChartSettingsWindow>();
+        if (chartSettingsWindow != null)
+        {
+            chartSettingsWindow.Owner = System.Windows.Application.Current.MainWindow;
+            chartSettingsWindow.ShowDialog();
+        }
+    }
+
+    /// <summary>
+    /// 显示联系我们窗口
+    /// </summary>
+    private void OnShowContactUs()
+    {
+        var contactUsWindow = App.ServiceProvider?.GetService<ContactUsWindow>();
+        if (contactUsWindow != null)
+        {
+            contactUsWindow.Owner = System.Windows.Application.Current.MainWindow;
+            contactUsWindow.ShowDialog();
+        }
+    }
+
+    /// <summary>
     /// 连接到 MQTT 服务器
     /// </summary>
     private async void OnConnect()
@@ -250,7 +282,12 @@ public class MainViewModel : INotifyPropertyChanged
                 settings.Port,
                 settings.Username,
                 settings.Password,
-                settings.ClientId);
+                settings.ClientId,
+                settings.UseTls,
+                settings.CaCertificatePath,
+                settings.ClientCertificatePath,
+                settings.ClientKeyPath,
+                settings.IgnoreCertificateErrors);
 
             // 重新加载并订阅配置文件中的所有 Topics
             // 这样确保每次连接都使用最新的配置
@@ -396,6 +433,14 @@ public class MainViewModel : INotifyPropertyChanged
             if (settings != null)
             {
                 settings.SubscribedTopics = new ObservableCollection<string>(_mqttService.SortedActiveSubscriptions);
+
+                // 加密密码（如果有密码且未加密）
+                if (!string.IsNullOrEmpty(settings.Password) &&
+                    !_encryptionService.IsEncrypted(settings.Password))
+                {
+                    settings.Password = _encryptionService.Encrypt(settings.Password);
+                }
+
                 var json = Newtonsoft.Json.JsonConvert.SerializeObject(settings, Newtonsoft.Json.Formatting.Indented);
                 System.IO.File.WriteAllText("config.json", json);
             }
@@ -488,6 +533,13 @@ public class MainViewModel : INotifyPropertyChanged
                 settings.WindowState = window.WindowState.ToString();
                 // 不修改订阅列表，保留原有配置
                 // settings.SubscribedTopics 保持不变
+
+                // 加密密码（如果有密码且未加密）
+                if (!string.IsNullOrEmpty(settings.Password) &&
+                    !_encryptionService.IsEncrypted(settings.Password))
+                {
+                    settings.Password = _encryptionService.Encrypt(settings.Password);
+                }
 
                 var json = Newtonsoft.Json.JsonConvert.SerializeObject(settings, Newtonsoft.Json.Formatting.Indented);
                 System.IO.File.WriteAllText("config.json", json);

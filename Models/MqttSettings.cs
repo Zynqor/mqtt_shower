@@ -110,6 +110,51 @@ public class MqttSettings : INotifyPropertyChanged
         }
     }
 
+    /// <summary>
+    /// 公司名称
+    /// </summary>
+    public string CompanyName { get; set; } = "您的公司名称";
+
+    /// <summary>
+    /// 公司地址
+    /// </summary>
+    public string CompanyAddress { get; set; } = "您的公司地址";
+
+    /// <summary>
+    /// 联系电话
+    /// </summary>
+    public string CompanyPhone { get; set; } = "联系电话";
+
+    /// <summary>
+    /// 公司邮箱
+    /// </summary>
+    public string CompanyEmail { get; set; } = "contact@company.com";
+
+    /// <summary>
+    /// 启用TLS/SSL加密连接
+    /// </summary>
+    public bool UseTls { get; set; } = false;
+
+    /// <summary>
+    /// CA证书文件路径（用于验证服务器）
+    /// </summary>
+    public string? CaCertificatePath { get; set; }
+
+    /// <summary>
+    /// 客户端证书文件路径（双向认证时使用）
+    /// </summary>
+    public string? ClientCertificatePath { get; set; }
+
+    /// <summary>
+    /// 客户端私钥文件路径（双向认证时使用）
+    /// </summary>
+    public string? ClientKeyPath { get; set; }
+
+    /// <summary>
+    /// 忽略证书错误（仅用于测试，不推荐在生产环境使用）
+    /// </summary>
+    public bool IgnoreCertificateErrors { get; set; } = false;
+
     protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

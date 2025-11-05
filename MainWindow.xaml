@@ -120,9 +120,13 @@
         <!-- 菜单栏 -->
         <Menu DockPanel.Dock="Top" Background="White" BorderBrush="#E0E0E0" BorderThickness="0,0,0,1">
             <MenuItem Header="文件(_F)" Padding="10,5">
-                <MenuItem Header="设置(_S)" Command="{Binding ShowSettingsCommand}"/>
+                <MenuItem Header="MQTT 连接设置(_S)" Command="{Binding ShowSettingsCommand}"/>
+                <MenuItem Header="图表设置(_C)" Command="{Binding ShowChartSettingsCommand}"/>
                 <Separator/>
                 <MenuItem Header="退出(_X)" Command="{Binding ExitCommand}"/>
+            </MenuItem>
+            <MenuItem Header="帮助(_H)" Padding="10,5">
+                <MenuItem Header="联系我们(_C)" Command="{Binding ShowContactUsCommand}"/>
             </MenuItem>
         </Menu>
 
