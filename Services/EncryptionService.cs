@@ -46,9 +46,10 @@ public class EncryptionService
                 using (var ms = new MemoryStream())
                 {
                     using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
-                    using (var writer = new StreamWriter(cs))
                     {
-                        writer.Write(plainText);
+                        byte[] plainBytes = Encoding.UTF8.GetBytes(plainText);
+                        cs.Write(plainBytes, 0, plainBytes.Length);
+                        cs.FlushFinalBlock(); // 确保所有数据被写入
                     }
 
                     byte[] encrypted = ms.ToArray();
@@ -92,9 +93,13 @@ public class EncryptionService
                 using (var decryptor = aes.CreateDecryptor())
                 using (var ms = new MemoryStream(encryptedBytes))
                 using (var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
-                using (var reader = new StreamReader(cs))
                 {
-                    return reader.ReadToEnd();
+                    using (var resultMs = new MemoryStream())
+                    {
+                        cs.CopyTo(resultMs);
+                        byte[] decryptedBytes = resultMs.ToArray();
+                        return Encoding.UTF8.GetString(decryptedBytes);
+                    }
                 }
             }
         }
