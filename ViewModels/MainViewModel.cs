@@ -18,6 +18,7 @@ public class MainViewModel : INotifyPropertyChanged
     private readonly DataProcessingService _dataProcessingService;
     private readonly LogService _logService;
     private readonly CsvDataStorageService _csvStorageService;
+    private readonly EncryptionService _encryptionService;
     private string _connectionStatusText = "未连接";
     private bool _isConnecting = false;
     private int _selectedTabIndex = 0;
@@ -120,12 +121,13 @@ public class MainViewModel : INotifyPropertyChanged
     public ICommand SubscribeTopicCommand { get; }
     public ICommand UnsubscribeTopicCommand { get; }
 
-    public MainViewModel(MqttService mqttService, DataProcessingService dataProcessingService, LogService logService, CsvDataStorageService csvStorageService)
+    public MainViewModel(MqttService mqttService, DataProcessingService dataProcessingService, LogService logService, CsvDataStorageService csvStorageService, EncryptionService encryptionService)
     {
         _mqttService = mqttService;
         _dataProcessingService = dataProcessingService;
         _logService = logService;
         _csvStorageService = csvStorageService;
+        _encryptionService = encryptionService;
 
         // 订阅 MQTT 服务的属性变化
         _mqttService.PropertyChanged += OnMqttServicePropertyChanged;
@@ -396,6 +398,14 @@ public class MainViewModel : INotifyPropertyChanged
             if (settings != null)
             {
                 settings.SubscribedTopics = new ObservableCollection<string>(_mqttService.SortedActiveSubscriptions);
+
+                // 加密密码（如果有密码且未加密）
+                if (!string.IsNullOrEmpty(settings.Password) &&
+                    !_encryptionService.IsEncrypted(settings.Password))
+                {
+                    settings.Password = _encryptionService.Encrypt(settings.Password);
+                }
+
                 var json = Newtonsoft.Json.JsonConvert.SerializeObject(settings, Newtonsoft.Json.Formatting.Indented);
                 System.IO.File.WriteAllText("config.json", json);
             }
@@ -488,6 +498,13 @@ public class MainViewModel : INotifyPropertyChanged
                 settings.WindowState = window.WindowState.ToString();
                 // 不修改订阅列表，保留原有配置
                 // settings.SubscribedTopics 保持不变
+
+                // 加密密码（如果有密码且未加密）
+                if (!string.IsNullOrEmpty(settings.Password) &&
+                    !_encryptionService.IsEncrypted(settings.Password))
+                {
+                    settings.Password = _encryptionService.Encrypt(settings.Password);
+                }
 
                 var json = Newtonsoft.Json.JsonConvert.SerializeObject(settings, Newtonsoft.Json.Formatting.Indented);
                 System.IO.File.WriteAllText("config.json", json);
