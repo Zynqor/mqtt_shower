@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Windows;
 using MqttMonitor.Services;
 
@@ -12,6 +14,7 @@ namespace MqttMonitor.ViewModels;
 public class LogViewModel : INotifyPropertyChanged
 {
     private readonly LogService _logService;
+    private string _logsText = string.Empty;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -20,15 +23,55 @@ public class LogViewModel : INotifyPropertyChanged
     /// </summary>
     public ObservableCollection<string> Logs { get; } = new ObservableCollection<string>();
 
+    /// <summary>
+    /// 日志文本（用于TextBox显示）
+    /// </summary>
+    public string LogsText
+    {
+        get => _logsText;
+        private set
+        {
+            if (_logsText != value)
+            {
+                _logsText = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     public LogViewModel(LogService logService)
     {
         _logService = logService;
+
+        // 订阅日志集合变化事件
+        Logs.CollectionChanged += Logs_CollectionChanged;
 
         // 订阅日志事件
         _logService.OnLogReceived += OnLogReceived;
 
         // 添加欢迎日志
         AddLog("应用程序已启动");
+    }
+
+    /// <summary>
+    /// 当Logs集合变化时更新LogsText
+    /// </summary>
+    private void Logs_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        UpdateLogsText();
+    }
+
+    /// <summary>
+    /// 更新日志文本
+    /// </summary>
+    private void UpdateLogsText()
+    {
+        var sb = new StringBuilder();
+        foreach (var log in Logs)
+        {
+            sb.AppendLine(log);
+        }
+        LogsText = sb.ToString();
     }
 
     /// <summary>

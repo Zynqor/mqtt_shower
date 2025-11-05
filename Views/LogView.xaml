@@ -25,50 +25,19 @@
             <Border.Effect>
                 <DropShadowEffect Color="#000000" Opacity="0.05" BlurRadius="10" ShadowDepth="2"/>
             </Border.Effect>
-            <ListBox x:Name="LogListBox"
-                     ItemsSource="{Binding Logs}"
+            <TextBox x:Name="LogTextBox"
+                     Text="{Binding LogsText, Mode=OneWay}"
                      Background="Transparent"
                      BorderThickness="0"
                      FontFamily="Consolas"
                      FontSize="11"
                      Padding="10"
-                     ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                     ScrollViewer.VerticalScrollBarVisibility="Auto">
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                        <Setter Property="Padding" Value="0"/>
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="ListBoxItem">
-                                    <Border Background="{TemplateBinding Background}"
-                                            BorderThickness="0" Padding="{TemplateBinding Padding}">
-                                        <ContentPresenter/>
-                                    </Border>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                        <Style.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#F8F9FA"/>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </ListBox.ItemContainerStyle>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBox Text="{Binding, Mode=OneWay}"
-                                 IsReadOnly="True"
-                                 BorderThickness="0"
-                                 Background="Transparent"
-                                 Foreground="#495057"
-                                 Padding="8,4"
-                                 TextWrapping="NoWrap"
-                                 Cursor="IBeam"
-                                 VerticalAlignment="Center"/>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                     IsReadOnly="True"
+                     TextWrapping="NoWrap"
+                     VerticalScrollBarVisibility="Auto"
+                     HorizontalScrollBarVisibility="Auto"
+                     Foreground="#495057"
+                     Cursor="IBeam"/>
         </Border>
     </Grid>
 </UserControl>
