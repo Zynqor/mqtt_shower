@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MqttMonitor.Converters"
         mc:Ignorable="d"
-        Title="MQTT 连接设置" Height="480" Width="450"
+        Title="MQTT 连接设置" Height="420" Width="450"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize">
     <Window.Resources>
@@ -71,17 +71,17 @@
                 <!-- 服务器地址 -->
                 <Label Content="服务器地址:" FontWeight="Bold"/>
                 <TextBox Text="{Binding Server, UpdateSourceTrigger=PropertyChanged}"
-                         Height="36" Margin="0,0,0,10"/>
+                         Height="42" Margin="0,0,0,10"/>
 
                 <!-- 端口 -->
                 <Label Content="端口:" FontWeight="Bold"/>
                 <TextBox Text="{Binding Port, UpdateSourceTrigger=PropertyChanged}"
-                         Height="36" Margin="0,0,0,10"/>
+                         Height="42" Margin="0,0,0,10"/>
 
                 <!-- 用户名 -->
                 <Label Content="用户名 (可选):" FontWeight="Bold"/>
                 <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"
-                         Height="36" Margin="0,0,0,10"/>
+                         Height="42" Margin="0,0,0,10"/>
 
                 <!-- 密码 -->
                 <Label Content="密码 (可选):" FontWeight="Bold"/>
@@ -92,11 +92,11 @@
                     </Grid.ColumnDefinitions>
                     <!-- 隐藏密码的 PasswordBox -->
                     <PasswordBox Grid.Column="0" x:Name="PasswordBox"
-                                 Height="36" Visibility="{Binding IsPasswordVisible, Converter={StaticResource InvertedBooleanToVisibilityConverter}}"/>
+                                 Height="42" Visibility="{Binding IsPasswordVisible, Converter={StaticResource InvertedBooleanToVisibilityConverter}}"/>
                     <!-- 显示密码的 TextBox -->
                     <TextBox Grid.Column="0" x:Name="PasswordTextBox"
                              Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}"
-                             Height="36" Visibility="{Binding IsPasswordVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                             Height="42" Visibility="{Binding IsPasswordVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     <Button Grid.Column="1" Content="👁"
                             Command="{Binding TogglePasswordVisibilityCommand}"
                             Width="35" Height="25" Margin="5,0,0,0"
@@ -106,26 +106,13 @@
                 <!-- 客户端ID -->
                 <Label Content="客户端ID (可选，留空则自动生成):" FontWeight="Bold"/>
                 <TextBox Text="{Binding ClientId, UpdateSourceTrigger=PropertyChanged}"
-                         Height="36" Margin="0,0,0,10"/>
+                         Height="42" Margin="0,0,0,10"/>
 
                 <!-- 基础 Topic -->
                 <Label Content="基础 Topic:" FontWeight="Bold"/>
                 <TextBox Text="{Binding BaseTopic, UpdateSourceTrigger=PropertyChanged}"
-                         Height="36" Margin="0,0,0,10"/>
+                         Height="42" Margin="0,0,0,10"/>
                 <TextBlock Text="用于命令发送和响应，例如: iot/devices"
-                           Foreground="Gray" FontSize="11" Margin="0,-8,0,10"/>
-
-                <!-- 图表最大数据点数量 -->
-                <Label Content="图表最大数据点数量:" FontWeight="Bold"/>
-                <TextBox Text="{Binding MaxChartDataPoints, UpdateSourceTrigger=PropertyChanged}"
-                         Height="36" Margin="0,0,0,10"/>
-                <TextBlock Text="图表将显示最近的数据点数量" Foreground="Gray" FontSize="11" Margin="0,-8,0,10"/>
-
-                <!-- 图表更新间隔 -->
-                <Label Content="图表更新间隔 (毫秒):" FontWeight="Bold"/>
-                <TextBox Text="{Binding ChartUpdateInterval, UpdateSourceTrigger=PropertyChanged}"
-                         Height="36" Margin="0,0,0,10"/>
-                <TextBlock Text="建议值: 200-2000 (数值越大性能越好，但实时性越低)"
                            Foreground="Gray" FontSize="11" Margin="0,-8,0,10"/>
             </StackPanel>
         </ScrollViewer>

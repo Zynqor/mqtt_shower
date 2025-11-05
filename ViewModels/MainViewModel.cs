@@ -112,6 +112,7 @@ public class MainViewModel : INotifyPropertyChanged
     // 命令
     public ICommand ExitCommand { get; }
     public ICommand ShowSettingsCommand { get; }
+    public ICommand ShowChartSettingsCommand { get; }
     public ICommand ClearDataCommand { get; }
     public ICommand ShowChartViewCommand { get; }
     public ICommand ShowTableViewCommand { get; }
@@ -135,6 +136,7 @@ public class MainViewModel : INotifyPropertyChanged
         // 初始化命令
         ExitCommand = new RelayCommand(OnExit);
         ShowSettingsCommand = new RelayCommand(OnShowSettings);
+        ShowChartSettingsCommand = new RelayCommand(OnShowChartSettings);
         ClearDataCommand = new RelayCommand(OnClearData);
         ShowChartViewCommand = new RelayCommand(() => SelectedTabIndex = 0);
         ShowTableViewCommand = new RelayCommand(() => SelectedTabIndex = 1);
@@ -210,6 +212,19 @@ public class MainViewModel : INotifyPropertyChanged
         {
             settingsWindow.Owner = System.Windows.Application.Current.MainWindow;
             settingsWindow.ShowDialog();
+        }
+    }
+
+    /// <summary>
+    /// 显示图表设置窗口
+    /// </summary>
+    private void OnShowChartSettings()
+    {
+        var chartSettingsWindow = App.ServiceProvider?.GetService<ChartSettingsWindow>();
+        if (chartSettingsWindow != null)
+        {
+            chartSettingsWindow.Owner = System.Windows.Application.Current.MainWindow;
+            chartSettingsWindow.ShowDialog();
         }
     }
 
