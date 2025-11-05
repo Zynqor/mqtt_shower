@@ -18,7 +18,7 @@ public class EncryptionService
     // 固定的加密密钥 (32字节 = 256位)
     // 注意：这是硬编码的密钥，适用于本地配置文件的简单混淆
     // 不适用于需要高安全性的场景
-    private static readonly byte[] EncryptionKey = Encoding.UTF8.GetBytes("MqttMonitor2025!SecureConfig!!");
+    private static readonly byte[] EncryptionKey = Encoding.UTF8.GetBytes("MqttMonitor2025!SecureConfig!!OK");
 
     // 固定的IV (16字节)
     private static readonly byte[] EncryptionIV = Encoding.UTF8.GetBytes("MqttMonitor2025!");
