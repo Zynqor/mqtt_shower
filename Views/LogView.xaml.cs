@@ -18,10 +18,10 @@ public partial class LogView : UserControl
         InitializeComponent();
         DataContext = viewModel;
 
-        // Subscribe to the collection changed event to auto-scroll
+        // Subscribe to the PropertyChanged event to auto-scroll when LogsText changes
         if (DataContext is LogViewModel logViewModel)
         {
-            logViewModel.Logs.CollectionChanged += Logs_CollectionChanged;
+            logViewModel.PropertyChanged += ViewModel_PropertyChanged;
         }
 
         // 添加鼠标滚轮事件处理，支持 Ctrl+滚轮缩放
@@ -50,9 +50,19 @@ public partial class LogView : UserControl
         }
     }
 
-    private void Logs_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    /// <summary>
+    /// 当 ViewModel 属性变化时，自动滚动到底部
+    /// </summary>
+    private void ViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        // Scroll to the bottom when new items are added
-        LogTextBox.ScrollToEnd();
+        // 当 LogsText 属性变化时，滚动到底部
+        if (e.PropertyName == nameof(LogViewModel.LogsText))
+        {
+            // 使用 Dispatcher 确保在 UI 更新完成后再滚动
+            Dispatcher.InvokeAsync(() =>
+            {
+                LogTextBox.ScrollToEnd();
+            }, System.Windows.Threading.DispatcherPriority.Loaded);
+        }
     }
 }
