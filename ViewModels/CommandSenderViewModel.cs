@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
 using MqttMonitor.Models;
 using MqttMonitor.Services;
+using System.IO;
 
 namespace MqttMonitor.ViewModels;
 
@@ -26,8 +27,36 @@ public class CommandSenderViewModel : INotifyPropertyChanged
     private string _selectedDeviceId = string.Empty;
     private string _commandName = string.Empty;
     private string _commandParams = string.Empty;
+    private CommandTemplate? _selectedCommandTemplate;
 
     public event PropertyChangedEventHandler? PropertyChanged;
+
+    /// <summary>
+    /// 命令模板列表
+    /// </summary>
+    public ObservableCollection<CommandTemplate> CommandTemplates { get; } = new();
+
+    /// <summary>
+    /// 选中的命令模板
+    /// </summary>
+    public CommandTemplate? SelectedCommandTemplate
+    {
+        get => _selectedCommandTemplate;
+        set
+        {
+            if (_selectedCommandTemplate != value)
+            {
+                _selectedCommandTemplate = value;
+                OnPropertyChanged();
+                OnCommandTemplateChanged();
+            }
+        }
+    }
+
+    /// <summary>
+    /// 当前命令的参数列表（用于UI绑定）
+    /// </summary>
+    public ObservableCollection<CommandParameter> CurrentParameters { get; } = new();
 
     /// <summary>
     /// 命令历史记录
@@ -103,6 +132,75 @@ public class CommandSenderViewModel : INotifyPropertyChanged
         _timeoutTimer = new System.Timers.Timer(1000);
         _timeoutTimer.Elapsed += CheckCommandTimeouts;
         _timeoutTimer.Start();
+
+        // 加载命令模板
+        LoadCommandTemplates();
+    }
+
+    /// <summary>
+    /// 从 commands.json 加载命令模板
+    /// </summary>
+    private void LoadCommandTemplates()
+    {
+        try
+        {
+            var commandsFilePath = "commands.json";
+            if (File.Exists(commandsFilePath))
+            {
+                var json = File.ReadAllText(commandsFilePath);
+                var templates = JsonConvert.DeserializeObject<List<CommandTemplate>>(json);
+
+                if (templates != null)
+                {
+                    CommandTemplates.Clear();
+                    foreach (var template in templates)
+                    {
+                        CommandTemplates.Add(template);
+                    }
+                    _logService.LogInfo($"成功加载 {CommandTemplates.Count} 个命令模板");
+                }
+            }
+            else
+            {
+                _logService.LogWarning("commands.json 文件不存在");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logService.LogException(ex, "加载命令模板失败");
+        }
+    }
+
+    /// <summary>
+    /// 当选中的命令模板改变时
+    /// </summary>
+    private void OnCommandTemplateChanged()
+    {
+        CurrentParameters.Clear();
+
+        if (SelectedCommandTemplate != null)
+        {
+            // 更新命令名称
+            CommandName = SelectedCommandTemplate.Name;
+
+            // 加载参数列表（创建新的副本，避免共享引用）
+            if (SelectedCommandTemplate.Parameters != null)
+            {
+                foreach (var param in SelectedCommandTemplate.Parameters)
+                {
+                    var paramCopy = new CommandParameter
+                    {
+                        Name = param.Name,
+                        Type = param.Type,
+                        Description = param.Description,
+                        Value = param.Value
+                    };
+                    CurrentParameters.Add(paramCopy);
+                }
+            }
+
+            _logService.LogInfo($"选中命令: {SelectedCommandTemplate.Name} ({SelectedCommandTemplate.Description})");
+        }
     }
 
     /// <summary>
@@ -154,13 +252,35 @@ public class CommandSenderViewModel : INotifyPropertyChanged
                 }
             }
 
+            // 构建命令参数对象
+            object? commandParams = null;
+            if (CurrentParameters.Count > 0)
+            {
+                var paramsDict = new Dictionary<string, object>();
+                foreach (var param in CurrentParameters)
+                {
+                    if (!string.IsNullOrWhiteSpace(param.Value))
+                    {
+                        // 根据参数类型转换值
+                        object paramValue = param.Type.ToLower() switch
+                        {
+                            "number" => double.TryParse(param.Value, out var numVal) ? numVal : param.Value,
+                            "boolean" => bool.TryParse(param.Value, out var boolVal) ? boolVal : param.Value,
+                            _ => param.Value // string 或其他类型
+                        };
+                        paramsDict[param.Name] = paramValue;
+                    }
+                }
+                commandParams = paramsDict.Count > 0 ? paramsDict : null;
+            }
+
             // 构建命令请求
             var commandRequest = new CommandRequest
             {
                 CommandId = Guid.NewGuid().ToString(),
                 CommandName = CommandName.Trim(),
                 Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
-                Params = string.IsNullOrWhiteSpace(CommandParams) ? null : CommandParams.Trim()
+                Params = commandParams
             };
 
             // 记录待处理命令
