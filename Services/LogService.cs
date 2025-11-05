@@ -58,7 +58,7 @@ public class LogService
             // 追加日志到文件
             if (_currentLogFile != null)
             {
-                File.AppendAllText(_currentLogFile, timestampedMessage + Environment.NewLine);
+                File.AppendAllText(_currentLogFile, message + Environment.NewLine);
             }
         }
         catch
