@@ -15,6 +15,7 @@ namespace MqttMonitor.ViewModels;
 public class SettingsViewModel : INotifyPropertyChanged
 {
     private readonly LogService _logService;
+    private readonly EncryptionService _encryptionService;
     private readonly MqttSettings _mqttSettings; // Inject MqttSettings
     private readonly string _configFilePath = "config.json";
 
@@ -187,9 +188,10 @@ public class SettingsViewModel : INotifyPropertyChanged
     public ICommand CancelCommand { get; }
     public ICommand TogglePasswordVisibilityCommand { get; }
 
-    public SettingsViewModel(LogService logService, MqttSettings mqttSettings) // Add MqttSettings to constructor
+    public SettingsViewModel(LogService logService, EncryptionService encryptionService, MqttSettings mqttSettings)
     {
         _logService = logService;
+        _encryptionService = encryptionService;
         _mqttSettings = mqttSettings; // Assign MqttSettings
 
         // 初始化命令
@@ -232,7 +234,33 @@ public class SettingsViewModel : INotifyPropertyChanged
                 _mqttSettings.WindowState = existingSettings.WindowState;
             }
 
-            var json = JsonConvert.SerializeObject(_mqttSettings, Formatting.Indented); // Serialize the updated singleton
+            // 创建一个副本用于保存（避免修改单例实例）
+            var settingsToSave = new MqttSettings
+            {
+                Server = _mqttSettings.Server,
+                Port = _mqttSettings.Port,
+                Username = _mqttSettings.Username,
+                Password = _mqttSettings.Password,
+                ClientId = _mqttSettings.ClientId,
+                BaseTopic = _mqttSettings.BaseTopic,
+                MaxChartDataPoints = _mqttSettings.MaxChartDataPoints,
+                ChartUpdateInterval = _mqttSettings.ChartUpdateInterval,
+                SubscribedTopics = _mqttSettings.SubscribedTopics,
+                Title = _mqttSettings.Title,
+                WindowWidth = _mqttSettings.WindowWidth,
+                WindowHeight = _mqttSettings.WindowHeight,
+                WindowLeft = _mqttSettings.WindowLeft,
+                WindowTop = _mqttSettings.WindowTop,
+                WindowState = _mqttSettings.WindowState
+            };
+
+            // 加密密码（如果有密码）
+            if (!string.IsNullOrEmpty(settingsToSave.Password))
+            {
+                settingsToSave.Password = _encryptionService.Encrypt(settingsToSave.Password);
+            }
+
+            var json = JsonConvert.SerializeObject(settingsToSave, Formatting.Indented);
             File.WriteAllText(_configFilePath, json);
 
             _logService.LogInfo("设置已保存");
@@ -283,7 +311,23 @@ public class SettingsViewModel : INotifyPropertyChanged
             if (File.Exists(_configFilePath))
             {
                 var json = File.ReadAllText(_configFilePath);
-                return JsonConvert.DeserializeObject<MqttSettings>(json);
+                var settings = JsonConvert.DeserializeObject<MqttSettings>(json);
+
+                // 解密密码（如果已加密）
+                if (settings != null && !string.IsNullOrEmpty(settings.Password))
+                {
+                    try
+                    {
+                        settings.Password = _encryptionService.Decrypt(settings.Password);
+                    }
+                    catch (Exception decryptEx)
+                    {
+                        _logService.LogException(decryptEx, "解密密码失败，密码将被清空");
+                        settings.Password = null;
+                    }
+                }
+
+                return settings;
             }
         }
         catch (Exception ex)
