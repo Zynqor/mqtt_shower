@@ -36,6 +36,7 @@
                      TextWrapping="NoWrap"
                      VerticalScrollBarVisibility="Auto"
                      HorizontalScrollBarVisibility="Auto"
+                     VerticalContentAlignment="Top"
                      Foreground="#495057"
                      Cursor="IBeam"/>
         </Border>
