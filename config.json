@@ -1,0 +1,23 @@
+{
+  "Title": "Mqtt Monitor",
+  "Server": "119.45.181.86",
+  "Port": 1883,
+  "Username": "admin",
+  "Password": "your_strong_password",
+  "ClientId": null,
+  "BaseTopic": "iot/devices",
+  "SubscribedTopics": [
+    "iot/devices/1111/datas",
+    "iot/devices/2222/datas",
+    "iot/devices/4396/datas",
+    "iot/devices/7777/datas",
+    "iot/devices/8000/datas"
+  ],
+  "WindowWidth": 1000.0,
+  "WindowHeight": 600.0,
+  "WindowLeft": "NaN",
+  "WindowTop": "NaN",
+  "WindowState": "Maximized",
+  "MaxChartDataPoints": 10,
+  "ChartUpdateInterval": 800
+}

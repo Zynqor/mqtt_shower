@@ -1,0 +1,73 @@
+[
+  {
+    "Name": "setThreshold",
+    "Description": "设置设备阈值参数",
+    "Parameters": [
+      {
+        "Name": "metricName",
+        "Type": "string",
+        "Description": "测点名称",
+        "Value": "temperature"
+      },
+      {
+        "Name": "thresholdValue",
+        "Type": "number",
+        "Description": "阈值",
+        "Value": "100"
+      }
+    ]
+  },
+  {
+    "Name": "restart",
+    "Description": "重启设备",
+    "Parameters": []
+  },
+  {
+    "Name": "updateInterval",
+    "Description": "更新数据上报间隔",
+    "Parameters": [
+      {
+        "Name": "intervalSeconds",
+        "Type": "number",
+        "Description": "上报间隔（秒）",
+        "Value": "60"
+      }
+    ]
+  },
+  {
+    "Name": "calibrate",
+    "Description": "校准传感器",
+    "Parameters": [
+      {
+        "Name": "sensorType",
+        "Type": "string",
+        "Description": "传感器类型",
+        "Value": "temperature"
+      },
+      {
+        "Name": "offset",
+        "Type": "number",
+        "Description": "校准偏移量",
+        "Value": "0"
+      }
+    ]
+  },
+  {
+    "Name": "enableMetric",
+    "Description": "启用或禁用指定测点",
+    "Parameters": [
+      {
+        "Name": "metricName",
+        "Type": "string",
+        "Description": "测点名称",
+        "Value": "temperature"
+      },
+      {
+        "Name": "enabled",
+        "Type": "boolean",
+        "Description": "是否启用",
+        "Value": "true"
+      }
+    ]
+  }
+]
