@@ -210,8 +210,6 @@ public class SettingsViewModel : INotifyPropertyChanged
     {
         try
         {
-            _logService.LogInfo($"[调试] 开始保存设置，密码字段: '{Password}' (长度: {Password?.Length ?? 0})");
-
             // Update the singleton MqttSettings instance
             _mqttSettings.Server = Server;
             _mqttSettings.Port = Port;
@@ -221,8 +219,6 @@ public class SettingsViewModel : INotifyPropertyChanged
             _mqttSettings.BaseTopic = BaseTopic;
             _mqttSettings.MaxChartDataPoints = MaxChartDataPoints;
             _mqttSettings.ChartUpdateInterval = ChartUpdateInterval;
-
-            _logService.LogInfo($"[调试] 赋值后密码: '{_mqttSettings.Password}' (长度: {_mqttSettings.Password?.Length ?? 0})");
 
             // Load existing settings to preserve subscribed topics and other properties not in SettingsViewModel
             var existingSettings = LoadSettingsFromFile();
@@ -258,28 +254,15 @@ public class SettingsViewModel : INotifyPropertyChanged
                 WindowState = _mqttSettings.WindowState
             };
 
-            _logService.LogInfo($"[调试] 准备保存的密码: '{settingsToSave.Password}' (长度: {settingsToSave.Password?.Length ?? 0})");
-
             // 加密密码（如果有密码且未加密）
             if (!string.IsNullOrEmpty(settingsToSave.Password) &&
                 !_encryptionService.IsEncrypted(settingsToSave.Password))
             {
                 settingsToSave.Password = _encryptionService.Encrypt(settingsToSave.Password);
-                _logService.LogInfo($"[调试] 密码已加密: {settingsToSave.Password.Substring(0, Math.Min(50, settingsToSave.Password.Length))}...");
-            }
-            else if (!string.IsNullOrEmpty(settingsToSave.Password))
-            {
-                _logService.LogInfo("[调试] 密码已经是加密格式，跳过加密");
-            }
-            else
-            {
-                _logService.LogInfo("[调试] 密码为空或null，不进行加密");
             }
 
             var json = JsonConvert.SerializeObject(settingsToSave, Formatting.Indented);
-            _logService.LogInfo($"[调试] 准备写入文件: {_configFilePath}");
             File.WriteAllText(_configFilePath, json);
-            _logService.LogInfo("[调试] 文件写入完成");
 
             _logService.LogInfo("设置已保存");
             OnSettingsSaved?.Invoke();
@@ -312,7 +295,6 @@ public class SettingsViewModel : INotifyPropertyChanged
             Port = settings.Port;
             Username = settings.Username ?? string.Empty;
             Password = settings.Password ?? string.Empty;
-            _logService.LogInfo($"[调试] 从文件加载的密码: '{Password}' (长度: {Password?.Length ?? 0})");
             ClientId = settings.ClientId ?? string.Empty;
             BaseTopic = settings.BaseTopic;
             MaxChartDataPoints = settings.MaxChartDataPoints;
@@ -335,16 +317,11 @@ public class SettingsViewModel : INotifyPropertyChanged
                 // 解密密码（如果已加密）
                 if (settings != null && !string.IsNullOrEmpty(settings.Password))
                 {
-                    _logService.LogInfo($"[调试] 从文件读取的原始密码: '{settings.Password.Substring(0, Math.Min(50, settings.Password.Length))}...'");
-                    bool isEncrypted = _encryptionService.IsEncrypted(settings.Password);
-                    _logService.LogInfo($"[调试] 密码是否加密: {isEncrypted}");
-
-                    if (isEncrypted)
+                    if (_encryptionService.IsEncrypted(settings.Password))
                     {
                         try
                         {
                             settings.Password = _encryptionService.Decrypt(settings.Password);
-                            _logService.LogInfo($"[调试] 解密后密码长度: {settings.Password?.Length ?? 0}");
                         }
                         catch (Exception decryptEx)
                         {
@@ -352,14 +329,6 @@ public class SettingsViewModel : INotifyPropertyChanged
                             settings.Password = null;
                         }
                     }
-                    else
-                    {
-                        _logService.LogInfo("[调试] 密码是明文格式，无需解密");
-                    }
-                }
-                else
-                {
-                    _logService.LogInfo("[调试] 文件中没有密码或密码为空");
                 }
 
                 return settings;
