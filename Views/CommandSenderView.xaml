@@ -123,6 +123,7 @@
                          DisplayMemberPath="Description"
                          Height="36" Margin="0,0,0,20"
                          FontSize="13"
+                         Padding="8,6"
                          VerticalContentAlignment="Center"/>
 
                 <!-- 说明文本 -->
