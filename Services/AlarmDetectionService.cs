@@ -17,6 +17,7 @@ public class AlarmDetectionService
     private readonly AlarmConfigService _alarmConfigService;
     private readonly SoundPlayerService _soundPlayerService;
     private readonly DataProcessingService _dataProcessingService;
+    private readonly AlarmHistoryStorageService _alarmHistoryStorageService;
 
     private List<AlarmConfig> _alarmConfigs = new();
     private readonly ConcurrentDictionary<string, DateTime> _exceedStartTimes = new();
@@ -39,12 +40,14 @@ public class AlarmDetectionService
         LogService logService,
         AlarmConfigService alarmConfigService,
         SoundPlayerService soundPlayerService,
-        DataProcessingService dataProcessingService)
+        DataProcessingService dataProcessingService,
+        AlarmHistoryStorageService alarmHistoryStorageService)
     {
         _logService = logService;
         _alarmConfigService = alarmConfigService;
         _soundPlayerService = soundPlayerService;
         _dataProcessingService = dataProcessingService;
+        _alarmHistoryStorageService = alarmHistoryStorageService;
 
         // 订阅数据处理事件
         _dataProcessingService.OnUpstreamDataParsed += CheckAlarms;
@@ -75,12 +78,24 @@ public class AlarmDetectionService
 
         foreach (var metric in dataPacket.Payload)
         {
-            var config = _alarmConfigService.GetAlarmConfig(dataPacket.DeviceId, metric.Name, _alarmConfigs);
-            if (config == null || !config.Enabled)
-                continue;
-
             var key = $"{dataPacket.DeviceId}_{metric.Name}";
             var value = metric.Value;
+
+            var config = _alarmConfigService.GetAlarmConfig(dataPacket.DeviceId, metric.Name, _alarmConfigs);
+
+            // 如果告警被禁用，检查是否有活动告警需要恢复
+            if (config == null || !config.Enabled)
+            {
+                // 清除超限记录
+                _exceedStartTimes.TryRemove(key, out _);
+
+                // 如果有活动告警，则恢复（用户禁用了告警配置）
+                if (_activeAlarms.TryGetValue(key, out var activeAlarm))
+                {
+                    RecoverAlarm(activeAlarm);
+                }
+                continue;
+            }
 
             // 检查是否超限
             bool isExceeding = false;
@@ -193,6 +208,9 @@ public class AlarmDetectionService
 
         // 播放恢复音
         _soundPlayerService.PlayRecoverySound();
+
+        // 保存到CSV文件（异步，不阻塞）
+        _ = _alarmHistoryStorageService.SaveAlarmRecordAsync(alarmRecord);
 
         // 触发事件
         OnAlarmRecovered?.Invoke(alarmRecord);

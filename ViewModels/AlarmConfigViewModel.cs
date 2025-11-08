@@ -144,10 +144,13 @@ public class AlarmConfigViewModel : INotifyPropertyChanged
 
             if (metrics.Any())
             {
+                // 按测点名称排序（递增）
+                var sortedMetrics = metrics.OrderBy(m => m.MetricName).ToList();
+
                 groups.Add(new DeviceMetricGroup
                 {
                     DeviceId = deviceId,
-                    Metrics = new ObservableCollection<DeviceMetricItem>(metrics)
+                    Metrics = new ObservableCollection<DeviceMetricItem>(sortedMetrics)
                 });
             }
         }
