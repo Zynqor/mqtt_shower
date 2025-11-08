@@ -8,9 +8,12 @@ namespace MqttMonitor.Views;
 /// </summary>
 public partial class AlarmView : UserControl
 {
-    public AlarmView(AlarmViewModel viewModel)
+    public AlarmView(AlarmViewModel viewModel, AlarmStatisticsView statisticsView)
     {
         InitializeComponent();
         DataContext = viewModel;
+
+        // 将统计面板添加到右侧
+        StatisticsPanel.Children.Add(statisticsView);
     }
 }

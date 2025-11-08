@@ -111,6 +111,7 @@ public partial class App : Application
         services.AddSingleton<ChartViewModel>();
         services.AddSingleton<CommandSenderViewModel>();
         services.AddSingleton<AlarmViewModel>();
+        services.AddSingleton<AlarmStatisticsViewModel>();
         services.AddTransient<SettingsViewModel>(sp => new SettingsViewModel(
             sp.GetRequiredService<LogService>(),
             sp.GetRequiredService<EncryptionService>(),
@@ -127,6 +128,7 @@ public partial class App : Application
         services.AddSingleton<TableView>();
         services.AddSingleton<ChartView>();
         services.AddSingleton<CommandSenderView>();
+        services.AddSingleton<AlarmStatisticsView>();
         services.AddSingleton<AlarmView>();
         services.AddTransient<SettingsWindow>(); // Transient for new instance each time
         services.AddTransient<ChartSettingsWindow>(); // Transient for new instance each time
