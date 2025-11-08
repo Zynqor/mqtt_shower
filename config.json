@@ -3,7 +3,7 @@
   "Server": "119.45.181.86",
   "Port": 1883,
   "Username": "admin",
-  "Password": "your_strong_password",
+  "Password": "ENCRYPTED:feuPH+4RDZvezfbP5rLVaniE0nz9xPdqhRVpMMh3mZo=",
   "ClientId": null,
   "BaseTopic": "iot/devices",
   "SubscribedTopics": [
@@ -19,5 +19,14 @@
   "WindowTop": "NaN",
   "WindowState": "Maximized",
   "MaxChartDataPoints": 10,
-  "ChartUpdateInterval": 800
+  "ChartUpdateInterval": 800,
+  "CompanyName": "您的公司名称",
+  "CompanyAddress": "您的公司地址",
+  "CompanyPhone": "联系电话",
+  "CompanyEmail": "contact@company.com",
+  "UseTls": false,
+  "CaCertificatePath": null,
+  "ClientCertificatePath": null,
+  "ClientKeyPath": null,
+  "IgnoreCertificateErrors": false
 }
