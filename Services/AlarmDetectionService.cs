@@ -17,7 +17,7 @@ public class AlarmDetectionService
     private readonly AlarmConfigService _alarmConfigService;
     private readonly SoundPlayerService _soundPlayerService;
     private readonly DataProcessingService _dataProcessingService;
-    private readonly AlarmHistoryStorageService _alarmHistoryStorageService;
+    private readonly AlarmDatabaseService _alarmDatabaseService;
 
     private List<AlarmConfig> _alarmConfigs = new();
     private readonly ConcurrentDictionary<string, DateTime> _exceedStartTimes = new();
@@ -41,19 +41,22 @@ public class AlarmDetectionService
         AlarmConfigService alarmConfigService,
         SoundPlayerService soundPlayerService,
         DataProcessingService dataProcessingService,
-        AlarmHistoryStorageService alarmHistoryStorageService)
+        AlarmDatabaseService alarmDatabaseService)
     {
         _logService = logService;
         _alarmConfigService = alarmConfigService;
         _soundPlayerService = soundPlayerService;
         _dataProcessingService = dataProcessingService;
-        _alarmHistoryStorageService = alarmHistoryStorageService;
+        _alarmDatabaseService = alarmDatabaseService;
 
         // 订阅数据处理事件
         _dataProcessingService.OnUpstreamDataParsed += CheckAlarms;
 
         // 加载告警配置
         LoadConfigs();
+
+        // 加载历史告警记录
+        LoadHistoryFromDatabase();
 
         // 启动定时器检查音效重复
         StartSoundRepeatTimer();
@@ -66,6 +69,30 @@ public class AlarmDetectionService
     {
         _alarmConfigs = _alarmConfigService.LoadAlarmConfigs();
         _logService.LogInfo($"告警检测服务已加载 {_alarmConfigs.Count} 个配置");
+    }
+
+    /// <summary>
+    /// 从数据库加载历史告警记录
+    /// </summary>
+    private async void LoadHistoryFromDatabase()
+    {
+        try
+        {
+            var recentAlarms = await _alarmDatabaseService.GetRecentAlarmsAsync(50);
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                HistoryAlarms.Clear();
+                foreach (var alarm in recentAlarms)
+                {
+                    HistoryAlarms.Add(alarm);
+                }
+            });
+            _logService.LogInfo($"已从数据库加载 {recentAlarms.Count} 条历史告警记录");
+        }
+        catch (Exception ex)
+        {
+            _logService.LogException(ex, "从数据库加载历史告警记录失败");
+        }
     }
 
     /// <summary>
@@ -182,6 +209,9 @@ public class AlarmDetectionService
             _soundPlayerService.PlayAlarmSound();
         }
 
+        // 保存到数据库（异步，不阻塞）
+        _ = _alarmDatabaseService.SaveAlarmRecordAsync(alarmRecord);
+
         // 触发事件
         OnAlarmTriggered?.Invoke(alarmRecord);
 
@@ -209,8 +239,8 @@ public class AlarmDetectionService
         // 播放恢复音
         _soundPlayerService.PlayRecoverySound();
 
-        // 保存到CSV文件（异步，不阻塞）
-        _ = _alarmHistoryStorageService.SaveAlarmRecordAsync(alarmRecord);
+        // 保存到数据库（异步，不阻塞）
+        _ = _alarmDatabaseService.SaveAlarmRecordAsync(alarmRecord);
 
         // 触发事件
         OnAlarmRecovered?.Invoke(alarmRecord);
@@ -224,6 +254,10 @@ public class AlarmDetectionService
     public void AcknowledgeAlarm(AlarmRecord alarmRecord)
     {
         alarmRecord.Acknowledged = true;
+
+        // 更新数据库
+        _ = _alarmDatabaseService.SaveAlarmRecordAsync(alarmRecord);
+
         _logService.LogInfo($"告警已确认: {alarmRecord.Description}");
     }
 
@@ -235,6 +269,9 @@ public class AlarmDetectionService
         foreach (var alarm in ActiveAlarms)
         {
             alarm.Acknowledged = true;
+
+            // 更新数据库
+            _ = _alarmDatabaseService.SaveAlarmRecordAsync(alarm);
         }
         _logService.LogInfo("已确认所有活动告警");
     }

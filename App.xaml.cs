@@ -101,7 +101,7 @@ public partial class App : Application
         services.AddSingleton<ChartLegendConfigService>();
         services.AddSingleton<AlarmConfigService>();
         services.AddSingleton<SoundPlayerService>();
-        services.AddSingleton<AlarmHistoryStorageService>();
+        services.AddSingleton<AlarmDatabaseService>();
         services.AddSingleton<AlarmDetectionService>();
 
         // Register ViewModels
