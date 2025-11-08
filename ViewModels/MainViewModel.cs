@@ -115,10 +115,13 @@ public class MainViewModel : INotifyPropertyChanged
     public ICommand ShowChartSettingsCommand { get; }
     public ICommand ShowContactUsCommand { get; }
     public ICommand ShowUserManualCommand { get; }
+    public ICommand ShowAlarmConfigCommand { get; }
+    public ICommand ShowAlertSettingsCommand { get; }
     public ICommand ClearDataCommand { get; }
     public ICommand ShowChartViewCommand { get; }
     public ICommand ShowTableViewCommand { get; }
     public ICommand ShowLogViewCommand { get; }
+    public ICommand ShowAlarmViewCommand { get; }
     public ICommand ConnectCommand { get; }
     public ICommand DisconnectCommand { get; }
     public ICommand SubscribeTopicCommand { get; }
@@ -141,10 +144,13 @@ public class MainViewModel : INotifyPropertyChanged
         ShowChartSettingsCommand = new RelayCommand(OnShowChartSettings);
         ShowContactUsCommand = new RelayCommand(OnShowContactUs);
         ShowUserManualCommand = new RelayCommand(OnShowUserManual);
+        ShowAlarmConfigCommand = new RelayCommand(OnShowAlarmConfig);
+        ShowAlertSettingsCommand = new RelayCommand(OnShowAlertSettings);
         ClearDataCommand = new RelayCommand(OnClearData);
         ShowChartViewCommand = new RelayCommand(() => SelectedTabIndex = 0);
         ShowTableViewCommand = new RelayCommand(() => SelectedTabIndex = 1);
         ShowLogViewCommand = new RelayCommand(() => SelectedTabIndex = 2);
+        ShowAlarmViewCommand = new RelayCommand(() => SelectedTabIndex = 4); // 告警是第5个标签（索引4）
         ConnectCommand = new RelayCommand(OnConnect, CanConnect);
         DisconnectCommand = new RelayCommand(OnDisconnect, CanDisconnect);
         SubscribeTopicCommand = new RelayCommand(OnSubscribeTopic);
@@ -242,6 +248,32 @@ public class MainViewModel : INotifyPropertyChanged
         {
             contactUsWindow.Owner = System.Windows.Application.Current.MainWindow;
             contactUsWindow.ShowDialog();
+        }
+    }
+
+    /// <summary>
+    /// 显示告警配置窗口
+    /// </summary>
+    private void OnShowAlarmConfig()
+    {
+        var alarmConfigWindow = App.ServiceProvider?.GetService<AlarmConfigWindow>();
+        if (alarmConfigWindow != null)
+        {
+            alarmConfigWindow.Owner = System.Windows.Application.Current.MainWindow;
+            alarmConfigWindow.ShowDialog();
+        }
+    }
+
+    /// <summary>
+    /// 显示提醒设置窗口
+    /// </summary>
+    private void OnShowAlertSettings()
+    {
+        var alertSettingsWindow = App.ServiceProvider?.GetService<AlertSettingsWindow>();
+        if (alertSettingsWindow != null)
+        {
+            alertSettingsWindow.Owner = System.Windows.Application.Current.MainWindow;
+            alertSettingsWindow.ShowDialog();
         }
     }
 

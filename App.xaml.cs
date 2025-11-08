@@ -82,6 +82,13 @@ public partial class App : Application
         // Register MainWindow
         services.AddSingleton<MainWindow>();
 
+        // Register AlertSettings as a singleton
+        services.AddSingleton<AlertSettings>(sp =>
+        {
+            var alarmConfigService = sp.GetRequiredService<AlarmConfigService>();
+            return alarmConfigService.LoadAlertSettings();
+        });
+
         // Register Services
         services.AddSingleton<LogService>();
         services.AddSingleton<EncryptionService>();
@@ -89,6 +96,9 @@ public partial class App : Application
         services.AddSingleton<MqttService>();
         services.AddSingleton<DataProcessingService>();
         services.AddSingleton<ChartLegendConfigService>();
+        services.AddSingleton<AlarmConfigService>();
+        services.AddSingleton<SoundPlayerService>();
+        services.AddSingleton<AlarmDetectionService>();
 
         // Register ViewModels
         services.AddSingleton<MainViewModel>();
@@ -96,6 +106,7 @@ public partial class App : Application
         services.AddSingleton<TableViewModel>();
         services.AddSingleton<ChartViewModel>();
         services.AddSingleton<CommandSenderViewModel>();
+        services.AddSingleton<AlarmViewModel>();
         services.AddTransient<SettingsViewModel>(sp => new SettingsViewModel(
             sp.GetRequiredService<LogService>(),
             sp.GetRequiredService<EncryptionService>(),
@@ -104,15 +115,20 @@ public partial class App : Application
             sp.GetRequiredService<LogService>(),
             sp.GetRequiredService<MqttSettings>(),
             sp.GetRequiredService<EncryptionService>())); // Transient for new instance each time
+        services.AddTransient<AlarmConfigViewModel>();
+        services.AddTransient<AlertSettingsViewModel>();
 
         // Register Views
         services.AddSingleton<LogView>();
         services.AddSingleton<TableView>();
         services.AddSingleton<ChartView>();
         services.AddSingleton<CommandSenderView>();
+        services.AddSingleton<AlarmView>();
         services.AddTransient<SettingsWindow>(); // Transient for new instance each time
         services.AddTransient<ChartSettingsWindow>(); // Transient for new instance each time
         services.AddTransient<ContactUsWindow>(); // Transient for new instance each time
+        services.AddTransient<AlarmConfigWindow>(); // Transient for new instance each time
+        services.AddTransient<AlertSettingsWindow>(); // Transient for new instance each time
     }
 
     protected override void OnExit(ExitEventArgs e)

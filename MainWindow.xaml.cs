@@ -20,7 +20,7 @@ public partial class MainWindow : Window
 {
     private readonly MainViewModel _viewModel;
 
-    public MainWindow(MainViewModel viewModel, LogView logView, TableView tableView, ChartView chartView, CommandSenderView commandSenderView)
+    public MainWindow(MainViewModel viewModel, LogView logView, TableView tableView, ChartView chartView, CommandSenderView commandSenderView, AlarmView alarmView)
     {
         InitializeComponent();
         _viewModel = viewModel;
@@ -31,6 +31,7 @@ public partial class MainWindow : Window
         TableTabItem.Content = tableView;
         CommandSenderTabItem.Content = commandSenderView;
         LogTabItem.Content = logView;
+        AlarmTabItem.Content = alarmView;
 
         // 订阅窗口事件
         Loaded += MainWindow_Loaded;
