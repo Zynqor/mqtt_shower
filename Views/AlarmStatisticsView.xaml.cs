@@ -101,7 +101,7 @@ public partial class AlarmStatisticsView : UserControl
         AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.Alignment = Alignment.MiddleLeft;
 
         // 设置Y轴从0开始
-        AlarmCountChart.Plot.Axes.SetLimitsY(bottom: 0);
+        AlarmCountChart.Plot.Axes.SetLimits(bottom: 0);
 
         AlarmCountChart.Refresh();
     }
@@ -137,7 +137,7 @@ public partial class AlarmStatisticsView : UserControl
         AlarmTrendChart.Plot.Axes.DateTimeTicksBottom();
 
         // 设置Y轴从0开始
-        AlarmTrendChart.Plot.Axes.SetLimitsY(bottom: 0);
+        AlarmTrendChart.Plot.Axes.SetLimits(bottom: 0);
 
         AlarmTrendChart.Refresh();
     }
@@ -160,22 +160,27 @@ public partial class AlarmStatisticsView : UserControl
         }
 
         // 准备数据
-        var values = data.Select(x => x.Count).ToList();
+        var values = data.Select(x => (double)x.Count).ToArray();
         var labels = data.Select(x => $"{x.TypeName}\n{x.Count}次 ({x.Percentage:F1}%)").ToArray();
 
         // 添加饼图
         var pie = AlarmTypeChart.Plot.Add.Pie(values);
-        pie.Slices[0].FillColor = Colors.Red.WithAlpha(0.8);
-        pie.Slices[0].Label = labels[0];
 
+        // 设置第一个切片（上限告警）
+        if (pie.Slices.Count > 0)
+        {
+            pie.Slices[0].FillColor = Colors.Red.WithAlpha(0.8);
+            pie.Slices[0].LabelStyle.Text = labels[0];
+            pie.Slices[0].LabelStyle.FontSize = 12;
+        }
+
+        // 设置第二个切片（下限告警）
         if (pie.Slices.Count > 1)
         {
             pie.Slices[1].FillColor = Colors.Blue.WithAlpha(0.8);
-            pie.Slices[1].Label = labels[1];
+            pie.Slices[1].LabelStyle.Text = labels[1];
+            pie.Slices[1].LabelStyle.FontSize = 12;
         }
-
-        pie.ShowSliceLabels = true;
-        pie.SliceLabelDistance = 1.3;
 
         AlarmTypeChart.Refresh();
     }
