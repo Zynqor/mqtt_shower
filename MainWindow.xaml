@@ -179,11 +179,11 @@
                 <TabItem x:Name="CommandSenderTabItem" Header="命令发送">
                     <!-- CommandSenderView 将通过代码后置添加 -->
                 </TabItem>
-                <TabItem x:Name="LogTabItem" Header="日志">
-                    <!-- LogView 将通过代码后置添加 -->
-                </TabItem>
                 <TabItem x:Name="AlarmTabItem" Header="告警">
                     <!-- AlarmView 将通过代码后置添加 -->
+                </TabItem>
+                <TabItem x:Name="LogTabItem" Header="日志">
+                    <!-- LogView 将通过代码后置添加 -->
                 </TabItem>
             </TabControl>
 
