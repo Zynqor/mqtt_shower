@@ -228,7 +228,10 @@ public class AlarmConfigViewModel : INotifyPropertyChanged
             _alarmDetectionService.LoadConfigs(); // 重新加载配置
 
             _logService.LogInfo("告警配置已保存");
-            OnConfigSaved?.Invoke();
+
+            // 显示保存成功提示（不关闭窗口，方便继续配置其他测点）
+            System.Windows.MessageBox.Show("告警配置已保存！", "成功",
+                System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
         }
         catch (Exception ex)
         {

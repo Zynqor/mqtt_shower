@@ -213,9 +213,7 @@
                         <TextBlock Text="订阅新 Topic:" FontWeight="SemiBold" FontSize="12"
                                    Foreground="#495057" Margin="0,0,0,8"/>
                         <TextBox Text="{Binding NewTopic, UpdateSourceTrigger=PropertyChanged}"
-                                 Height="36" Margin="0,0,0,8"/>
-                        <TextBlock Text="支持通配符: + (单层) 和 # (多层)"
-                                   Foreground="#6C757D" FontSize="11" Margin="0,0,0,10"/>
+                                 Height="36" Margin="0,0,0,10"/>
                         <Button Content="订阅" Command="{Binding SubscribeTopicCommand}"
                                 Height="32" Style="{StaticResource ModernButton}"/>
                     </StackPanel>
