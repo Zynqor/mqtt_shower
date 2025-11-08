@@ -34,6 +34,9 @@ public partial class App : Application
         ConfigureServices(serviceCollection);
         ServiceProvider = serviceCollection.BuildServiceProvider();
 
+        // 初始化告警检测服务（需要在启动时订阅事件）
+        var alarmDetectionService = ServiceProvider.GetRequiredService<AlarmDetectionService>();
+
         // Show main window
         var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
         mainWindow.Show();

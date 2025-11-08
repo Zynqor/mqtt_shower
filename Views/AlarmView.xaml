@@ -86,7 +86,7 @@
                                             <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Right">
                                                 <TextBlock Margin="0,0,0,5">
                                                     <Run Text="持续时长："/>
-                                                    <Run Text="{Binding Duration}" FontWeight="Bold" Foreground="#DC3545"/>
+                                                    <Run Text="{Binding Duration, Mode=OneWay}" FontWeight="Bold" Foreground="#DC3545"/>
                                                 </TextBlock>
                                             </StackPanel>
                                         </Grid>
@@ -161,7 +161,7 @@
                                                 </TextBlock>
                                                 <TextBlock Margin="0,0,20,0">
                                                     <Run Text="持续："/>
-                                                    <Run Text="{Binding Duration}" FontWeight="Bold"/>
+                                                    <Run Text="{Binding Duration, Mode=OneWay}" FontWeight="Bold"/>
                                                 </TextBlock>
                                                 <TextBlock>
                                                     <Run Text="峰值："/>
