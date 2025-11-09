@@ -107,6 +107,12 @@ public class AlarmViewModel : INotifyPropertyChanged
         if (record != null)
         {
             _alarmDetectionService.AcknowledgeAlarm(record);
+
+            System.Windows.MessageBox.Show(
+                $"已确认告警：{record.Description}\n\n注意：告警仍处于活动状态，只有当测量值恢复正常后，告警才会自动移到历史记录。",
+                "确认成功",
+                System.Windows.MessageBoxButton.OK,
+                System.Windows.MessageBoxImage.Information);
         }
     }
 
@@ -115,7 +121,24 @@ public class AlarmViewModel : INotifyPropertyChanged
     /// </summary>
     private void OnAcknowledgeAll()
     {
+        var count = ActiveAlarms.Count;
+        if (count == 0)
+        {
+            System.Windows.MessageBox.Show(
+                "当前没有活动告警需要确认。",
+                "提示",
+                System.Windows.MessageBoxButton.OK,
+                System.Windows.MessageBoxImage.Information);
+            return;
+        }
+
         _alarmDetectionService.AcknowledgeAllAlarms();
+
+        System.Windows.MessageBox.Show(
+            $"已确认所有 {count} 个活动告警。\n\n注意：告警仍处于活动状态，只有当测量值恢复正常后，告警才会自动移到历史记录。",
+            "全部确认成功",
+            System.Windows.MessageBoxButton.OK,
+            System.Windows.MessageBoxImage.Information);
     }
 
     /// <summary>

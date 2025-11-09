@@ -48,10 +48,10 @@ public partial class AlarmStatisticsView : UserControl
         AlarmCountChart.Plot.Font.Automatic();
         AlarmCountChart.Plot.Title("设备/测点告警次数统计（Top 20）");
         AlarmCountChart.Plot.YLabel("告警次数");
-        AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.Rotation = 45;
-        AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.Alignment = Alignment.MiddleRight;
+        AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.Rotation = 0;
+        AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.Alignment = Alignment.UpperCenter;
         AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.FontName = fontName;
-        AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.FontSize = 11;
+        AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.FontSize = 10;
         AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.Bold = true;
         AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.ForeColor = ScottPlot.Color.FromHex("#333333");
         AlarmCountChart.Plot.Axes.Left.TickLabelStyle.FontName = fontName;
@@ -110,11 +110,11 @@ public partial class AlarmStatisticsView : UserControl
         var bars = AlarmCountChart.Plot.Add.Bars(positions, values);
         bars.Color = Colors.Red.WithAlpha(0.7);
 
-        // 设置X轴标签
+        // 设置X轴标签（横向显示）
         AlarmCountChart.Plot.Axes.Bottom.SetTicks(positions, labels);
-        AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.Rotation = 45;
-        AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.Alignment = Alignment.MiddleRight;
-        AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.FontSize = 11;
+        AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.Rotation = 0;
+        AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.Alignment = Alignment.UpperCenter;
+        AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.FontSize = 10;
         AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.Bold = true;
         AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.ForeColor = ScottPlot.Color.FromHex("#333333");
 

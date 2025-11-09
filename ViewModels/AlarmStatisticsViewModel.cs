@@ -166,10 +166,30 @@ public class AlarmStatisticsViewModel : INotifyPropertyChanged
             CalculateTopAlarmDevices(alarms);
 
             _logService.LogInfo($"统计完成 - 告警次数:{AlarmCounts.Count}, 趋势:{AlarmTrends.Count}, 类型:{AlarmTypeDistributions.Count}, Top设备:{TopAlarmDevices.Count}");
+
+            // 显示查询成功提示
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                System.Windows.MessageBox.Show(
+                    $"查询完成！\n\n查询到 {alarms.Count} 条告警记录\n告警次数统计: {AlarmCounts.Count} 项\n告警趋势: {AlarmTrends.Count} 个时间段\nTop设备: {TopAlarmDevices.Count} 个",
+                    "查询成功",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Information);
+            });
         }
         catch (Exception ex)
         {
             _logService.LogException(ex, "加载告警统计数据失败");
+
+            // 显示查询失败提示
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                System.Windows.MessageBox.Show(
+                    $"查询失败：{ex.Message}",
+                    "错误",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Error);
+            });
         }
         finally
         {
