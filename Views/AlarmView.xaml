@@ -11,17 +11,17 @@
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*" MinWidth="400"/>
+            <ColumnDefinition Width="*" MinWidth="300"/>
             <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="2*" MinWidth="300"/>
+            <ColumnDefinition Width="3*" MinWidth="400"/>
         </Grid.ColumnDefinitions>
 
         <!-- 左侧：活动告警和历史告警 -->
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="2*" MinHeight="150"/>
+                <RowDefinition Height="*" MinHeight="150"/>
                 <RowDefinition Height="5"/>
-                <RowDefinition Height="3*" MinHeight="200"/>
+                <RowDefinition Height="*" MinHeight="150"/>
             </Grid.RowDefinitions>
 
         <!-- 活动告警区域 -->

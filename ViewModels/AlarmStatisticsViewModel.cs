@@ -117,7 +117,7 @@ public class AlarmStatisticsViewModel : INotifyPropertyChanged
     private void SetToday()
     {
         StartTime = DateTime.Today;
-        EndTime = DateTime.Now;
+        EndTime = DateTime.Today;
         _ = LoadStatisticsAsync();
     }
 
@@ -127,7 +127,7 @@ public class AlarmStatisticsViewModel : INotifyPropertyChanged
     private void SetLast7Days()
     {
         StartTime = DateTime.Today.AddDays(-7);
-        EndTime = DateTime.Now;
+        EndTime = DateTime.Today;
         _ = LoadStatisticsAsync();
     }
 
@@ -137,7 +137,7 @@ public class AlarmStatisticsViewModel : INotifyPropertyChanged
     private void SetLast30Days()
     {
         StartTime = DateTime.Today.AddDays(-30);
-        EndTime = DateTime.Now;
+        EndTime = DateTime.Today;
         _ = LoadStatisticsAsync();
     }
 
@@ -153,55 +153,27 @@ public class AlarmStatisticsViewModel : INotifyPropertyChanged
 
         try
         {
-            // 处理结束时间：如果选择的是今天，并且时间是00:00:00，则使用当前时间
-            var queryEndTime = EndTime;
-            if (EndTime.Date == DateTime.Today && EndTime.TimeOfDay == TimeSpan.Zero)
-            {
-                queryEndTime = DateTime.Now;
-            }
-            // 如果选择的是其他日期，并且时间是00:00:00，则使用当天的23:59:59
-            else if (EndTime.TimeOfDay == TimeSpan.Zero)
-            {
-                queryEndTime = EndTime.Date.AddDays(1).AddSeconds(-1);
-            }
+            // 统一处理时间范围：始终查询整天（0:00:00 到 23:59:59）
+            var queryStartTime = StartTime.Date; // 起始日 0:00:00
+            var queryEndTime = EndTime.Date.AddDays(1).AddSeconds(-1); // 截止日 23:59:59
 
             // 查询指定时间范围的告警记录
-            var alarms = await _alarmDatabaseService.GetAlarmsByDateRangeAsync(StartTime, queryEndTime);
+            var alarms = await _alarmDatabaseService.GetAlarmsByDateRangeAsync(queryStartTime, queryEndTime);
 
-            _logService.LogInfo($"查询时间范围: {StartTime:yyyy-MM-dd HH:mm:ss} - {queryEndTime:yyyy-MM-dd HH:mm:ss}");
+            _logService.LogInfo($"查询时间范围: {queryStartTime:yyyy-MM-dd HH:mm:ss} - {queryEndTime:yyyy-MM-dd HH:mm:ss}");
             _logService.LogInfo($"已加载告警统计数据: {alarms.Count} 条记录");
 
             // 计算各种统计数据
             CalculateAlarmCounts(alarms);
-            CalculateAlarmTrends(alarms, queryEndTime);
+            CalculateAlarmTrends(alarms, queryStartTime, queryEndTime);
             CalculateAlarmTypeDistributions(alarms);
             CalculateTopAlarmDevices(alarms);
 
             _logService.LogInfo($"统计完成 - 告警次数:{AlarmCounts.Count}, 趋势:{AlarmTrends.Count}, 类型:{AlarmTypeDistributions.Count}, Top设备:{TopAlarmDevices.Count}");
-
-            // 显示查询成功提示
-            System.Windows.Application.Current.Dispatcher.Invoke(() =>
-            {
-                System.Windows.MessageBox.Show(
-                    $"查询完成！\n\n时间范围：{StartTime:yyyy-MM-dd HH:mm:ss} - {queryEndTime:yyyy-MM-dd HH:mm:ss}\n\n查询到 {alarms.Count} 条告警记录\n告警次数统计: {AlarmCounts.Count} 项\n告警趋势: {AlarmTrends.Count} 个时间段\nTop设备: {TopAlarmDevices.Count} 个",
-                    "查询成功",
-                    System.Windows.MessageBoxButton.OK,
-                    System.Windows.MessageBoxImage.Information);
-            });
         }
         catch (Exception ex)
         {
             _logService.LogException(ex, "加载告警统计数据失败");
-
-            // 显示查询失败提示
-            System.Windows.Application.Current.Dispatcher.Invoke(() =>
-            {
-                System.Windows.MessageBox.Show(
-                    $"查询失败：{ex.Message}",
-                    "错误",
-                    System.Windows.MessageBoxButton.OK,
-                    System.Windows.MessageBoxImage.Error);
-            });
         }
         finally
         {
@@ -235,11 +207,11 @@ public class AlarmStatisticsViewModel : INotifyPropertyChanged
     /// <summary>
     /// 计算告警趋势（按天或按小时）
     /// </summary>
-    private void CalculateAlarmTrends(List<AlarmRecord> alarms, DateTime actualEndTime)
+    private void CalculateAlarmTrends(List<AlarmRecord> alarms, DateTime queryStartTime, DateTime queryEndTime)
     {
         AlarmTrends.Clear();
 
-        var daysDiff = (actualEndTime - StartTime).TotalDays;
+        var daysDiff = (queryEndTime - queryStartTime).TotalDays;
 
         if (daysDiff <= 1)
         {
