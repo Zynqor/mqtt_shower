@@ -67,11 +67,6 @@ public partial class AlarmStatisticsView : UserControl
         // 设置饼图样式
         AlarmTypeChart.Plot.Font.Automatic();
         AlarmTypeChart.Plot.Title("告警类型分布");
-
-        // 启用交互功能
-        AlarmCountChart.Interaction.Enable();
-        AlarmTrendChart.Interaction.Enable();
-        AlarmTypeChart.Interaction.Enable();
     }
 
     private void OnAlarmCountsChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -115,17 +110,6 @@ public partial class AlarmStatisticsView : UserControl
         var bars = AlarmCountChart.Plot.Add.Bars(positions, values);
         bars.Color = Colors.Red.WithAlpha(0.7);
 
-        // 为每个柱子添加标签（显示数值）
-        for (int i = 0; i < positions.Length; i++)
-        {
-            var annotation = AlarmCountChart.Plot.Add.Annotation($"{values[i]:F0}", positions[i], values[i]);
-            annotation.LabelStyle.FontSize = 10;
-            annotation.LabelStyle.Bold = true;
-            annotation.LabelStyle.ForeColor = Colors.Black;
-            annotation.LabelAlignment = Alignment.LowerCenter;
-            annotation.OffsetY = 5;
-        }
-
         // 设置X轴标签
         AlarmCountChart.Plot.Axes.Bottom.SetTicks(positions, labels);
         AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.Rotation = 45;
@@ -134,9 +118,8 @@ public partial class AlarmStatisticsView : UserControl
         AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.Bold = true;
         AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.ForeColor = ScottPlot.Color.FromHex("#333333");
 
-        // 设置Y轴从0开始，并留出顶部空间显示标签
-        var maxValue = values.Length > 0 ? values.Max() : 1;
-        AlarmCountChart.Plot.Axes.SetLimits(bottom: 0, top: maxValue * 1.1);
+        // 设置Y轴从0开始
+        AlarmCountChart.Plot.Axes.SetLimits(bottom: 0);
 
         AlarmCountChart.Refresh();
     }
@@ -169,23 +152,11 @@ public partial class AlarmStatisticsView : UserControl
         linePlot.MarkerSize = 8;
         linePlot.LinePattern = LinePattern.Solid;
 
-        // 为每个数据点添加标签
-        for (int i = 0; i < times.Length; i++)
-        {
-            var annotation = AlarmTrendChart.Plot.Add.Annotation($"{counts[i]:F0}", times[i], counts[i]);
-            annotation.LabelStyle.FontSize = 9;
-            annotation.LabelStyle.Bold = true;
-            annotation.LabelStyle.ForeColor = Colors.Red;
-            annotation.LabelAlignment = Alignment.LowerCenter;
-            annotation.OffsetY = 8;
-        }
-
         // 设置X轴为日期时间
         AlarmTrendChart.Plot.Axes.DateTimeTicksBottom();
 
-        // 设置Y轴从0开始，并留出顶部空间显示标签
-        var maxCount = counts.Length > 0 ? counts.Max() : 1;
-        AlarmTrendChart.Plot.Axes.SetLimits(bottom: 0, top: maxCount * 1.15);
+        // 设置Y轴从0开始
+        AlarmTrendChart.Plot.Axes.SetLimits(bottom: 0);
 
         AlarmTrendChart.Refresh();
     }
