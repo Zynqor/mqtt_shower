@@ -16,7 +16,7 @@ public partial class AlarmStatisticsView : UserControl
         DataContext = viewModel;
         _viewModel = viewModel;
 
-        Loaded += (s, e) =>
+        Loaded += async (s, e) =>
         {
             if (_viewModel != null)
             {
@@ -28,6 +28,9 @@ public partial class AlarmStatisticsView : UserControl
                 // 初始化图表
                 InitializeCharts();
 
+                // 加载今天的数据
+                await _viewModel.LoadStatisticsAsync();
+
                 // 绘制初始数据
                 UpdateAlarmCountChart();
                 UpdateAlarmTrendChart();
@@ -38,7 +41,17 @@ public partial class AlarmStatisticsView : UserControl
 
     private void InitializeCharts()
     {
+        // 设置中文字体
+        var font = new ScottPlot.Fonts.FontFamily
+        {
+            Default = "Microsoft YaHei UI",
+            Serif = "Microsoft YaHei UI",
+            SansSerif = "Microsoft YaHei UI",
+            Monospace = "Microsoft YaHei UI"
+        };
+
         // 设置柱状图样式
+        AlarmCountChart.Plot.Font.Set(font);
         AlarmCountChart.Plot.Title("设备/测点告警次数统计（Top 20）");
         AlarmCountChart.Plot.XLabel("设备/测点");
         AlarmCountChart.Plot.YLabel("告警次数");
@@ -46,11 +59,13 @@ public partial class AlarmStatisticsView : UserControl
         AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.Alignment = Alignment.MiddleLeft;
 
         // 设置折线图样式
+        AlarmTrendChart.Plot.Font.Set(font);
         AlarmTrendChart.Plot.Title("告警趋势");
         AlarmTrendChart.Plot.XLabel("时间");
         AlarmTrendChart.Plot.YLabel("告警次数");
 
         // 设置饼图样式
+        AlarmTypeChart.Plot.Font.Set(font);
         AlarmTypeChart.Plot.Title("告警类型分布");
     }
 
@@ -172,6 +187,7 @@ public partial class AlarmStatisticsView : UserControl
             pie.Slices[0].FillColor = Colors.Red.WithAlpha(0.8);
             pie.Slices[0].LabelStyle.Text = labels[0];
             pie.Slices[0].LabelStyle.FontSize = 12;
+            pie.Slices[0].LabelStyle.FontName = "Microsoft YaHei UI";
         }
 
         // 设置第二个切片（下限告警）
@@ -180,6 +196,7 @@ public partial class AlarmStatisticsView : UserControl
             pie.Slices[1].FillColor = Colors.Blue.WithAlpha(0.8);
             pie.Slices[1].LabelStyle.Text = labels[1];
             pie.Slices[1].LabelStyle.FontSize = 12;
+            pie.Slices[1].LabelStyle.FontName = "Microsoft YaHei UI";
         }
 
         AlarmTypeChart.Refresh();

@@ -109,9 +109,6 @@ public class AlarmStatisticsViewModel : INotifyPropertyChanged
         SetTodayCommand = new RelayCommand(SetToday);
         SetLast7DaysCommand = new RelayCommand(SetLast7Days);
         SetLast30DaysCommand = new RelayCommand(SetLast30Days);
-
-        // 默认加载今天的数据
-        _ = LoadStatisticsAsync();
     }
 
     /// <summary>
@@ -159,13 +156,16 @@ public class AlarmStatisticsViewModel : INotifyPropertyChanged
             // 查询指定时间范围的告警记录
             var alarms = await _alarmDatabaseService.GetAlarmsByDateRangeAsync(StartTime, EndTime);
 
+            _logService.LogInfo($"查询时间范围: {StartTime:yyyy-MM-dd HH:mm:ss} - {EndTime:yyyy-MM-dd HH:mm:ss}");
+            _logService.LogInfo($"已加载告警统计数据: {alarms.Count} 条记录");
+
             // 计算各种统计数据
             CalculateAlarmCounts(alarms);
             CalculateAlarmTrends(alarms);
             CalculateAlarmTypeDistributions(alarms);
             CalculateTopAlarmDevices(alarms);
 
-            _logService.LogInfo($"已加载告警统计数据: {alarms.Count} 条记录");
+            _logService.LogInfo($"统计完成 - 告警次数:{AlarmCounts.Count}, 趋势:{AlarmTrends.Count}, 类型:{AlarmTypeDistributions.Count}, Top设备:{TopAlarmDevices.Count}");
         }
         catch (Exception ex)
         {
@@ -280,13 +280,20 @@ public class AlarmStatisticsViewModel : INotifyPropertyChanged
         TopAlarmDevices.Clear();
 
         var grouped = alarms.GroupBy(a => new { a.DeviceId, a.MetricName })
-            .Select(g => new
+            .Select(g =>
             {
-                g.Key.DeviceId,
-                g.Key.MetricName,
-                Count = g.Count(),
-                AvgDuration = g.Where(x => x.RecoveredTime.HasValue)
-                    .Average(x => (x.RecoveredTime!.Value - x.TriggerTime).TotalMinutes)
+                var recoveredAlarms = g.Where(x => x.RecoveredTime.HasValue).ToList();
+                var avgDuration = recoveredAlarms.Any()
+                    ? recoveredAlarms.Average(x => (x.RecoveredTime!.Value - x.TriggerTime).TotalMinutes)
+                    : 0.0;
+
+                return new
+                {
+                    g.Key.DeviceId,
+                    g.Key.MetricName,
+                    Count = g.Count(),
+                    AvgDuration = avgDuration
+                };
             })
             .OrderByDescending(x => x.Count)
             .Take(10);
@@ -300,7 +307,7 @@ public class AlarmStatisticsViewModel : INotifyPropertyChanged
                 DeviceId = item.DeviceId,
                 MetricName = item.MetricName,
                 AlarmCount = item.Count,
-                AvgDuration = $"{item.AvgDuration:F1}分钟"
+                AvgDuration = item.AvgDuration > 0 ? $"{item.AvgDuration:F1}分钟" : "N/A"
             });
         }
     }
