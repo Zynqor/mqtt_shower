@@ -42,30 +42,28 @@ public partial class AlarmStatisticsView : UserControl
     private void InitializeCharts()
     {
         // 设置中文字体
-        var font = new ScottPlot.Fonts.FontFamily
-        {
-            Default = "Microsoft YaHei UI",
-            Serif = "Microsoft YaHei UI",
-            SansSerif = "Microsoft YaHei UI",
-            Monospace = "Microsoft YaHei UI"
-        };
+        var fontName = "Microsoft YaHei UI";
 
         // 设置柱状图样式
-        AlarmCountChart.Plot.Font.Set(font);
+        AlarmCountChart.Plot.Font.Automatic();
         AlarmCountChart.Plot.Title("设备/测点告警次数统计（Top 20）");
         AlarmCountChart.Plot.XLabel("设备/测点");
         AlarmCountChart.Plot.YLabel("告警次数");
         AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.Rotation = 45;
         AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.Alignment = Alignment.MiddleLeft;
+        AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.FontName = fontName;
+        AlarmCountChart.Plot.Axes.Left.TickLabelStyle.FontName = fontName;
 
         // 设置折线图样式
-        AlarmTrendChart.Plot.Font.Set(font);
+        AlarmTrendChart.Plot.Font.Automatic();
         AlarmTrendChart.Plot.Title("告警趋势");
         AlarmTrendChart.Plot.XLabel("时间");
         AlarmTrendChart.Plot.YLabel("告警次数");
+        AlarmTrendChart.Plot.Axes.Bottom.TickLabelStyle.FontName = fontName;
+        AlarmTrendChart.Plot.Axes.Left.TickLabelStyle.FontName = fontName;
 
         // 设置饼图样式
-        AlarmTypeChart.Plot.Font.Set(font);
+        AlarmTypeChart.Plot.Font.Automatic();
         AlarmTypeChart.Plot.Title("告警类型分布");
     }
 
