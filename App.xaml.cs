@@ -103,6 +103,7 @@ public partial class App : Application
         services.AddSingleton<SoundPlayerService>();
         services.AddSingleton<AlarmDatabaseService>();
         services.AddSingleton<AlarmDetectionService>();
+        services.AddSingleton<LayoutSettingsService>();
 
         // Register ViewModels
         services.AddSingleton<MainViewModel>();
