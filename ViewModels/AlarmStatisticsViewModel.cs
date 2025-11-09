@@ -201,7 +201,7 @@ public class AlarmStatisticsViewModel : INotifyPropertyChanged
     }
 
     /// <summary>
-    /// 计算告警趋势（按天）
+    /// 计算告警趋势（按天或按小时）
     /// </summary>
     private void CalculateAlarmTrends(List<AlarmRecord> alarms)
     {
@@ -212,6 +212,7 @@ public class AlarmStatisticsViewModel : INotifyPropertyChanged
         if (daysDiff <= 1)
         {
             // 按小时统计
+            _logService.LogInfo($"告警趋势：按小时统计（时间跨度 {daysDiff:F1} 天）");
             var grouped = alarms.GroupBy(a => new DateTime(a.TriggerTime.Year, a.TriggerTime.Month, a.TriggerTime.Day, a.TriggerTime.Hour, 0, 0))
                 .Select(g => new AlarmTrendItem
                 {
@@ -223,11 +224,13 @@ public class AlarmStatisticsViewModel : INotifyPropertyChanged
             foreach (var item in grouped)
             {
                 AlarmTrends.Add(item);
+                _logService.LogInfo($"  {item.Time:yyyy-MM-dd HH:mm}: {item.Count}次");
             }
         }
         else
         {
             // 按天统计
+            _logService.LogInfo($"告警趋势：按天统计（时间跨度 {daysDiff:F1} 天）");
             var grouped = alarms.GroupBy(a => a.TriggerTime.Date)
                 .Select(g => new AlarmTrendItem
                 {
@@ -239,6 +242,7 @@ public class AlarmStatisticsViewModel : INotifyPropertyChanged
             foreach (var item in grouped)
             {
                 AlarmTrends.Add(item);
+                _logService.LogInfo($"  {item.Time:yyyy-MM-dd}: {item.Count}次");
             }
         }
     }
@@ -253,6 +257,8 @@ public class AlarmStatisticsViewModel : INotifyPropertyChanged
         var upperCount = alarms.Count(a => a.AlarmType == AlarmType.UpperLimit);
         var lowerCount = alarms.Count(a => a.AlarmType == AlarmType.LowerLimit);
         var total = alarms.Count;
+
+        _logService.LogInfo($"告警类型分布 - 上限:{upperCount}, 下限:{lowerCount}, 总计:{total}");
 
         if (total > 0)
         {

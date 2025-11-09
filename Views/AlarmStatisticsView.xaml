@@ -10,6 +10,7 @@
     <UserControl.Resources>
         <local:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <local:CountToVisibilityConverter x:Key="CountToVisibilityConverter"/>
+        <local:InvertedBooleanConverter x:Key="InvertedBooleanConverter"/>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -43,13 +44,14 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="开始时间：" VerticalAlignment="Center" Margin="0,0,10,5"/>
-                    <DatePicker Grid.Row="0" Grid.Column="1" SelectedDate="{Binding StartTime}" Margin="0,0,0,5"/>
+                    <DatePicker Grid.Row="0" Grid.Column="1" SelectedDate="{Binding StartTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,5"/>
 
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="结束时间：" VerticalAlignment="Center" Margin="0,0,10,5"/>
-                    <DatePicker Grid.Row="1" Grid.Column="1" SelectedDate="{Binding EndTime}" Margin="0,0,0,5"/>
+                    <DatePicker Grid.Row="1" Grid.Column="1" SelectedDate="{Binding EndTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,5"/>
 
                     <Button Grid.Row="2" Grid.Column="1" Content="查询" Command="{Binding QueryCommand}"
-                            Width="80" Height="30" HorizontalAlignment="Left" Margin="0,5,0,0"/>
+                            Width="80" Height="30" HorizontalAlignment="Left" Margin="0,5,0,0"
+                            IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBooleanConverter}}"/>
                 </Grid>
 
                 <!-- 加载指示 -->
