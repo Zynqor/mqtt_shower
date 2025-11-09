@@ -153,15 +153,27 @@ public class AlarmStatisticsViewModel : INotifyPropertyChanged
 
         try
         {
-            // 查询指定时间范围的告警记录
-            var alarms = await _alarmDatabaseService.GetAlarmsByDateRangeAsync(StartTime, EndTime);
+            // 处理结束时间：如果选择的是今天，并且时间是00:00:00，则使用当前时间
+            var queryEndTime = EndTime;
+            if (EndTime.Date == DateTime.Today && EndTime.TimeOfDay == TimeSpan.Zero)
+            {
+                queryEndTime = DateTime.Now;
+            }
+            // 如果选择的是其他日期，并且时间是00:00:00，则使用当天的23:59:59
+            else if (EndTime.TimeOfDay == TimeSpan.Zero)
+            {
+                queryEndTime = EndTime.Date.AddDays(1).AddSeconds(-1);
+            }
 
-            _logService.LogInfo($"查询时间范围: {StartTime:yyyy-MM-dd HH:mm:ss} - {EndTime:yyyy-MM-dd HH:mm:ss}");
+            // 查询指定时间范围的告警记录
+            var alarms = await _alarmDatabaseService.GetAlarmsByDateRangeAsync(StartTime, queryEndTime);
+
+            _logService.LogInfo($"查询时间范围: {StartTime:yyyy-MM-dd HH:mm:ss} - {queryEndTime:yyyy-MM-dd HH:mm:ss}");
             _logService.LogInfo($"已加载告警统计数据: {alarms.Count} 条记录");
 
             // 计算各种统计数据
             CalculateAlarmCounts(alarms);
-            CalculateAlarmTrends(alarms);
+            CalculateAlarmTrends(alarms, queryEndTime);
             CalculateAlarmTypeDistributions(alarms);
             CalculateTopAlarmDevices(alarms);
 
@@ -171,7 +183,7 @@ public class AlarmStatisticsViewModel : INotifyPropertyChanged
             System.Windows.Application.Current.Dispatcher.Invoke(() =>
             {
                 System.Windows.MessageBox.Show(
-                    $"查询完成！\n\n查询到 {alarms.Count} 条告警记录\n告警次数统计: {AlarmCounts.Count} 项\n告警趋势: {AlarmTrends.Count} 个时间段\nTop设备: {TopAlarmDevices.Count} 个",
+                    $"查询完成！\n\n时间范围：{StartTime:yyyy-MM-dd HH:mm:ss} - {queryEndTime:yyyy-MM-dd HH:mm:ss}\n\n查询到 {alarms.Count} 条告警记录\n告警次数统计: {AlarmCounts.Count} 项\n告警趋势: {AlarmTrends.Count} 个时间段\nTop设备: {TopAlarmDevices.Count} 个",
                     "查询成功",
                     System.Windows.MessageBoxButton.OK,
                     System.Windows.MessageBoxImage.Information);
@@ -223,11 +235,11 @@ public class AlarmStatisticsViewModel : INotifyPropertyChanged
     /// <summary>
     /// 计算告警趋势（按天或按小时）
     /// </summary>
-    private void CalculateAlarmTrends(List<AlarmRecord> alarms)
+    private void CalculateAlarmTrends(List<AlarmRecord> alarms, DateTime actualEndTime)
     {
         AlarmTrends.Clear();
 
-        var daysDiff = (EndTime - StartTime).TotalDays;
+        var daysDiff = (actualEndTime - StartTime).TotalDays;
 
         if (daysDiff <= 1)
         {
