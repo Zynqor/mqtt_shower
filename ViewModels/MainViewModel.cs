@@ -117,6 +117,7 @@ public class MainViewModel : INotifyPropertyChanged
     public ICommand ShowUserManualCommand { get; }
     public ICommand ShowAlarmConfigCommand { get; }
     public ICommand ShowAlertSettingsCommand { get; }
+    public ICommand ShowHistoryQueryCommand { get; }
     public ICommand ClearDataCommand { get; }
     public ICommand ShowChartViewCommand { get; }
     public ICommand ShowTableViewCommand { get; }
@@ -146,6 +147,7 @@ public class MainViewModel : INotifyPropertyChanged
         ShowUserManualCommand = new RelayCommand(OnShowUserManual);
         ShowAlarmConfigCommand = new RelayCommand(OnShowAlarmConfig);
         ShowAlertSettingsCommand = new RelayCommand(OnShowAlertSettings);
+        ShowHistoryQueryCommand = new RelayCommand(OnShowHistoryQuery);
         ClearDataCommand = new RelayCommand(OnClearData);
         ShowChartViewCommand = new RelayCommand(() => SelectedTabIndex = 0);
         ShowTableViewCommand = new RelayCommand(() => SelectedTabIndex = 1);
@@ -235,6 +237,19 @@ public class MainViewModel : INotifyPropertyChanged
         {
             chartSettingsWindow.Owner = System.Windows.Application.Current.MainWindow;
             chartSettingsWindow.ShowDialog();
+        }
+    }
+
+    /// <summary>
+    /// 显示历史数据查询窗口
+    /// </summary>
+    private void OnShowHistoryQuery()
+    {
+        var historyQueryWindow = App.ServiceProvider?.GetService<HistoryQueryWindow>();
+        if (historyQueryWindow != null)
+        {
+            historyQueryWindow.Owner = System.Windows.Application.Current.MainWindow;
+            historyQueryWindow.ShowDialog();
         }
     }
 
@@ -602,6 +617,8 @@ CSV 文件位置：
     }
 
     /// <summary>
+=======
+>>>>>>> b648c44 (实现阶段4和阶段5功能：历史数据查询窗口 + CSV批量写入优化)
     /// 连接到 MQTT 服务器
     /// </summary>
     private async void OnConnect()
