@@ -1,14 +1,18 @@
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Controls;
+using System.Windows.Input;
 using MqttMonitor.ViewModels;
 using ScottPlot;
+using ScottPlot.Plottables;
 
 namespace MqttMonitor.Views;
 
 public partial class AlarmStatisticsView : UserControl
 {
     private AlarmStatisticsViewModel? _viewModel;
+    private Crosshair? _trendChartCrosshair;
+    private Text? _trendChartLabel;
 
     public AlarmStatisticsView(AlarmStatisticsViewModel viewModel)
     {
@@ -27,6 +31,9 @@ public partial class AlarmStatisticsView : UserControl
 
                 // 初始化图表
                 InitializeCharts();
+
+                // 为折线图添加鼠标悬浮功能
+                SetupTrendChartMouseTracking();
 
                 // 加载今天的数据
                 await _viewModel.LoadStatisticsAsync();
@@ -97,6 +104,7 @@ public partial class AlarmStatisticsView : UserControl
         var data = _viewModel.AlarmCounts.ToList();
         if (data.Count == 0)
         {
+            AlarmCountChart.Plot.Axes.AutoScale();
             AlarmCountChart.Refresh();
             return;
         }
@@ -110,6 +118,18 @@ public partial class AlarmStatisticsView : UserControl
         var bars = AlarmCountChart.Plot.Add.Bars(positions, values);
         bars.Color = Colors.Red.WithAlpha(0.7);
 
+        // 在每个柱子上方添加数值标签
+        var fontName = "Microsoft YaHei UI";
+        for (int i = 0; i < positions.Length; i++)
+        {
+            var text = AlarmCountChart.Plot.Add.Text(values[i].ToString("F0"), positions[i], values[i]);
+            text.LabelStyle.FontSize = 11;
+            text.LabelStyle.FontName = fontName;
+            text.LabelStyle.Bold = true;
+            text.LabelStyle.ForeColor = ScottPlot.Color.FromHex("#333333");
+            text.OffsetY = 10; // 向上偏移，显示在柱子上方
+        }
+
         // 设置X轴标签（横向显示）
         AlarmCountChart.Plot.Axes.Bottom.SetTicks(positions, labels);
         AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.Rotation = 0;
@@ -120,6 +140,9 @@ public partial class AlarmStatisticsView : UserControl
 
         // 设置Y轴从0开始
         AlarmCountChart.Plot.Axes.SetLimits(bottom: 0);
+
+        // 自动调整尺度
+        AlarmCountChart.Plot.Axes.AutoScale();
 
         AlarmCountChart.Refresh();
     }
@@ -137,6 +160,10 @@ public partial class AlarmStatisticsView : UserControl
         var data = _viewModel.AlarmTrends.ToList();
         if (data.Count == 0)
         {
+            // 清空Crosshair
+            _trendChartCrosshair = null;
+            _trendChartLabel = null;
+            AlarmTrendChart.Plot.Axes.AutoScale();
             AlarmTrendChart.Refresh();
             return;
         }
@@ -152,11 +179,32 @@ public partial class AlarmStatisticsView : UserControl
         linePlot.MarkerSize = 8;
         linePlot.LinePattern = LinePattern.Solid;
 
+        // 添加Crosshair用于鼠标悬浮显示
+        _trendChartCrosshair = AlarmTrendChart.Plot.Add.Crosshair(0, 0);
+        _trendChartCrosshair.IsVisible = false;
+        _trendChartCrosshair.LineColor = ScottPlot.Color.FromHex("#666666");
+        _trendChartCrosshair.LineWidth = 1;
+
+        // 添加数值标签（初始不可见）
+        _trendChartLabel = AlarmTrendChart.Plot.Add.Text("", 0, 0);
+        _trendChartLabel.LabelStyle.FontSize = 12;
+        _trendChartLabel.LabelStyle.FontName = "Microsoft YaHei UI";
+        _trendChartLabel.LabelStyle.Bold = true;
+        _trendChartLabel.LabelStyle.ForeColor = ScottPlot.Color.FromHex("#333333");
+        _trendChartLabel.LabelStyle.BackColor = ScottPlot.Color.FromHex("#FFFFFF").WithAlpha(0.9);
+        _trendChartLabel.LabelStyle.BorderColor = ScottPlot.Color.FromHex("#666666");
+        _trendChartLabel.LabelStyle.BorderWidth = 1;
+        _trendChartLabel.LabelStyle.Padding = 5;
+        _trendChartLabel.IsVisible = false;
+
         // 设置X轴为日期时间
         AlarmTrendChart.Plot.Axes.DateTimeTicksBottom();
 
         // 设置Y轴从0开始
         AlarmTrendChart.Plot.Axes.SetLimits(bottom: 0);
+
+        // 自动调整尺度
+        AlarmTrendChart.Plot.Axes.AutoScale();
 
         AlarmTrendChart.Refresh();
     }
@@ -174,6 +222,7 @@ public partial class AlarmStatisticsView : UserControl
         var data = _viewModel.AlarmTypeDistributions.ToList();
         if (data.Count == 0)
         {
+            AlarmTypeChart.Plot.Axes.AutoScale();
             AlarmTypeChart.Refresh();
             return;
         }
@@ -203,6 +252,72 @@ public partial class AlarmStatisticsView : UserControl
             pie.Slices[1].LabelStyle.FontName = "Microsoft YaHei UI";
         }
 
+        // 自动调整尺度
+        AlarmTypeChart.Plot.Axes.AutoScale();
+
         AlarmTypeChart.Refresh();
+    }
+
+    /// <summary>
+    /// 设置折线图鼠标跟踪功能
+    /// </summary>
+    private void SetupTrendChartMouseTracking()
+    {
+        AlarmTrendChart.MouseMove += (s, e) =>
+        {
+            if (_viewModel == null || _trendChartCrosshair == null || _trendChartLabel == null)
+                return;
+
+            var data = _viewModel.AlarmTrends.ToList();
+            if (data.Count == 0)
+                return;
+
+            // 获取鼠标位置对应的坐标
+            var mousePixel = e.GetPosition(AlarmTrendChart);
+            var mouseCoordinate = AlarmTrendChart.Plot.GetCoordinates((float)mousePixel.X, (float)mousePixel.Y);
+
+            // 查找最近的数据点
+            var times = data.Select(x => x.Time.ToOADate()).ToArray();
+            var counts = data.Select(x => (double)x.Count).ToArray();
+
+            int nearestIndex = -1;
+            double minDistance = double.MaxValue;
+
+            for (int i = 0; i < times.Length; i++)
+            {
+                double distance = System.Math.Abs(times[i] - mouseCoordinate.X);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    nearestIndex = i;
+                }
+            }
+
+            if (nearestIndex >= 0 && nearestIndex < data.Count)
+            {
+                // 更新Crosshair位置
+                _trendChartCrosshair.Position = new Coordinates(times[nearestIndex], counts[nearestIndex]);
+                _trendChartCrosshair.IsVisible = true;
+
+                // 更新标签
+                var time = data[nearestIndex].Time;
+                var count = data[nearestIndex].Count;
+                _trendChartLabel.LabelText = $"{time:yyyy-MM-dd HH:mm}\n告警次数: {count}";
+                _trendChartLabel.Location = new Coordinates(times[nearestIndex], counts[nearestIndex]);
+                _trendChartLabel.OffsetY = -40; // 向上偏移，避免遮挡数据点
+                _trendChartLabel.IsVisible = true;
+
+                AlarmTrendChart.Refresh();
+            }
+        };
+
+        AlarmTrendChart.MouseLeave += (s, e) =>
+        {
+            if (_trendChartCrosshair != null)
+                _trendChartCrosshair.IsVisible = false;
+            if (_trendChartLabel != null)
+                _trendChartLabel.IsVisible = false;
+            AlarmTrendChart.Refresh();
+        };
     }
 }
