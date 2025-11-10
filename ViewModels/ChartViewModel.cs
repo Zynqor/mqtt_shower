@@ -32,6 +32,8 @@ public class ChartViewModel : INotifyPropertyChanged
     private WpfPlot? _chart;
     private ObservableCollection<ChartLegendItem> _legendItems = new();
     private ObservableCollection<ChartLegendGroupViewModel> _legendGroups = new();
+    private Crosshair? _crosshair;
+    private Text? _hoverLabel;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -133,9 +135,27 @@ public class ChartViewModel : INotifyPropertyChanged
         _chart.Plot.FigureBackground.Color = ScottPlot.Color.FromHex("#FFFFFF");
         _chart.Plot.DataBackground.Color = ScottPlot.Color.FromHex("#FFFFFF");
 
+        // 初始化Crosshair和悬浮标签
+        _crosshair = _chart.Plot.Add.Crosshair(0, 0);
+        _crosshair.IsVisible = false;
+        _crosshair.LineColor = ScottPlot.Color.FromHex("#666666");
+        _crosshair.LineWidth = 1;
 
+        _hoverLabel = _chart.Plot.Add.Text("", 0, 0);
+        _hoverLabel.LabelStyle.FontSize = 11;
+        _hoverLabel.LabelStyle.FontName = "Microsoft YaHei UI";
+        _hoverLabel.LabelStyle.Bold = true;
+        _hoverLabel.LabelStyle.ForeColor = ScottPlot.Color.FromHex("#333333");
+        _hoverLabel.LabelStyle.BackgroundColor = ScottPlot.Color.FromHex("#FFFFFF").WithAlpha(0.95);
+        _hoverLabel.LabelStyle.BorderColor = ScottPlot.Color.FromHex("#666666");
+        _hoverLabel.LabelStyle.BorderWidth = 1;
+        _hoverLabel.LabelStyle.Padding = 8;
+        _hoverLabel.IsVisible = false;
 
-        _logService.LogInfo("ScottPlot 图表已初始化（高性能模式）");
+        // 设置鼠标事件
+        SetupMouseTracking();
+
+        _logService.LogInfo("ScottPlot 图表已初始化（高性能模式 + 鼠标悬浮显示）");
     }
 
     /// <summary>
@@ -585,6 +605,121 @@ public class ChartViewModel : INotifyPropertyChanged
             _nextDeviceColorIndex = 0;
             _logService.LogInfo("图表数据已清空");
         });
+    }
+
+    /// <summary>
+    /// 设置鼠标跟踪功能
+    /// </summary>
+    private void SetupMouseTracking()
+    {
+        if (_chart == null)
+            return;
+
+        _chart.MouseMove += (s, e) =>
+        {
+            if (_crosshair == null || _hoverLabel == null)
+                return;
+
+            try
+            {
+                // 获取鼠标位置对应的坐标
+                var mousePixel = e.GetPosition(_chart);
+                var mouseCoordinate = _chart.Plot.GetCoordinates((float)mousePixel.X, (float)mousePixel.Y);
+
+                // 查找所有可见折线中最近的数据点
+                string? nearestDeviceId = null;
+                string? nearestMetricName = null;
+                int nearestIndex = -1;
+                double minDistance = double.MaxValue;
+                double nearestX = 0;
+                double nearestY = 0;
+
+                foreach (var kvp in _seriesMap)
+                {
+                    var deviceId = kvp.Key;
+                    var deviceSeries = kvp.Value;
+
+                    foreach (var metricKvp in deviceSeries)
+                    {
+                        var metricName = metricKvp.Key;
+                        var plotData = metricKvp.Value;
+
+                        // 跳过不可见的折线
+                        if (!plotData.Plot.IsVisible)
+                            continue;
+
+                        // 查找X轴最近的点
+                        for (int i = 0; i < plotData.XData.Count; i++)
+                        {
+                            double distance = Math.Abs(plotData.XData[i] - mouseCoordinate.X);
+                            if (distance < minDistance)
+                            {
+                                minDistance = distance;
+                                nearestDeviceId = deviceId;
+                                nearestMetricName = metricName;
+                                nearestIndex = i;
+                                nearestX = plotData.XData[i];
+                                nearestY = plotData.YData[i];
+                            }
+                        }
+                    }
+                }
+
+                // 如果找到了最近的点，显示Crosshair和标签
+                if (nearestDeviceId != null && nearestMetricName != null && nearestIndex >= 0)
+                {
+                    // 更新Crosshair位置
+                    _crosshair.Position = new Coordinates(nearestX, nearestY);
+                    _crosshair.IsVisible = true;
+
+                    // 获取原始值（不含偏移量）
+                    var plotData = _seriesMap[nearestDeviceId][nearestMetricName];
+                    var originalValue = plotData.OriginalYData[nearestIndex];
+                    var offset = nearestY - originalValue;
+
+                    // 转换时间
+                    var time = DateTime.FromOADate(nearestX);
+
+                    // 更新标签
+                    var labelText = $"设备: {nearestDeviceId}\n" +
+                                  $"测点: {nearestMetricName}\n" +
+                                  $"时间: {time:HH:mm:ss}\n" +
+                                  $"数值: {originalValue:F2}";
+
+                    if (Math.Abs(offset) > 0.001)
+                    {
+                        labelText += $"\n偏移: {offset:+0.##;-0.##;0}";
+                    }
+
+                    _hoverLabel.LabelText = labelText;
+                    _hoverLabel.Location = new Coordinates(nearestX, nearestY);
+                    _hoverLabel.OffsetY = -50; // 向上偏移，避免遮挡数据点
+                    _hoverLabel.IsVisible = true;
+
+                    _chart.Refresh();
+                }
+                else
+                {
+                    // 没有找到数据点，隐藏
+                    _crosshair.IsVisible = false;
+                    _hoverLabel.IsVisible = false;
+                    _chart.Refresh();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logService.LogException(ex, "鼠标跟踪失败");
+            }
+        };
+
+        _chart.MouseLeave += (s, e) =>
+        {
+            if (_crosshair != null)
+                _crosshair.IsVisible = false;
+            if (_hoverLabel != null)
+                _hoverLabel.IsVisible = false;
+            _chart?.Refresh();
+        };
     }
 
     protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
