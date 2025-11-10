@@ -622,11 +622,10 @@ public class ChartViewModel : INotifyPropertyChanged
 
             try
             {
-                // 获取鼠标位置对应的坐标
+                // 获取鼠标像素位置
                 var mousePixel = e.GetPosition(_chart);
-                var mouseCoordinate = _chart.Plot.GetCoordinates((float)mousePixel.X, (float)mousePixel.Y);
 
-                // 查找所有可见折线中最近的数据点
+                // 查找所有可见折线中最近的数据点（基于像素距离）
                 string? nearestDeviceId = null;
                 string? nearestMetricName = null;
                 int nearestIndex = -1;
@@ -648,10 +647,18 @@ public class ChartViewModel : INotifyPropertyChanged
                         if (!plotData.Plot.IsVisible)
                             continue;
 
-                        // 查找X轴最近的点
+                        // 查找最近的点（基于像素距离）
                         for (int i = 0; i < plotData.XData.Count; i++)
                         {
-                            double distance = Math.Abs(plotData.XData[i] - mouseCoordinate.X);
+                            // 将数据点坐标转换为像素坐标
+                            var dataCoord = new Coordinates(plotData.XData[i], plotData.YData[i]);
+                            var pixelCoord = _chart.Plot.GetPixel(dataCoord);
+
+                            // 计算像素距离（欧氏距离）
+                            double dx = pixelCoord.X - mousePixel.X;
+                            double dy = pixelCoord.Y - mousePixel.Y;
+                            double distance = Math.Sqrt(dx * dx + dy * dy);
+
                             if (distance < minDistance)
                             {
                                 minDistance = distance;
