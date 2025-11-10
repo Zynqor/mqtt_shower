@@ -211,7 +211,7 @@
         <Style x:Key="ModernTextBox" TargetType="TextBox">
             <Setter Property="Height" Value="36"/>
             <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Padding" Value="10,5"/>
             <Setter Property="BorderBrush" Value="#CED4DA"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Background" Value="White"/>
@@ -256,7 +256,7 @@
         <Style x:Key="ModernPasswordBox" TargetType="PasswordBox">
             <Setter Property="Height" Value="36"/>
             <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Padding" Value="10,5"/>
             <Setter Property="BorderBrush" Value="#CED4DA"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Background" Value="White"/>
