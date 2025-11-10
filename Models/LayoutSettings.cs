@@ -6,6 +6,31 @@ namespace MqttMonitor.Models;
 public class LayoutSettings
 {
     /// <summary>
+    /// 窗口宽度
+    /// </summary>
+    public double WindowWidth { get; set; } = 1000;
+
+    /// <summary>
+    /// 窗口高度
+    /// </summary>
+    public double WindowHeight { get; set; } = 600;
+
+    /// <summary>
+    /// 窗口左侧位置
+    /// </summary>
+    public double WindowLeft { get; set; } = double.NaN;
+
+    /// <summary>
+    /// 窗口顶部位置
+    /// </summary>
+    public double WindowTop { get; set; } = double.NaN;
+
+    /// <summary>
+    /// 窗口状态（Normal, Maximized, Minimized）
+    /// </summary>
+    public string WindowState { get; set; } = "Normal";
+
+    /// <summary>
     /// 告警页面左侧面板宽度（相对值）
     /// 默认: 1（对应 1:3 比例）
     /// </summary>

@@ -95,6 +95,78 @@ public partial class App : Application
             return alarmConfigService.LoadAlertSettings();
         });
 
+        // Register ChartConfig as a singleton (with migration from old config.json)
+        services.AddSingleton<ChartConfig>(sp =>
+        {
+            var chartConfigService = sp.GetRequiredService<ChartConfigService>();
+            var logService = sp.GetRequiredService<LogService>();
+            var chartConfig = chartConfigService.LoadChartConfig();
+
+            // 如果chart_config.json不存在，尝试从旧的config.json迁移
+            if (!File.Exists("chart_config.json") && File.Exists("config.json"))
+            {
+                try
+                {
+                    var oldConfigJson = File.ReadAllText("config.json");
+                    dynamic? oldConfig = JsonConvert.DeserializeObject(oldConfigJson);
+                    if (oldConfig != null)
+                    {
+                        if (oldConfig.MaxChartDataPoints != null)
+                            chartConfig.MaxChartDataPoints = (int)oldConfig.MaxChartDataPoints;
+                        if (oldConfig.ChartUpdateInterval != null)
+                            chartConfig.ChartUpdateInterval = (int)oldConfig.ChartUpdateInterval;
+
+                        chartConfigService.SaveChartConfig(chartConfig);
+                        logService.LogInfo("已从config.json迁移图表配置到chart_config.json");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logService.LogException(ex, "从config.json迁移图表配置失败");
+                }
+            }
+
+            return chartConfig;
+        });
+
+        // Register CompanyInfo as a singleton (with migration from old config.json)
+        services.AddSingleton<CompanyInfo>(sp =>
+        {
+            var companyInfoService = sp.GetRequiredService<CompanyInfoService>();
+            var logService = sp.GetRequiredService<LogService>();
+            var companyInfo = companyInfoService.LoadCompanyInfo();
+
+            // 如果company_info.json不存在，尝试从旧的config.json迁移
+            if (!File.Exists("company_info.json") && File.Exists("config.json"))
+            {
+                try
+                {
+                    var oldConfigJson = File.ReadAllText("config.json");
+                    dynamic? oldConfig = JsonConvert.DeserializeObject(oldConfigJson);
+                    if (oldConfig != null)
+                    {
+                        if (oldConfig.CompanyName != null)
+                            companyInfo.CompanyName = (string)oldConfig.CompanyName;
+                        if (oldConfig.CompanyAddress != null)
+                            companyInfo.CompanyAddress = (string)oldConfig.CompanyAddress;
+                        if (oldConfig.CompanyPhone != null)
+                            companyInfo.CompanyPhone = (string)oldConfig.CompanyPhone;
+                        if (oldConfig.CompanyEmail != null)
+                            companyInfo.CompanyEmail = (string)oldConfig.CompanyEmail;
+
+                        companyInfoService.SaveCompanyInfo(companyInfo);
+                        logService.LogInfo("已从config.json迁移公司信息到company_info.json");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logService.LogException(ex, "从config.json迁移公司信息失败");
+                }
+            }
+
+            return companyInfo;
+        });
+
         // Register Services
         services.AddSingleton<LogService>();
         services.AddSingleton<EncryptionService>();
@@ -107,6 +179,8 @@ public partial class App : Application
         services.AddSingleton<AlarmDatabaseService>();
         services.AddSingleton<AlarmDetectionService>();
         services.AddSingleton<LayoutSettingsService>();
+        services.AddSingleton<ChartConfigService>();
+        services.AddSingleton<CompanyInfoService>();
 
         // Register ViewModels
         services.AddSingleton<MainViewModel>();

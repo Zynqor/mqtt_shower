@@ -32,6 +32,37 @@ public class LayoutSettingsService
                 _logService.LogInfo("已加载布局设置");
                 return settings ?? new LayoutSettings();
             }
+            // 如果layout_settings.json不存在，尝试从旧的config.json迁移窗口属性
+            else if (File.Exists("config.json"))
+            {
+                try
+                {
+                    var oldConfigJson = File.ReadAllText("config.json");
+                    dynamic? oldConfig = JsonConvert.DeserializeObject(oldConfigJson);
+                    if (oldConfig != null)
+                    {
+                        var settings = new LayoutSettings();
+                        if (oldConfig.WindowWidth != null)
+                            settings.WindowWidth = (double)oldConfig.WindowWidth;
+                        if (oldConfig.WindowHeight != null)
+                            settings.WindowHeight = (double)oldConfig.WindowHeight;
+                        if (oldConfig.WindowLeft != null)
+                            settings.WindowLeft = (double)oldConfig.WindowLeft;
+                        if (oldConfig.WindowTop != null)
+                            settings.WindowTop = (double)oldConfig.WindowTop;
+                        if (oldConfig.WindowState != null)
+                            settings.WindowState = (string)oldConfig.WindowState;
+
+                        SaveLayoutSettings(settings);
+                        _logService.LogInfo("已从config.json迁移窗口布局到layout_settings.json");
+                        return settings;
+                    }
+                }
+                catch (Exception migrationEx)
+                {
+                    _logService.LogException(migrationEx, "从config.json迁移窗口布局失败");
+                }
+            }
         }
         catch (Exception ex)
         {
