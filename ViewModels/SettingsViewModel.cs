@@ -17,7 +17,6 @@ public class SettingsViewModel : INotifyPropertyChanged
     private readonly LogService _logService;
     private readonly EncryptionService _encryptionService;
     private readonly MqttSettings _mqttSettings; // Inject MqttSettings
-    private readonly string _configFilePath = "config.json";
 
     private string _server = "localhost";
     private int _port = 1883;
@@ -26,8 +25,6 @@ public class SettingsViewModel : INotifyPropertyChanged
     private string _clientId = string.Empty;
     private string _baseTopic = "iot/devices";
     private bool _isPasswordVisible = false;
-    private int _maxChartDataPoints = 1000;
-    private int _chartUpdateInterval = 800;
     private bool _useTls = false;
     private string _caCertificatePath = string.Empty;
     private string _clientCertificatePath = string.Empty;
@@ -147,38 +144,6 @@ public class SettingsViewModel : INotifyPropertyChanged
                 _isPasswordVisible = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(PasswordVisibilityIcon));
-            }
-        }
-    }
-
-    /// <summary>
-    /// 图表最大数据点数量
-    /// </summary>
-    public int MaxChartDataPoints
-    {
-        get => _maxChartDataPoints;
-        set
-        {
-            if (_maxChartDataPoints != value)
-            {
-                _maxChartDataPoints = value;
-                OnPropertyChanged();
-            }
-        }
-    }
-
-    /// <summary>
-    /// 图表更新间隔（毫秒）
-    /// </summary>
-    public int ChartUpdateInterval
-    {
-        get => _chartUpdateInterval;
-        set
-        {
-            if (_chartUpdateInterval != value)
-            {
-                _chartUpdateInterval = value;
-                OnPropertyChanged();
             }
         }
     }
@@ -363,26 +328,18 @@ public class SettingsViewModel : INotifyPropertyChanged
             _mqttSettings.Password = string.IsNullOrWhiteSpace(Password) ? null : Password;
             _mqttSettings.ClientId = string.IsNullOrWhiteSpace(ClientId) ? null : ClientId;
             _mqttSettings.BaseTopic = BaseTopic;
-            _mqttSettings.MaxChartDataPoints = MaxChartDataPoints;
-            _mqttSettings.ChartUpdateInterval = ChartUpdateInterval;
             _mqttSettings.UseTls = UseTls;
             _mqttSettings.CaCertificatePath = string.IsNullOrWhiteSpace(CaCertificatePath) ? null : CaCertificatePath;
             _mqttSettings.ClientCertificatePath = string.IsNullOrWhiteSpace(ClientCertificatePath) ? null : ClientCertificatePath;
             _mqttSettings.ClientKeyPath = string.IsNullOrWhiteSpace(ClientKeyPath) ? null : ClientKeyPath;
             _mqttSettings.IgnoreCertificateErrors = IgnoreCertificateErrors;
 
-            // Load existing settings to preserve subscribed topics and other properties not in SettingsViewModel
+            // Load existing settings to preserve subscribed topics and title
             var existingSettings = LoadSettingsFromFile();
             if (existingSettings != null)
             {
                 _mqttSettings.SubscribedTopics = existingSettings.SubscribedTopics;
-                // Copy other properties that are not directly bound in SettingsViewModel if necessary
                 _mqttSettings.Title = existingSettings.Title;
-                _mqttSettings.WindowWidth = existingSettings.WindowWidth;
-                _mqttSettings.WindowHeight = existingSettings.WindowHeight;
-                _mqttSettings.WindowLeft = existingSettings.WindowLeft;
-                _mqttSettings.WindowTop = existingSettings.WindowTop;
-                _mqttSettings.WindowState = existingSettings.WindowState;
             }
 
             // 创建一个副本用于保存（避免修改单例实例）
@@ -394,20 +351,13 @@ public class SettingsViewModel : INotifyPropertyChanged
                 Password = _mqttSettings.Password,
                 ClientId = _mqttSettings.ClientId,
                 BaseTopic = _mqttSettings.BaseTopic,
-                MaxChartDataPoints = _mqttSettings.MaxChartDataPoints,
-                ChartUpdateInterval = _mqttSettings.ChartUpdateInterval,
                 UseTls = _mqttSettings.UseTls,
                 CaCertificatePath = _mqttSettings.CaCertificatePath,
                 ClientCertificatePath = _mqttSettings.ClientCertificatePath,
                 ClientKeyPath = _mqttSettings.ClientKeyPath,
                 IgnoreCertificateErrors = _mqttSettings.IgnoreCertificateErrors,
                 SubscribedTopics = _mqttSettings.SubscribedTopics,
-                Title = _mqttSettings.Title,
-                WindowWidth = _mqttSettings.WindowWidth,
-                WindowHeight = _mqttSettings.WindowHeight,
-                WindowLeft = _mqttSettings.WindowLeft,
-                WindowTop = _mqttSettings.WindowTop,
-                WindowState = _mqttSettings.WindowState
+                Title = _mqttSettings.Title
             };
 
             // 加密密码（如果有密码且未加密）
@@ -417,8 +367,9 @@ public class SettingsViewModel : INotifyPropertyChanged
                 settingsToSave.Password = _encryptionService.Encrypt(settingsToSave.Password);
             }
 
+            var configFilePath = PathManager.MqttConfigFile;
             var json = JsonConvert.SerializeObject(settingsToSave, Formatting.Indented);
-            File.WriteAllText(_configFilePath, json);
+            File.WriteAllText(configFilePath, json);
 
             _logService.LogInfo("设置已保存");
             OnSettingsSaved?.Invoke();
@@ -453,8 +404,6 @@ public class SettingsViewModel : INotifyPropertyChanged
             Password = settings.Password ?? string.Empty;
             ClientId = settings.ClientId ?? string.Empty;
             BaseTopic = settings.BaseTopic;
-            MaxChartDataPoints = settings.MaxChartDataPoints;
-            ChartUpdateInterval = settings.ChartUpdateInterval;
             UseTls = settings.UseTls;
             CaCertificatePath = settings.CaCertificatePath ?? string.Empty;
             ClientCertificatePath = settings.ClientCertificatePath ?? string.Empty;
@@ -470,9 +419,10 @@ public class SettingsViewModel : INotifyPropertyChanged
     {
         try
         {
-            if (File.Exists(_configFilePath))
+            var configFilePath = PathManager.MqttConfigFile;
+            if (File.Exists(configFilePath))
             {
-                var json = File.ReadAllText(_configFilePath);
+                var json = File.ReadAllText(configFilePath);
                 var settings = JsonConvert.DeserializeObject<MqttSettings>(json);
 
                 // 解密密码（如果已加密）

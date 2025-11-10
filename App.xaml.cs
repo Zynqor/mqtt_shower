@@ -226,7 +226,7 @@ public partial class App : Application
         {
             // 1. 断开MQTT连接
             var mqttService = ServiceProvider?.GetService<MqttService>();
-            if (mqttService != null && mqttService.IsConnected)
+            if (mqttService != null && mqttService.CurrentState == Services.ConnectionState.Connected)
             {
                 await mqttService.DisconnectAsync();
             }
