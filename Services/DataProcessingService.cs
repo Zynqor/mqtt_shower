@@ -10,11 +10,14 @@ namespace MqttMonitor.Services;
 /// <summary>
 /// 数据处理服务，负责解析和处理 MQTT 消息
 /// </summary>
-public class DataProcessingService
+public class DataProcessingService : IDisposable
 {
     private readonly MqttService _mqttService;
     private readonly LogService _logService;
     private readonly CsvDataStorageService _csvStorageService;
+    private readonly SemaphoreSlim _taskSemaphore = new(1, 1);
+    private readonly List<Task> _runningTasks = new();
+    private bool _disposed;
 
     /// <summary>
     /// 存储所有设备及其指标的最新状态
@@ -112,18 +115,47 @@ public class DataProcessingService
             // 触发事件
             OnUpstreamDataParsed?.Invoke(dataPacket);
 
-            // 保存数据到CSV文件
-            _ = Task.Run(async () =>
+            // 保存数据到CSV文件（跟踪后台任务）
+            if (!_disposed)
             {
+                var task = Task.Run(async () =>
+                {
+                    try
+                    {
+                        await _csvStorageService.SaveDataAsync(dataPacket);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logService.LogException(ex, "保存CSV数据时出错");
+                    }
+                    finally
+                    {
+                        // 任务完成后从列表中移除
+                        await _taskSemaphore.WaitAsync();
+                        try
+                        {
+                            _runningTasks.Remove(Task.CurrentId.HasValue
+                                ? _runningTasks.FirstOrDefault(t => t.Id == Task.CurrentId.Value)
+                                : null);
+                        }
+                        finally
+                        {
+                            _taskSemaphore.Release();
+                        }
+                    }
+                });
+
+                // 添加到跟踪列表
+                _taskSemaphore.Wait();
                 try
                 {
-                    await _csvStorageService.SaveDataAsync(dataPacket);
+                    _runningTasks.Add(task);
                 }
-                catch (Exception ex)
+                finally
                 {
-                    _logService.LogException(ex, "保存CSV数据时出错");
+                    _taskSemaphore.Release();
                 }
-            });
+            }
         }
         catch (JsonException ex)
         {
@@ -177,5 +209,51 @@ public class DataProcessingService
         AllDeviceData.Clear();
         _logService.LogInfo("已清空所有设备数据");
         OnDataCleared?.Invoke();
+    }
+
+    /// <summary>
+    /// 释放资源，等待所有后台任务完成
+    /// </summary>
+    public void Dispose()
+    {
+        if (_disposed)
+            return;
+
+        _disposed = true;
+
+        _logService.LogInfo("DataProcessingService 正在释放资源，等待后台任务完成...");
+
+        // 等待所有后台任务完成（最多等待5秒）
+        Task[] tasksToWait;
+        _taskSemaphore.Wait();
+        try
+        {
+            tasksToWait = _runningTasks.ToArray();
+            _logService.LogInfo($"等待 {tasksToWait.Length} 个后台任务完成");
+        }
+        finally
+        {
+            _taskSemaphore.Release();
+        }
+
+        try
+        {
+            // 等待所有任务完成，最多等待5秒
+            if (tasksToWait.Length > 0)
+            {
+                Task.WaitAll(tasksToWait, TimeSpan.FromSeconds(5));
+                _logService.LogInfo("所有后台任务已完成");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logService.LogException(ex, "等待后台任务完成时出错");
+        }
+
+        // 清理资源
+        _runningTasks.Clear();
+        _taskSemaphore.Dispose();
+
+        _logService.LogInfo("DataProcessingService 已释放资源");
     }
 }

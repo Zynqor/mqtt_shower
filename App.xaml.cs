@@ -242,7 +242,11 @@ public partial class App : Application
             var chartViewModel = ServiceProvider?.GetService<ChartViewModel>();
             chartViewModel?.Dispose();
 
-            // 3. 断开MQTT连接并释放客户端
+            // 3. 等待数据处理服务的所有后台任务完成
+            var dataProcessingService = ServiceProvider?.GetService<DataProcessingService>();
+            dataProcessingService?.Dispose();
+
+            // 4. 断开MQTT连接并释放客户端
             var mqttService = ServiceProvider?.GetService<MqttService>();
             if (mqttService != null && mqttService.CurrentState == Services.ConnectionState.Connected)
             {
