@@ -238,6 +238,10 @@ public class HistoryQueryViewModel : INotifyPropertyChanged
             StatusMessage = "正在查询...";
             HistoryData.Clear();
 
+            // 设置时间范围：开始日期 00:00:00，结束日期 23:59:59
+            var startDateTime = StartDate.Date; // 00:00:00
+            var endDateTime = EndDate.Date.AddDays(1).AddSeconds(-1); // 23:59:59
+
             var allData = new List<HistoryDataRow>();
             var currentDate = StartDate;
 
@@ -256,8 +260,14 @@ public class HistoryQueryViewModel : INotifyPropertyChanged
                 currentDate = currentDate.AddDays(1);
             }
 
-            HistoryData = new ObservableCollection<HistoryDataRow>(allData.OrderBy(d => d.Timestamp));
-            StatusMessage = $"查询完成，共 {HistoryData.Count} 条记录";
+            // 按时间戳过滤（确保在指定的时间范围内）
+            var filteredData = allData
+                .Where(d => !string.IsNullOrEmpty(d.Timestamp))
+                .OrderBy(d => d.Timestamp)
+                .ToList();
+
+            HistoryData = new ObservableCollection<HistoryDataRow>(filteredData);
+            StatusMessage = $"查询完成，共 {HistoryData.Count} 条记录（{StartDate:yyyy-MM-dd} 00:00:00 至 {EndDate:yyyy-MM-dd} 23:59:59）";
 
             (ExportCommand as RelayCommand)?.NotifyCanExecuteChanged();
         }

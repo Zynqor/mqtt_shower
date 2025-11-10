@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:converters="clr-namespace:MqttMonitor.Converters"
         mc:Ignorable="d"
         Title="历史数据查询" Height="600" Width="900"
         WindowStartupLocation="CenterOwner"
@@ -11,6 +12,7 @@
     <!-- 资源 -->
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:InvertedBooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter"/>
 
         <!-- 按钮样式 -->
         <Style x:Key="ModernButton" TargetType="Button">
@@ -78,34 +80,38 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="100"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="100"/>
                 </Grid.ColumnDefinitions>
 
                 <!-- 设备选择 -->
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="选择设备:" VerticalAlignment="Center"
-                           FontWeight="SemiBold" FontSize="13" Margin="0,0,15,0"/>
+                           FontWeight="SemiBold" FontSize="13"/>
                 <ComboBox Grid.Row="0" Grid.Column="1"
                           ItemsSource="{Binding AvailableDevices}"
                           SelectedItem="{Binding SelectedDevice}"
-                          Height="36" FontSize="13" Margin="0,0,10,0"/>
-                <Button Grid.Row="0" Grid.Column="2" Content="刷新"
+                          Height="36" FontSize="13" Margin="0,0,10,0"
+                          VerticalContentAlignment="Center"/>
+                <Button Grid.Row="0" Grid.Column="2" Content="刷新设备"
                         Command="{Binding RefreshDevicesCommand}"
-                        Style="{StaticResource SecondaryButton}" Width="80"/>
+                        Style="{StaticResource SecondaryButton}" Height="36"/>
 
-                <!-- 时间范围 -->
+                <!-- 开始日期 -->
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="开始日期:" VerticalAlignment="Center"
-                           FontWeight="SemiBold" FontSize="13" Margin="0,15,15,0"/>
+                           FontWeight="SemiBold" FontSize="13" Margin="0,15,0,0"/>
                 <DatePicker Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
                             SelectedDate="{Binding StartDate}"
-                            Height="36" FontSize="13" Margin="0,15,0,0"/>
+                            Height="36" FontSize="13" Margin="0,15,0,0"
+                            VerticalContentAlignment="Center"/>
 
+                <!-- 结束日期 -->
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="结束日期:" VerticalAlignment="Center"
-                           FontWeight="SemiBold" FontSize="13" Margin="0,15,15,0"/>
+                           FontWeight="SemiBold" FontSize="13" Margin="0,15,0,0"/>
                 <DatePicker Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
                             SelectedDate="{Binding EndDate}"
-                            Height="36" FontSize="13" Margin="0,15,0,0"/>
+                            Height="36" FontSize="13" Margin="0,15,0,0"
+                            VerticalContentAlignment="Center"/>
             </Grid>
         </Border>
 
@@ -129,7 +135,7 @@
                           AlternatingRowBackground="#F8F9FA"
                           BorderThickness="0"
                           HeadersVisibility="Column"
-                          Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                          Visibility="{Binding IsLoading, Converter={StaticResource InvertedBooleanToVisibilityConverter}}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="时间" Binding="{Binding Timestamp}" Width="180"/>
                     </DataGrid.Columns>
