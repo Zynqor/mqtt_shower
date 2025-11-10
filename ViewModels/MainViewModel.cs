@@ -118,6 +118,7 @@ public class MainViewModel : INotifyPropertyChanged
     public ICommand ShowAlarmConfigCommand { get; }
     public ICommand ShowAlertSettingsCommand { get; }
     public ICommand ShowHistoryQueryCommand { get; }
+    public ICommand ShowAlarmHistoryQueryCommand { get; }
     public ICommand ClearDataCommand { get; }
     public ICommand ShowChartViewCommand { get; }
     public ICommand ShowTableViewCommand { get; }
@@ -148,6 +149,7 @@ public class MainViewModel : INotifyPropertyChanged
         ShowAlarmConfigCommand = new RelayCommand(OnShowAlarmConfig);
         ShowAlertSettingsCommand = new RelayCommand(OnShowAlertSettings);
         ShowHistoryQueryCommand = new RelayCommand(OnShowHistoryQuery);
+        ShowAlarmHistoryQueryCommand = new RelayCommand(OnShowAlarmHistoryQuery);
         ClearDataCommand = new RelayCommand(OnClearData);
         ShowChartViewCommand = new RelayCommand(() => SelectedTabIndex = 0);
         ShowTableViewCommand = new RelayCommand(() => SelectedTabIndex = 1);
@@ -250,6 +252,19 @@ public class MainViewModel : INotifyPropertyChanged
         {
             historyQueryWindow.Owner = System.Windows.Application.Current.MainWindow;
             historyQueryWindow.ShowDialog();
+        }
+    }
+
+    /// <summary>
+    /// 显示历史告警查询窗口
+    /// </summary>
+    private void OnShowAlarmHistoryQuery()
+    {
+        var alarmHistoryQueryWindow = App.ServiceProvider?.GetService<AlarmHistoryQueryWindow>();
+        if (alarmHistoryQueryWindow != null)
+        {
+            alarmHistoryQueryWindow.Owner = System.Windows.Application.Current.MainWindow;
+            alarmHistoryQueryWindow.ShowDialog();
         }
     }
 

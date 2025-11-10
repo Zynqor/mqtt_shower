@@ -277,6 +277,96 @@ public class AlarmDatabaseService : IDisposable
     }
 
     /// <summary>
+    /// 按条件查询告警记录（支持告警类型筛选）
+    /// </summary>
+    public async Task<List<AlarmRecord>> QueryAlarmsAsync(
+        DateTime startTime,
+        DateTime endTime,
+        string? deviceId = null,
+        AlarmType? alarmType = null)
+    {
+        var records = new List<AlarmRecord>();
+
+        try
+        {
+            using var connection = new SqliteConnection($"Data Source={_databasePath}");
+            await connection.OpenAsync();
+
+            var sql = @"
+                SELECT * FROM alarm_records
+                WHERE trigger_time >= @startTime AND trigger_time <= @endTime
+            ";
+
+            if (!string.IsNullOrEmpty(deviceId))
+            {
+                sql += " AND device_id = @deviceId";
+            }
+
+            if (alarmType.HasValue)
+            {
+                sql += " AND alarm_type = @alarmType";
+            }
+
+            sql += " ORDER BY trigger_time DESC";
+
+            using var command = new SqliteCommand(sql, connection);
+            command.Parameters.AddWithValue("@startTime", startTime.ToString("yyyy-MM-dd HH:mm:ss"));
+            command.Parameters.AddWithValue("@endTime", endTime.ToString("yyyy-MM-dd HH:mm:ss"));
+
+            if (!string.IsNullOrEmpty(deviceId))
+            {
+                command.Parameters.AddWithValue("@deviceId", deviceId);
+            }
+
+            if (alarmType.HasValue)
+            {
+                command.Parameters.AddWithValue("@alarmType", (int)alarmType.Value);
+            }
+
+            using var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                records.Add(ReadAlarmRecord(reader));
+            }
+        }
+        catch (Exception ex)
+        {
+            _logService.LogException(ex, "查询告警记录失败");
+        }
+
+        return records;
+    }
+
+    /// <summary>
+    /// 获取所有不同的设备ID
+    /// </summary>
+    public async Task<List<string>> GetAllDeviceIdsAsync()
+    {
+        var deviceIds = new List<string>();
+
+        try
+        {
+            using var connection = new SqliteConnection($"Data Source={_databasePath}");
+            await connection.OpenAsync();
+
+            var sql = "SELECT DISTINCT device_id FROM alarm_records ORDER BY device_id";
+
+            using var command = new SqliteCommand(sql, connection);
+            using var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                deviceIds.Add(reader.GetString(0));
+            }
+        }
+        catch (Exception ex)
+        {
+            _logService.LogException(ex, "获取设备列表失败");
+        }
+
+        return deviceIds;
+    }
+
+    /// <summary>
     /// 获取告警统计数据
     /// </summary>
     public async Task<Dictionary<string, int>> GetAlarmStatisticsAsync(DateTime startTime, DateTime endTime)

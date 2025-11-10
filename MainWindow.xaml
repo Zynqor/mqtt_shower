@@ -127,6 +127,7 @@
             </MenuItem>
             <MenuItem Header="数据监控(_M)" Padding="10,5">
                 <MenuItem Header="历史数据查询(_H)" Command="{Binding ShowHistoryQueryCommand}"/>
+                <MenuItem Header="历史告警查询(_L)" Command="{Binding ShowAlarmHistoryQueryCommand}"/>
                 <Separator/>
                 <MenuItem Header="告警配置(_A)" Command="{Binding ShowAlarmConfigCommand}"/>
                 <MenuItem Header="提醒设置(_S)" Command="{Binding ShowAlertSettingsCommand}"/>

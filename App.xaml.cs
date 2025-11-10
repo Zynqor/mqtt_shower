@@ -124,6 +124,7 @@ public partial class App : Application
         services.AddTransient<AlarmConfigViewModel>();
         services.AddTransient<AlertSettingsViewModel>();
         services.AddTransient<HistoryQueryViewModel>(); // Transient for new instance each time
+        services.AddTransient<AlarmHistoryQueryViewModel>(); // Transient for new instance each time
 
         // Register Views
         services.AddSingleton<LogView>();
@@ -138,6 +139,7 @@ public partial class App : Application
         services.AddTransient<AlarmConfigWindow>(); // Transient for new instance each time
         services.AddTransient<AlertSettingsWindow>(); // Transient for new instance each time
         services.AddTransient<HistoryQueryWindow>(); // Transient for new instance each time
+        services.AddTransient<AlarmHistoryQueryWindow>(); // Transient for new instance each time
     }
 
     protected override void OnExit(ExitEventArgs e)
