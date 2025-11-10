@@ -130,6 +130,9 @@ public class ChartViewModel : INotifyPropertyChanged
         _chart.Plot.Axes.Bottom.Label.Text = "";
         _chart.Plot.Axes.Left.Label.Text = "";
 
+        // 设置X轴为日期时间格式
+        _chart.Plot.Axes.DateTimeTicksBottom();
+
         // 设置样式
         _chart.Plot.Grid.MajorLineColor = ScottPlot.Color.FromHex("#E6E6E6");
         _chart.Plot.FigureBackground.Color = ScottPlot.Color.FromHex("#FFFFFF");
@@ -348,11 +351,12 @@ public class ChartViewModel : INotifyPropertyChanged
         plotData.Plot = scatter;
         scatter.Color = color;
         scatter.LineWidth = 1.5f;
-        scatter.MarkerSize = 0; // 不显示标记点以提升性能
+        scatter.MarkerSize = 5; // 显示数据点标记
+        scatter.MarkerShape = MarkerShape.FilledCircle; // 使用实心圆点
         scatter.LegendText = $"{deviceId} - {metricName}";
 
-        // 启用平滑（可选）
-        scatter.Smooth = true;
+        // 禁用平滑，显示为直线连接的折线图
+        scatter.Smooth = false;
 
         // 创建图例项
         var legendItem = new ChartLegendItem
