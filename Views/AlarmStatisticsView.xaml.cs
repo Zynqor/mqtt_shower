@@ -191,7 +191,7 @@ public partial class AlarmStatisticsView : UserControl
         _trendChartLabel.LabelStyle.FontName = "Microsoft YaHei UI";
         _trendChartLabel.LabelStyle.Bold = true;
         _trendChartLabel.LabelStyle.ForeColor = ScottPlot.Color.FromHex("#333333");
-        _trendChartLabel.LabelStyle.BackColor = ScottPlot.Color.FromHex("#FFFFFF").WithAlpha(0.9);
+        _trendChartLabel.LabelStyle.BackgroundColor = ScottPlot.Color.FromHex("#FFFFFF").WithAlpha(0.9);
         _trendChartLabel.LabelStyle.BorderColor = ScottPlot.Color.FromHex("#666666");
         _trendChartLabel.LabelStyle.BorderWidth = 1;
         _trendChartLabel.LabelStyle.Padding = 5;
