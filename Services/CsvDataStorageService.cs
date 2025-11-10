@@ -128,9 +128,13 @@ public class CsvDataStorageService : IDisposable
             {
                 try
                 {
+                    // 先刷新缓冲区
                     await kvp.Value.FlushAsync();
+                    // 关闭文件流
+                    kvp.Value.Close();
+                    // 释放资源
                     kvp.Value.Dispose();
-                    _logService.LogInfo($"已关闭文件写入器: {kvp.Key}");
+                    _logService.LogInfo($"已关闭文件: {kvp.Key}.csv");
                 }
                 catch (Exception ex)
                 {
@@ -141,7 +145,12 @@ public class CsvDataStorageService : IDisposable
             _fileWriters.Clear();
             _writeCache.Clear();
             _isEnabled = false;
-            _logService.LogInfo("CSV数据存储已禁用，所有缓存已刷新，所有文件已关闭");
+
+            // 强制触发垃圾回收，确保文件句柄被释放
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
+            _logService.LogInfo("CSV数据存储已禁用，所有缓存已刷新，所有文件已关闭并解锁");
         }
         catch (Exception ex)
         {
