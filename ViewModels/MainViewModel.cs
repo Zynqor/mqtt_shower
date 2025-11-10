@@ -658,7 +658,7 @@ public class MainViewModel : INotifyPropertyChanged, IDisposable
     /// <summary>
     /// 从配置文件加载已订阅的 Topics
     /// </summary>
-    private void LoadSubscribedTopicsFromConfig()
+    private async void LoadSubscribedTopicsFromConfig()
     {
         try
         {
@@ -670,12 +670,12 @@ public class MainViewModel : INotifyPropertyChanged, IDisposable
                 // This ensures MqttService's internal state is consistent with loaded config
                 foreach (var topic in _mqttService.SortedActiveSubscriptions.ToList())
                 {
-                    _mqttService.UnsubscribeAsync(topic).Wait(); // Use .Wait() for synchronous call in this context
+                    await _mqttService.UnsubscribeAsync(topic);
                 }
 
                 foreach (var topic in settings.SubscribedTopics.OrderBy(t => t))
                 {
-                    _mqttService.SubscribeAsync(topic).Wait(); // Use .Wait() for synchronous call in this context
+                    await _mqttService.SubscribeAsync(topic);
                 }
                 _logService.LogInfo($"从配置文件加载了 {_mqttService.SortedActiveSubscriptions.Count} 个订阅主题");
             }

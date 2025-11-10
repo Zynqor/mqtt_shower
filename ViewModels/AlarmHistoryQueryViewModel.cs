@@ -15,7 +15,7 @@ namespace MqttMonitor.ViewModels;
 /// <summary>
 /// 历史告警查询窗口 ViewModel
 /// </summary>
-public class AlarmHistoryQueryViewModel : INotifyPropertyChanged
+public class AlarmHistoryQueryViewModel : INotifyPropertyChanged, IDisposable
 {
     private readonly LogService _logService;
     private readonly AlarmDatabaseService _alarmDatabaseService;
@@ -27,6 +27,7 @@ public class AlarmHistoryQueryViewModel : INotifyPropertyChanged
     private ObservableCollection<AlarmRecord> _alarmRecords = new();
     private bool _isLoading = false;
     private string _statusMessage = "就绪";
+    private CancellationTokenSource? _queryCts;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -231,6 +232,12 @@ public class AlarmHistoryQueryViewModel : INotifyPropertyChanged
             return;
         }
 
+        // 取消之前的查询
+        _queryCts?.Cancel();
+        _queryCts?.Dispose();
+        _queryCts = new CancellationTokenSource();
+        var token = _queryCts.Token;
+
         try
         {
             IsLoading = true;
@@ -248,12 +255,18 @@ public class AlarmHistoryQueryViewModel : INotifyPropertyChanged
                 _ => null
             };
 
-            // 查询数据库
-            var records = await _alarmDatabaseService.QueryAlarmsAsync(
-                StartDateTime,
-                EndDateTime,
-                deviceId,
-                alarmType);
+            // 查询数据库（使用Task.Run以支持取消）
+            var records = await System.Threading.Tasks.Task.Run(async () =>
+            {
+                token.ThrowIfCancellationRequested();
+                return await _alarmDatabaseService.QueryAlarmsAsync(
+                    StartDateTime,
+                    EndDateTime,
+                    deviceId,
+                    alarmType);
+            }, token);
+
+            token.ThrowIfCancellationRequested();
 
             AlarmRecords = new ObservableCollection<AlarmRecord>(records);
 
@@ -262,6 +275,11 @@ public class AlarmHistoryQueryViewModel : INotifyPropertyChanged
             StatusMessage = $"查询完成，共 {AlarmRecords.Count} 条记录（{deviceFilter}，{typeFilter}，{StartDateTime:yyyy-MM-dd HH:mm:ss} 至 {EndDateTime:yyyy-MM-dd HH:mm:ss}）";
 
             (ExportCommand as RelayCommand)?.NotifyCanExecuteChanged();
+        }
+        catch (OperationCanceledException)
+        {
+            StatusMessage = "查询已取消";
+            _logService.LogInfo("历史告警查询被取消");
         }
         catch (Exception ex)
         {
@@ -354,5 +372,28 @@ public class AlarmHistoryQueryViewModel : INotifyPropertyChanged
     protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    // IDisposable实现
+    private bool _disposed = false;
+
+    public void Dispose()
+    {
+        if (_disposed) return;
+        _disposed = true;
+
+        try
+        {
+            // 取消正在进行的查询
+            _queryCts?.Cancel();
+            _queryCts?.Dispose();
+            _queryCts = null;
+
+            _logService.LogInfo("AlarmHistoryQueryViewModel 已释放资源");
+        }
+        catch (Exception ex)
+        {
+            _logService.LogException(ex, "AlarmHistoryQueryViewModel 释放资源时出错");
+        }
     }
 }

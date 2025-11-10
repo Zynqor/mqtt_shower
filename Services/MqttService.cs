@@ -202,6 +202,13 @@ public class MqttService : INotifyPropertyChanged
             if (_mqttClient != null)
             {
                 _logService.LogInfo("正在断开 MQTT 连接...");
+
+                // 取消事件订阅，防止内存泄漏
+                _mqttClient.ConnectedAsync -= OnConnectedAsync;
+                _mqttClient.DisconnectedAsync -= OnDisconnectedAsync;
+                _mqttClient.ApplicationMessageReceivedAsync -= OnApplicationMessageReceivedAsync;
+                _mqttClient.ConnectingFailedAsync -= OnConnectingFailedAsync;
+
                 await _mqttClient.StopAsync();
 
                 // 释放 MQTT 客户端资源

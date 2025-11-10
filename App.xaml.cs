@@ -175,6 +175,7 @@ public partial class App : Application
         services.AddSingleton<LogService>();
         services.AddSingleton<EncryptionService>();
         services.AddSingleton<CsvDataStorageService>();
+        services.AddSingleton<HistoryDataStorageService>();
         services.AddSingleton<MqttService>();
         services.AddSingleton<DataProcessingService>();
         services.AddSingleton<ChartLegendConfigService>();
@@ -242,6 +243,9 @@ public partial class App : Application
             var chartViewModel = ServiceProvider?.GetService<ChartViewModel>();
             chartViewModel?.Dispose();
 
+            var commandSenderViewModel = ServiceProvider?.GetService<CommandSenderViewModel>();
+            commandSenderViewModel?.Dispose();
+
             // 3. 等待数据处理服务的所有后台任务完成
             var dataProcessingService = ServiceProvider?.GetService<DataProcessingService>();
             dataProcessingService?.Dispose();
@@ -260,6 +264,10 @@ public partial class App : Application
             // 5. 释放CSV数据存储服务（会刷新所有缓存）
             var csvStorage = ServiceProvider?.GetService<CsvDataStorageService>();
             csvStorage?.Dispose();
+
+            // 5.1 释放历史数据存储服务（SQLite）
+            var historyDataStorage = ServiceProvider?.GetService<HistoryDataStorageService>();
+            historyDataStorage?.Dispose();
 
             // 6. 释放告警数据库服务
             var alarmDatabase = ServiceProvider?.GetService<AlarmDatabaseService>();
