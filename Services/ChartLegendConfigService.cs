@@ -17,8 +17,11 @@ public class ChartLegendConfigService
     {
         _logService = logService;
 
-        // 使用PathManager提供的配置文件路径
-        _configFilePath = PathManager.ChartLegendConfigFile;
+        // 使用configs目录下的配置文件路径
+        _configFilePath = Path.Combine("configs", "chart_legend_config.json");
+
+        // 确保configs目录存在
+        Directory.CreateDirectory("configs");
 
         // JSON序列化选项
         _jsonOptions = new JsonSerializerOptions

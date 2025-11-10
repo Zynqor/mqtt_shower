@@ -11,11 +11,13 @@ namespace MqttMonitor.Services;
 public class ChartConfigService
 {
     private readonly LogService _logService;
-    private readonly string _configFilePath = PathManager.ChartConfigFile;
+    private readonly string _configFilePath = Path.Combine("configs", "chart_config.json");
 
     public ChartConfigService(LogService logService)
     {
         _logService = logService;
+        // 确保configs目录存在
+        Directory.CreateDirectory("configs");
     }
 
     /// <summary>

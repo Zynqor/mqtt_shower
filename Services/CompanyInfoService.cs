@@ -11,11 +11,13 @@ namespace MqttMonitor.Services;
 public class CompanyInfoService
 {
     private readonly LogService _logService;
-    private readonly string _configFilePath = PathManager.CompanyInfoFile;
+    private readonly string _configFilePath = Path.Combine("configs", "company_info.json");
 
     public CompanyInfoService(LogService logService)
     {
         _logService = logService;
+        // 确保configs目录存在
+        Directory.CreateDirectory("configs");
     }
 
     /// <summary>

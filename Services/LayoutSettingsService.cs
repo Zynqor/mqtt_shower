@@ -11,11 +11,13 @@ namespace MqttMonitor.Services;
 public class LayoutSettingsService
 {
     private readonly LogService _logService;
-    private readonly string _configFilePath = PathManager.LayoutSettingsFile;
+    private readonly string _configFilePath = Path.Combine("configs", "layout_settings.json");
 
     public LayoutSettingsService(LogService logService)
     {
         _logService = logService;
+        // 确保configs目录存在
+        Directory.CreateDirectory("configs");
     }
 
     /// <summary>
@@ -33,11 +35,11 @@ public class LayoutSettingsService
                 return settings ?? new LayoutSettings();
             }
             // 如果layout_settings.json不存在，尝试从旧的config.json迁移窗口属性
-            else if (File.Exists(PathManager.LegacyConfigFile))
+            else if (File.Exists("config.json"))
             {
                 try
                 {
-                    var oldConfigJson = File.ReadAllText(PathManager.LegacyConfigFile);
+                    var oldConfigJson = File.ReadAllText("config.json");
                     dynamic? oldConfig = JsonConvert.DeserializeObject(oldConfigJson);
                     if (oldConfig != null)
                     {

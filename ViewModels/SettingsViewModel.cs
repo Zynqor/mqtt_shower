@@ -419,7 +419,7 @@ public class SettingsViewModel : INotifyPropertyChanged
     {
         try
         {
-            var configFilePath = PathManager.MqttConfigFile;
+            var configFilePath = Path.Combine("configs", "mqtt_config.json");
             if (File.Exists(configFilePath))
             {
                 var json = File.ReadAllText(configFilePath);

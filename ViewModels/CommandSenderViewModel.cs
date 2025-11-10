@@ -142,7 +142,7 @@ public class CommandSenderViewModel : INotifyPropertyChanged
     {
         try
         {
-            var commandsFilePath = PathManager.CommandsConfigFile;
+            var commandsFilePath = Path.Combine("configs", "commands.json");
             if (File.Exists(commandsFilePath))
             {
                 var json = File.ReadAllText(commandsFilePath);
