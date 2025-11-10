@@ -336,4 +336,3 @@ public class DeviceMetricItem : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
-}
