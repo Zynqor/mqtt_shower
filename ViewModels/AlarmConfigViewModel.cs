@@ -227,6 +227,12 @@ public class AlarmConfigViewModel : INotifyPropertyChanged
             _alarmConfigService.SaveAlarmConfigs(configs);
             _alarmDetectionService.LoadConfigs(); // 重新加载配置
 
+            // 更新UI中的HasAlarm状态（立即显示感叹号图标）
+            if (SelectedMetric != null && CurrentConfig != null)
+            {
+                SelectedMetric.HasAlarm = CurrentConfig.Enabled;
+            }
+
             _logService.LogInfo("告警配置已保存");
 
             // 显示保存成功提示（不关闭窗口，方便继续配置其他测点）
@@ -299,12 +305,35 @@ public class DeviceMetricGroup
 /// <summary>
 /// 设备测点项
 /// </summary>
-public class DeviceMetricItem
+public class DeviceMetricItem : INotifyPropertyChanged
 {
+    private bool _hasAlarm;
+
     public string DeviceId { get; set; } = string.Empty;
     public string MetricName { get; set; } = string.Empty;
     public string Unit { get; set; } = string.Empty;
-    public bool HasAlarm { get; set; }
+
+    public bool HasAlarm
+    {
+        get => _hasAlarm;
+        set
+        {
+            if (_hasAlarm != value)
+            {
+                _hasAlarm = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(DisplayName));
+            }
+        }
+    }
 
     public string DisplayName => $"{MetricName} {(HasAlarm ? "⚠️" : "")}";
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+}
 }
