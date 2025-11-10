@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
+using MqttMonitor.Models;
 using MqttMonitor.Services;
 using MqttMonitor.Views;
 
