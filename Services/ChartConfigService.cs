@@ -11,7 +11,7 @@ namespace MqttMonitor.Services;
 public class ChartConfigService
 {
     private readonly LogService _logService;
-    private readonly string _configFilePath = "chart_config.json";
+    private readonly string _configFilePath = PathManager.ChartConfigFile;
 
     public ChartConfigService(LogService logService)
     {

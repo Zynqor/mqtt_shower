@@ -837,8 +837,10 @@ CSV 文件位置：
                     settings.Password = _encryptionService.Encrypt(settings.Password);
                 }
 
+                var configFilePath = PathManager.MqttConfigFile;
                 var json = Newtonsoft.Json.JsonConvert.SerializeObject(settings, Newtonsoft.Json.Formatting.Indented);
-                System.IO.File.WriteAllText("config.json", json);
+                System.IO.File.WriteAllText(configFilePath, json);
+                _logService.LogInfo($"已保存订阅列表到 {configFilePath}");
             }
         }
         catch (Exception ex)

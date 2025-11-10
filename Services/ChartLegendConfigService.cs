@@ -17,13 +17,8 @@ public class ChartLegendConfigService
     {
         _logService = logService;
 
-        // 配置文件保存在exe同级目录下
-        var appDataPath = AppDomain.CurrentDomain.BaseDirectory;
-
-        // 确保目录存在
-        Directory.CreateDirectory(appDataPath);
-
-        _configFilePath = Path.Combine(appDataPath, "chart_legend_config.json");
+        // 使用PathManager提供的配置文件路径
+        _configFilePath = PathManager.ChartLegendConfigFile;
 
         // JSON序列化选项
         _jsonOptions = new JsonSerializerOptions

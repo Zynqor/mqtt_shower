@@ -142,7 +142,7 @@ public class CommandSenderViewModel : INotifyPropertyChanged
     {
         try
         {
-            var commandsFilePath = "commands.json";
+            var commandsFilePath = PathManager.CommandsConfigFile;
             if (File.Exists(commandsFilePath))
             {
                 var json = File.ReadAllText(commandsFilePath);
@@ -160,7 +160,7 @@ public class CommandSenderViewModel : INotifyPropertyChanged
             }
             else
             {
-                _logService.LogWarning("commands.json 文件不存在");
+                _logService.LogWarning($"命令模板文件不存在: {commandsFilePath}");
             }
         }
         catch (Exception ex)

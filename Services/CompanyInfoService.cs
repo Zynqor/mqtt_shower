@@ -11,7 +11,7 @@ namespace MqttMonitor.Services;
 public class CompanyInfoService
 {
     private readonly LogService _logService;
-    private readonly string _configFilePath = "company_info.json";
+    private readonly string _configFilePath = PathManager.CompanyInfoFile;
 
     public CompanyInfoService(LogService logService)
     {

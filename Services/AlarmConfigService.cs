@@ -13,8 +13,8 @@ namespace MqttMonitor.Services;
 public class AlarmConfigService
 {
     private readonly LogService _logService;
-    private readonly string _configFilePath = "alarm_config.json";
-    private readonly string _alertSettingsFilePath = "alert_settings.json";
+    private readonly string _configFilePath = PathManager.AlarmConfigFile;
+    private readonly string _alertSettingsFilePath = PathManager.AlertSettingsFile;
 
     public AlarmConfigService(LogService logService)
     {

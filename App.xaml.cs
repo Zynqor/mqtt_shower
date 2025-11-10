@@ -103,11 +103,11 @@ public partial class App : Application
             var chartConfig = chartConfigService.LoadChartConfig();
 
             // 如果chart_config.json不存在，尝试从旧的config.json迁移
-            if (!File.Exists("chart_config.json") && File.Exists("config.json"))
+            if (!File.Exists(PathManager.ChartConfigFile) && File.Exists(PathManager.LegacyConfigFile))
             {
                 try
                 {
-                    var oldConfigJson = File.ReadAllText("config.json");
+                    var oldConfigJson = File.ReadAllText(PathManager.LegacyConfigFile);
                     dynamic? oldConfig = JsonConvert.DeserializeObject(oldConfigJson);
                     if (oldConfig != null)
                     {
@@ -137,11 +137,11 @@ public partial class App : Application
             var companyInfo = companyInfoService.LoadCompanyInfo();
 
             // 如果company_info.json不存在，尝试从旧的config.json迁移
-            if (!File.Exists("company_info.json") && File.Exists("config.json"))
+            if (!File.Exists(PathManager.CompanyInfoFile) && File.Exists(PathManager.LegacyConfigFile))
             {
                 try
                 {
-                    var oldConfigJson = File.ReadAllText("config.json");
+                    var oldConfigJson = File.ReadAllText(PathManager.LegacyConfigFile);
                     dynamic? oldConfig = JsonConvert.DeserializeObject(oldConfigJson);
                     if (oldConfig != null)
                     {
