@@ -13,7 +13,7 @@ namespace MqttMonitor.ViewModels;
 /// <summary>
 /// 主窗口 ViewModel
 /// </summary>
-public class MainViewModel : INotifyPropertyChanged
+public class MainViewModel : INotifyPropertyChanged, IDisposable
 {
     private readonly MqttService _mqttService;
     private readonly DataProcessingService _dataProcessingService;
@@ -27,6 +27,7 @@ public class MainViewModel : INotifyPropertyChanged
     private int _selectedTabIndex = 0;
     private string _newTopic = string.Empty;
     private string _title = "Mqtt Monitor";
+    private bool _disposed;
 
     public string Title
     {
@@ -969,5 +970,18 @@ CSV 文件位置：
     protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    public void Dispose()
+    {
+        if (_disposed)
+            return;
+
+        _disposed = true;
+
+        // 取消事件订阅
+        _mqttService.PropertyChanged -= OnMqttServicePropertyChanged;
+
+        _logService.LogInfo("MainViewModel 已释放资源");
     }
 }

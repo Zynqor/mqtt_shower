@@ -11,7 +11,7 @@ namespace MqttMonitor.Services;
 /// <summary>
 /// 告警检测服务
 /// </summary>
-public class AlarmDetectionService
+public class AlarmDetectionService : IDisposable
 {
     private readonly LogService _logService;
     private readonly AlarmConfigService _alarmConfigService;
@@ -22,6 +22,8 @@ public class AlarmDetectionService
     private List<AlarmConfig> _alarmConfigs = new();
     private readonly ConcurrentDictionary<string, DateTime> _exceedStartTimes = new();
     private readonly ConcurrentDictionary<string, AlarmRecord> _activeAlarms = new();
+    private System.Windows.Threading.DispatcherTimer? _soundRepeatTimer;
+    private bool _disposed;
 
     public ObservableCollection<AlarmRecord> ActiveAlarms { get; } = new();
     public ObservableCollection<AlarmRecord> HistoryAlarms { get; } = new();
@@ -293,12 +295,12 @@ public class AlarmDetectionService
     /// </summary>
     private void StartSoundRepeatTimer()
     {
-        var timer = new System.Windows.Threading.DispatcherTimer
+        _soundRepeatTimer = new System.Windows.Threading.DispatcherTimer
         {
             Interval = TimeSpan.FromMinutes(1) // 每分钟检查一次
         };
 
-        timer.Tick += (s, e) =>
+        _soundRepeatTimer.Tick += (s, e) =>
         {
             foreach (var alarm in ActiveAlarms)
             {
@@ -323,7 +325,7 @@ public class AlarmDetectionService
             }
         };
 
-        timer.Start();
+        _soundRepeatTimer.Start();
     }
 
     /// <summary>
@@ -332,5 +334,24 @@ public class AlarmDetectionService
     public int GetActiveAlarmCount()
     {
         return ActiveAlarms.Count;
+    }
+
+    public void Dispose()
+    {
+        if (_disposed)
+            return;
+
+        _disposed = true;
+
+        // 停止定时器
+        _soundRepeatTimer?.Stop();
+
+        // 停止所有音效
+        _soundPlayerService?.StopAllSounds();
+
+        // 取消事件订阅
+        _dataProcessingService.OnUpstreamDataParsed -= CheckAlarms;
+
+        _logService.LogInfo("AlarmDetectionService 已释放资源");
     }
 }

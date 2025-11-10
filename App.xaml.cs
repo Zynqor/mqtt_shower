@@ -228,31 +228,44 @@ public partial class App : Application
     {
         try
         {
-            // 1. 停止所有 ViewModel 的定时器和事件订阅
+            var logService = ServiceProvider?.GetService<LogService>();
+            logService?.LogInfo("应用程序正在退出，开始清理资源...");
+
+            // 1. 停止告警检测服务（包含定时器）
+            var alarmDetectionService = ServiceProvider?.GetService<AlarmDetectionService>();
+            alarmDetectionService?.Dispose();
+
+            // 2. 停止所有 ViewModel 的定时器和事件订阅
+            var mainViewModel = ServiceProvider?.GetService<MainViewModel>();
+            mainViewModel?.Dispose();
+
             var chartViewModel = ServiceProvider?.GetService<ChartViewModel>();
             chartViewModel?.Dispose();
 
-            // 2. 断开MQTT连接
+            // 3. 断开MQTT连接并释放客户端
             var mqttService = ServiceProvider?.GetService<MqttService>();
             if (mqttService != null && mqttService.CurrentState == Services.ConnectionState.Connected)
             {
                 await mqttService.DisconnectAsync();
             }
 
-            // 3. 释放CSV数据存储服务（会刷新所有缓存）
+            // 4. 释放音效播放服务
+            var soundPlayerService = ServiceProvider?.GetService<SoundPlayerService>();
+            soundPlayerService?.Dispose();
+
+            // 5. 释放CSV数据存储服务（会刷新所有缓存）
             var csvStorage = ServiceProvider?.GetService<CsvDataStorageService>();
             csvStorage?.Dispose();
 
-            // 4. 释放告警数据库服务
+            // 6. 释放告警数据库服务
             var alarmDatabase = ServiceProvider?.GetService<AlarmDatabaseService>();
             alarmDatabase?.Dispose();
 
-            // 5. 释放告警历史存储服务
+            // 7. 释放告警历史存储服务
             var alarmHistoryStorage = ServiceProvider?.GetService<AlarmHistoryStorageService>();
             alarmHistoryStorage?.Dispose();
 
-            // 6. 日志记录
-            var logService = ServiceProvider?.GetService<LogService>();
+            // 8. 日志记录
             logService?.LogInfo("应用程序正常退出，所有资源已释放");
         }
         catch (Exception ex)

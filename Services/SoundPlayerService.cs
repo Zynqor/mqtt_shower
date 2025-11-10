@@ -8,12 +8,13 @@ namespace MqttMonitor.Services;
 /// <summary>
 /// 音效播放服务
 /// </summary>
-public class SoundPlayerService
+public class SoundPlayerService : IDisposable
 {
     private readonly LogService _logService;
     private readonly AlertSettings _alertSettings;
     private SoundPlayer? _alarmPlayer;
     private SoundPlayer? _recoveryPlayer;
+    private bool _disposed;
 
     public SoundPlayerService(LogService logService, AlertSettings alertSettings)
     {
@@ -141,6 +142,32 @@ public class SoundPlayerService
         catch (Exception ex)
         {
             _logService.LogException(ex, "停止音效失败");
+        }
+    }
+
+    public void Dispose()
+    {
+        if (_disposed)
+            return;
+
+        _disposed = true;
+
+        try
+        {
+            // 停止并释放音效播放器
+            _alarmPlayer?.Stop();
+            _alarmPlayer?.Dispose();
+            _alarmPlayer = null;
+
+            _recoveryPlayer?.Stop();
+            _recoveryPlayer?.Dispose();
+            _recoveryPlayer = null;
+
+            _logService.LogInfo("SoundPlayerService 已释放资源");
+        }
+        catch (Exception ex)
+        {
+            _logService.LogException(ex, "释放 SoundPlayerService 资源失败");
         }
     }
 }
