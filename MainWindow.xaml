@@ -118,23 +118,23 @@
 
     <DockPanel>
         <!-- 菜单栏 -->
-        <Menu DockPanel.Dock="Top" Background="White" BorderBrush="#E0E0E0" BorderThickness="0,0,0,1">
-            <MenuItem Header="文件(_F)" Padding="10,5">
-                <MenuItem Header="MQTT 连接设置(_S)" Command="{Binding ShowSettingsCommand}"/>
-                <MenuItem Header="图表设置(_C)" Command="{Binding ShowChartSettingsCommand}"/>
-                <Separator/>
-                <MenuItem Header="退出(_X)" Command="{Binding ExitCommand}"/>
+        <Menu DockPanel.Dock="Top" Style="{StaticResource ModernMenu}">
+            <MenuItem Header="文件(_F)" Style="{StaticResource ModernMenuItem}">
+                <MenuItem Header="MQTT 连接设置(_S)" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowSettingsCommand}"/>
+                <MenuItem Header="图表设置(_C)" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowChartSettingsCommand}"/>
+                <Separator Style="{StaticResource ModernSeparator}"/>
+                <MenuItem Header="退出(_X)" Style="{StaticResource ModernMenuItem}" Command="{Binding ExitCommand}"/>
             </MenuItem>
-            <MenuItem Header="数据监控(_M)" Padding="10,5">
-                <MenuItem Header="历史数据查询(_H)" Command="{Binding ShowHistoryQueryCommand}"/>
-                <MenuItem Header="历史告警查询(_L)" Command="{Binding ShowAlarmHistoryQueryCommand}"/>
-                <Separator/>
-                <MenuItem Header="告警配置(_A)" Command="{Binding ShowAlarmConfigCommand}"/>
-                <MenuItem Header="提醒设置(_S)" Command="{Binding ShowAlertSettingsCommand}"/>
+            <MenuItem Header="数据监控(_M)" Style="{StaticResource ModernMenuItem}">
+                <MenuItem Header="历史数据查询(_H)" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowHistoryQueryCommand}"/>
+                <MenuItem Header="历史告警查询(_L)" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowAlarmHistoryQueryCommand}"/>
+                <Separator Style="{StaticResource ModernSeparator}"/>
+                <MenuItem Header="告警配置(_A)" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowAlarmConfigCommand}"/>
+                <MenuItem Header="提醒设置(_S)" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowAlertSettingsCommand}"/>
             </MenuItem>
-            <MenuItem Header="帮助(_H)" Padding="10,5">
-                <MenuItem Header="使用说明(_U)" Command="{Binding ShowUserManualCommand}"/>
-                <MenuItem Header="联系我们(_C)" Command="{Binding ShowContactUsCommand}"/>
+            <MenuItem Header="帮助(_H)" Style="{StaticResource ModernMenuItem}">
+                <MenuItem Header="使用说明(_U)" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowUserManualCommand}"/>
+                <MenuItem Header="联系我们(_C)" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowContactUsCommand}"/>
             </MenuItem>
         </Menu>
 

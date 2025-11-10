@@ -6,71 +6,98 @@
         mc:Ignorable="d"
         Title="提醒设置" Height="600" Width="500"
         WindowStartupLocation="CenterOwner"
-        ResizeMode="CanResize">
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+        ResizeMode="CanResize"
+        Background="#F8F9FA">
+    <Border Margin="15" Background="White" CornerRadius="8" Padding="20"
+            BorderBrush="#E0E0E0" BorderThickness="1">
+        <Border.Effect>
+            <DropShadowEffect Color="#000000" Opacity="0.05" BlurRadius="10" ShadowDepth="2"/>
+        </Border.Effect>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <!-- 标题 -->
-        <TextBlock Grid.Row="0" Text="告警提醒设置" FontSize="16" FontWeight="Bold" Margin="0,0,0,20"/>
+            <!-- 标题 -->
+            <TextBlock Grid.Row="0" Text="告警提醒设置" FontSize="18" FontWeight="Bold"
+                       Foreground="#212529" Margin="0,0,0,20"/>
 
-        <!-- 设置表单 -->
-        <StackPanel Grid.Row="1">
-            <!-- 声音设置 -->
-            <GroupBox Header="声音设置" Padding="15" Margin="0,0,0,15">
-                <StackPanel>
-                    <CheckBox Content="启用声音提醒" IsChecked="{Binding SoundEnabled}" FontWeight="Bold" Margin="0,0,0,15"/>
+            <!-- 设置表单 -->
+            <StackPanel Grid.Row="1">
+                <!-- 声音设置 -->
+                <GroupBox Header="声音设置" Style="{StaticResource ModernGroupBox}">
+                    <StackPanel>
+                        <CheckBox Content="启用声音提醒" IsChecked="{Binding SoundEnabled}"
+                                  Style="{StaticResource ModernCheckBox}"
+                                  FontWeight="SemiBold" Margin="0,0,0,15"/>
 
-                    <TextBlock Text="音量:" Margin="0,0,0,5"/>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <Slider Grid.Column="0" Value="{Binding SoundVolume}" Minimum="0" Maximum="100"
-                                TickFrequency="10" IsSnapToTickEnabled="True" VerticalAlignment="Center"/>
-                        <TextBlock Grid.Column="1" Text="{Binding SoundVolume, StringFormat={}{0}%}"
-                                   Width="40" TextAlignment="Right" VerticalAlignment="Center" Margin="10,0,0,0"/>
-                    </Grid>
+                        <Label Content="音量:" Style="{StaticResource ModernLabel}"/>
+                        <Grid Margin="0,0,0,15">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Slider Grid.Column="0" Value="{Binding SoundVolume}" Minimum="0" Maximum="100"
+                                    Style="{StaticResource ModernSlider}"
+                                    TickFrequency="10" IsSnapToTickEnabled="True" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="{Binding SoundVolume, StringFormat={}{0}%}"
+                                       Width="50" TextAlignment="Right" VerticalAlignment="Center"
+                                       FontWeight="SemiBold" FontSize="13" Margin="15,0,0,0"/>
+                        </Grid>
 
-                    <Separator Margin="0,15,0,15"/>
+                        <Separator Style="{StaticResource ModernSeparator}"/>
 
-                    <CheckBox Content="重复播放告警音" IsChecked="{Binding RepeatSound}" Margin="0,0,0,10"/>
+                        <CheckBox Content="重复播放告警音" IsChecked="{Binding RepeatSound}"
+                                  Style="{StaticResource ModernCheckBox}" Margin="0,10,0,15"/>
 
-                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                        <TextBlock Text="默认重复间隔:" VerticalAlignment="Center" Width="120"/>
-                        <TextBox Text="{Binding DefaultRepeatMinutes, UpdateSourceTrigger=PropertyChanged}"
-                                 Width="100" Height="30" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
-                        <TextBlock Text="分钟" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Content="默认重复间隔:" Style="{StaticResource ModernLabel}"
+                                   VerticalAlignment="Center" Width="120"/>
+                            <TextBox Grid.Column="1" Text="{Binding DefaultRepeatMinutes, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource ModernTextBox}" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="2" Text="分钟" VerticalAlignment="Center"
+                                       FontSize="13" Foreground="#495057" Margin="10,0,0,0"/>
+                        </Grid>
+
+                        <TextBlock Text="注意：可在告警配置中单独设置每个测点的重复间隔"
+                                   Foreground="#6C757D" FontSize="11" Margin="0,5,0,0" TextWrapping="Wrap"/>
                     </StackPanel>
+                </GroupBox>
 
-                    <TextBlock Text="注意：可在告警配置中单独设置每个测点的重复间隔"
-                               Foreground="Gray" FontSize="11" Margin="0,10,0,0" TextWrapping="Wrap"/>
-                </StackPanel>
-            </GroupBox>
-
-            <!-- 音效测试 -->
-            <GroupBox Header="音效测试" Padding="15">
-                <StackPanel>
-                    <TextBlock Text="点击下方按钮测试音效（使用系统默认音）" Foreground="Gray" FontSize="11" Margin="0,0,0,10"/>
-                    <StackPanel Orientation="Horizontal">
-                        <Button Content="测试告警音" Command="{Binding TestAlarmSoundCommand}" Width="120" Height="35" Margin="0,0,10,0"/>
-                        <Button Content="测试恢复音" Command="{Binding TestRecoverySoundCommand}" Width="120" Height="35"/>
+                <!-- 音效测试 -->
+                <GroupBox Header="音效测试" Style="{StaticResource ModernGroupBox}">
+                    <StackPanel>
+                        <TextBlock Text="点击下方按钮测试音效（使用系统默认音）"
+                                   Foreground="#6C757D" FontSize="11" Margin="0,0,0,15"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Button Content="测试告警音" Command="{Binding TestAlarmSoundCommand}"
+                                    Style="{StaticResource ModernButton}"
+                                    Width="130" Margin="0,0,10,0"/>
+                            <Button Content="测试恢复音" Command="{Binding TestRecoverySoundCommand}"
+                                    Style="{StaticResource SuccessButton}"
+                                    Width="130"/>
+                        </StackPanel>
+                        <TextBlock Text="提示：您可以将自定义音效文件（WAV格式）放置在程序目录下的Sounds文件夹中，文件名分别为 alarm.wav（告警音）和 recovery.wav（恢复音）"
+                                   Foreground="#007BFF" FontSize="11" Margin="0,15,0,0" TextWrapping="Wrap"/>
                     </StackPanel>
-                    <TextBlock Text="提示：您可以将自定义音效文件（WAV格式）放置在程序目录下的Sounds文件夹中，
-文件名分别为 alarm.wav（告警音）和 recovery.wav（恢复音）"
-                               Foreground="#007ACC" FontSize="11" Margin="0,15,0,0" TextWrapping="Wrap"/>
-                </StackPanel>
-            </GroupBox>
-        </StackPanel>
+                </GroupBox>
+            </StackPanel>
 
-        <!-- 按钮 -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-            <Button Content="保存" Width="80" Height="30" Command="{Binding SaveCommand}" Margin="0,0,10,0"/>
-            <Button Content="取消" Width="80" Height="30" Command="{Binding CancelCommand}"/>
-        </StackPanel>
-    </Grid>
+            <!-- 按钮 -->
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                <Button Content="保存" Width="90" Command="{Binding SaveCommand}"
+                        Style="{StaticResource SuccessButton}"
+                        Margin="0,0,10,0"/>
+                <Button Content="取消" Width="90" Command="{Binding CancelCommand}"
+                        Style="{StaticResource SecondaryButton}"/>
+            </StackPanel>
+        </Grid>
+    </Border>
 </Window>

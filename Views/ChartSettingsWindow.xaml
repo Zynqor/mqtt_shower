@@ -4,68 +4,59 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="图表设置" Height="320" Width="450"
+        Title="图表设置" Height="360" Width="480"
         WindowStartupLocation="CenterOwner"
-        ResizeMode="NoResize">
-    <Window.Resources>
-        <!-- TextBox样式 -->
-        <Style TargetType="TextBox">
-            <Setter Property="Padding" Value="8"/>
-            <Setter Property="BorderBrush" Value="#CED4DA"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="TextBox">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="4">
-                            <ScrollViewer x:Name="PART_ContentHost" Margin="2"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </Window.Resources>
-    <Grid Margin="15">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+        ResizeMode="NoResize"
+        Background="#F8F9FA">
+    <Border Margin="15" Background="White" CornerRadius="8" Padding="20"
+            BorderBrush="#E0E0E0" BorderThickness="1">
+        <Border.Effect>
+            <DropShadowEffect Color="#000000" Opacity="0.05" BlurRadius="10" ShadowDepth="2"/>
+        </Border.Effect>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <!-- 标题 -->
-        <TextBlock Grid.Row="0" Text="图表显示配置"
-                   FontSize="16" FontWeight="Bold" Margin="0,0,0,15"/>
+            <!-- 标题 -->
+            <TextBlock Grid.Row="0" Text="图表显示配置"
+                       FontSize="18" FontWeight="Bold" Foreground="#212529" Margin="0,0,0,20"/>
 
-        <!-- 设置表单 -->
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <StackPanel>
-                <!-- 图表最大数据点数量 -->
-                <Label Content="图表最大数据点数量:" FontWeight="Bold"/>
-                <TextBox Text="{Binding MaxChartDataPoints, UpdateSourceTrigger=PropertyChanged}"
-                         Height="42" Margin="0,0,0,10"/>
-                <TextBlock Text="图表将显示最近的数据点数量" Foreground="Gray" FontSize="11" Margin="0,-8,0,10"/>
+            <!-- 设置表单 -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <!-- 图表最大数据点数量 -->
+                    <Label Content="图表最大数据点数量:" Style="{StaticResource ModernLabel}"/>
+                    <TextBox Text="{Binding MaxChartDataPoints, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource ModernTextBox}" Margin="0,0,0,5"/>
+                    <TextBlock Text="图表将显示最近的数据点数量"
+                               Foreground="#6C757D" FontSize="11" Margin="0,0,0,20"/>
 
-                <!-- 图表更新间隔 -->
-                <Label Content="图表更新间隔 (毫秒):" FontWeight="Bold"/>
-                <TextBox Text="{Binding ChartUpdateInterval, UpdateSourceTrigger=PropertyChanged}"
-                         Height="42" Margin="0,0,0,10"/>
-                <TextBlock Text="建议值: 200-2000 (数值越大性能越好，但实时性越低)"
-                           Foreground="Gray" FontSize="11" Margin="0,-8,0,10"/>
+                    <!-- 图表更新间隔 -->
+                    <Label Content="图表更新间隔 (毫秒):" Style="{StaticResource ModernLabel}"/>
+                    <TextBox Text="{Binding ChartUpdateInterval, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource ModernTextBox}" Margin="0,0,0,5"/>
+                    <Border Background="#FFF8E1" BorderBrush="#FFD54F" BorderThickness="1"
+                            CornerRadius="4" Padding="10" Margin="0,0,0,10">
+                        <TextBlock Text="💡 建议值: 200-2000 (数值越大性能越好，但实时性越低)"
+                                   Foreground="#F57C00" FontSize="11" TextWrapping="Wrap"/>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- 按钮 -->
+            <StackPanel Grid.Row="2" Orientation="Horizontal"
+                        HorizontalAlignment="Right" Margin="0,20,0,0">
+                <Button Content="保存" Width="90"
+                        Command="{Binding SaveCommand}"
+                        Style="{StaticResource SuccessButton}"
+                        Margin="0,0,10,0"/>
+                <Button Content="取消" Width="90"
+                        Command="{Binding CancelCommand}"
+                        Style="{StaticResource SecondaryButton}"/>
             </StackPanel>
-        </ScrollViewer>
-
-        <!-- 按钮 -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal"
-                    HorizontalAlignment="Right" Margin="0,15,0,0">
-            <Button Content="保存" Width="80" Height="30"
-                    Command="{Binding SaveCommand}"
-                    Margin="0,0,10,0"/>
-            <Button Content="取消" Width="80" Height="30"
-                    Command="{Binding CancelCommand}"/>
-        </StackPanel>
-    </Grid>
+        </Grid>
+    </Border>
 </Window>

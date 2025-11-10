@@ -251,5 +251,193 @@
             <Setter Property="Background" Value="White"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
+
+        <!-- PasswordBox样式 -->
+        <Style x:Key="ModernPasswordBox" TargetType="PasswordBox">
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="BorderBrush" Value="#CED4DA"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="PasswordBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4"
+                                Padding="0">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                        Margin="{TemplateBinding Padding}"
+                                        VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="BorderBrush" Value="#80BDFF"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="#007BFF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Label样式 -->
+        <Style x:Key="ModernLabel" TargetType="Label">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#495057"/>
+            <Setter Property="Padding" Value="0,0,0,5"/>
+        </Style>
+
+        <!-- GroupBox样式 -->
+        <Style x:Key="ModernGroupBox" TargetType="GroupBox">
+            <Setter Property="BorderBrush" Value="#E0E0E0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="15"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GroupBox">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Border Grid.Row="0" Grid.RowSpan="2"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="6"/>
+                            <ContentPresenter Grid.Row="0"
+                                            ContentSource="Header"
+                                            Margin="15,10,15,5"
+                                            TextBlock.FontWeight="SemiBold"
+                                            TextBlock.FontSize="14"
+                                            TextBlock.Foreground="#212529"/>
+                            <ContentPresenter Grid.Row="1"
+                                            Margin="{TemplateBinding Padding}"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- CheckBox样式 -->
+        <Style x:Key="ModernCheckBox" TargetType="CheckBox">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="#495057"/>
+            <Setter Property="Padding" Value="8,0,0,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <!-- Slider样式 -->
+        <Style x:Key="ModernSlider" TargetType="Slider">
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="Foreground" Value="#007BFF"/>
+            <Setter Property="Background" Value="#E0E0E0"/>
+        </Style>
+
+        <!-- TreeView样式 -->
+        <Style x:Key="ModernTreeView" TargetType="TreeView">
+            <Setter Property="BorderBrush" Value="#E0E0E0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Padding" Value="5"/>
+        </Style>
+
+        <!-- TreeViewItem样式 -->
+        <Style x:Key="ModernTreeViewItem" TargetType="TreeViewItem">
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+
+        <!-- MenuItem样式 -->
+        <Style x:Key="ModernMenuItem" TargetType="MenuItem">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#495057"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="MenuItem">
+                        <Border Name="Border" Background="{TemplateBinding Background}"
+                                BorderThickness="0" CornerRadius="4" Margin="2">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="Icon"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="Shortcut"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <ContentPresenter Grid.Column="0" x:Name="Icon"
+                                                ContentSource="Icon" Margin="5,0"/>
+                                <ContentPresenter Grid.Column="1" ContentSource="Header"
+                                                Margin="{TemplateBinding Padding}"
+                                                VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="2" x:Name="InputGestureText"
+                                         Text="{TemplateBinding InputGestureText}"
+                                         Margin="15,0,5,0" VerticalAlignment="Center"/>
+                                <Path Grid.Column="3" x:Name="Arrow"
+                                    Data="M0,0 L4,4 L0,8 Z" Fill="{TemplateBinding Foreground}"
+                                    Margin="5,0" VerticalAlignment="Center" Visibility="Collapsed"/>
+                                <Popup x:Name="Popup" Placement="Right" IsOpen="{TemplateBinding IsSubmenuOpen}"
+                                     AllowsTransparency="True" Focusable="False" PopupAnimation="Fade">
+                                    <Border Background="White" BorderBrush="#E0E0E0"
+                                          BorderThickness="1" CornerRadius="4" Padding="5"
+                                          Effect="{DynamicResource MenuPopupShadow}">
+                                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle"/>
+                                    </Border>
+                                </Popup>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Role" Value="TopLevelHeader">
+                                <Setter TargetName="Popup" Property="Placement" Value="Bottom"/>
+                            </Trigger>
+                            <Trigger Property="Role" Value="SubmenuHeader">
+                                <Setter TargetName="Arrow" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#F0F0F0"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="#CCCCCC"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Menu样式 -->
+        <Style x:Key="ModernMenu" TargetType="Menu">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E0E0E0"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        </Style>
+
+        <!-- DropShadow效果用于弹出菜单 -->
+        <DropShadowEffect x:Key="MenuPopupShadow" Color="#000000" Opacity="0.15"
+                         BlurRadius="10" ShadowDepth="3"/>
+
+        <!-- Separator样式 -->
+        <Style x:Key="ModernSeparator" TargetType="Separator">
+            <Setter Property="Height" Value="1"/>
+            <Setter Property="Background" Value="#E0E0E0"/>
+            <Setter Property="Margin" Value="0,5"/>
+        </Style>
+
+        <!-- 只读TextBox样式（用于联系我们等窗口） -->
+        <Style x:Key="ReadOnlyTextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource ModernTextBox}">
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="Background" Value="#F8F9FA"/>
+            <Setter Property="Cursor" Value="IBeam"/>
+        </Style>
     </Application.Resources>
 </Application>
