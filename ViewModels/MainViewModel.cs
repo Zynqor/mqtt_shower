@@ -617,8 +617,6 @@ CSV 文件位置：
     }
 
     /// <summary>
-=======
->>>>>>> b648c44 (实现阶段4和阶段5功能：历史数据查询窗口 + CSV批量写入优化)
     /// 连接到 MQTT 服务器
     /// </summary>
     private async void OnConnect()
