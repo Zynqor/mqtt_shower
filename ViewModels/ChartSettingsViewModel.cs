@@ -16,9 +16,8 @@ namespace MqttMonitor.ViewModels;
 public class ChartSettingsViewModel : INotifyPropertyChanged
 {
     private readonly LogService _logService;
-    private readonly MqttSettings _mqttSettings;
-    private readonly EncryptionService _encryptionService;
-    private readonly string _configFilePath = "config.json";
+    private readonly ChartConfig _chartConfig;
+    private readonly ChartConfigService _chartConfigService;
 
     private int _maxChartDataPoints = 1000;
     private int _chartUpdateInterval = 800;
@@ -63,11 +62,11 @@ public class ChartSettingsViewModel : INotifyPropertyChanged
     public ICommand SaveCommand { get; }
     public ICommand CancelCommand { get; }
 
-    public ChartSettingsViewModel(LogService logService, MqttSettings mqttSettings, EncryptionService encryptionService)
+    public ChartSettingsViewModel(LogService logService, ChartConfig chartConfig, ChartConfigService chartConfigService)
     {
         _logService = logService;
-        _mqttSettings = mqttSettings;
-        _encryptionService = encryptionService;
+        _chartConfig = chartConfig;
+        _chartConfigService = chartConfigService;
 
         // 初始化命令
         SaveCommand = new RelayCommand(OnSave);
@@ -85,57 +84,11 @@ public class ChartSettingsViewModel : INotifyPropertyChanged
         try
         {
             // 更新单例实例
-            _mqttSettings.MaxChartDataPoints = MaxChartDataPoints;
-            _mqttSettings.ChartUpdateInterval = ChartUpdateInterval;
+            _chartConfig.MaxChartDataPoints = MaxChartDataPoints;
+            _chartConfig.ChartUpdateInterval = ChartUpdateInterval;
 
-            // 加载现有设置以保留其他属性
-            var existingSettings = LoadSettingsFromFile();
-            if (existingSettings != null)
-            {
-                _mqttSettings.Server = existingSettings.Server;
-                _mqttSettings.Port = existingSettings.Port;
-                _mqttSettings.Username = existingSettings.Username;
-                _mqttSettings.Password = existingSettings.Password;
-                _mqttSettings.ClientId = existingSettings.ClientId;
-                _mqttSettings.BaseTopic = existingSettings.BaseTopic;
-                _mqttSettings.SubscribedTopics = existingSettings.SubscribedTopics;
-                _mqttSettings.Title = existingSettings.Title;
-                _mqttSettings.WindowWidth = existingSettings.WindowWidth;
-                _mqttSettings.WindowHeight = existingSettings.WindowHeight;
-                _mqttSettings.WindowLeft = existingSettings.WindowLeft;
-                _mqttSettings.WindowTop = existingSettings.WindowTop;
-                _mqttSettings.WindowState = existingSettings.WindowState;
-            }
-
-            // 创建副本用于保存
-            var settingsToSave = new MqttSettings
-            {
-                Server = _mqttSettings.Server,
-                Port = _mqttSettings.Port,
-                Username = _mqttSettings.Username,
-                Password = _mqttSettings.Password,
-                ClientId = _mqttSettings.ClientId,
-                BaseTopic = _mqttSettings.BaseTopic,
-                MaxChartDataPoints = _mqttSettings.MaxChartDataPoints,
-                ChartUpdateInterval = _mqttSettings.ChartUpdateInterval,
-                SubscribedTopics = _mqttSettings.SubscribedTopics,
-                Title = _mqttSettings.Title,
-                WindowWidth = _mqttSettings.WindowWidth,
-                WindowHeight = _mqttSettings.WindowHeight,
-                WindowLeft = _mqttSettings.WindowLeft,
-                WindowTop = _mqttSettings.WindowTop,
-                WindowState = _mqttSettings.WindowState
-            };
-
-            // 加密密码（如果有密码且未加密）
-            if (!string.IsNullOrEmpty(settingsToSave.Password) &&
-                !_encryptionService.IsEncrypted(settingsToSave.Password))
-            {
-                settingsToSave.Password = _encryptionService.Encrypt(settingsToSave.Password);
-            }
-
-            var json = JsonConvert.SerializeObject(settingsToSave, Formatting.Indented);
-            File.WriteAllText(_configFilePath, json);
+            // 保存到文件
+            _chartConfigService.SaveChartConfig(_chartConfig);
 
             _logService.LogInfo("图表设置已保存");
             OnSettingsSaved?.Invoke();
@@ -161,51 +114,8 @@ public class ChartSettingsViewModel : INotifyPropertyChanged
     /// </summary>
     public void LoadSettings()
     {
-        var settings = LoadSettingsFromFile();
-        if (settings != null)
-        {
-            MaxChartDataPoints = settings.MaxChartDataPoints;
-            ChartUpdateInterval = settings.ChartUpdateInterval;
-        }
-    }
-
-    /// <summary>
-    /// 从文件加载设置
-    /// </summary>
-    public MqttSettings? LoadSettingsFromFile()
-    {
-        try
-        {
-            if (File.Exists(_configFilePath))
-            {
-                var json = File.ReadAllText(_configFilePath);
-                var settings = JsonConvert.DeserializeObject<MqttSettings>(json);
-
-                // 解密密码（如果已加密）
-                if (settings != null && !string.IsNullOrEmpty(settings.Password))
-                {
-                    if (_encryptionService.IsEncrypted(settings.Password))
-                    {
-                        try
-                        {
-                            settings.Password = _encryptionService.Decrypt(settings.Password);
-                        }
-                        catch (Exception decryptEx)
-                        {
-                            _logService.LogException(decryptEx, "解密密码失败，密码将被清空");
-                            settings.Password = null;
-                        }
-                    }
-                }
-
-                return settings;
-            }
-        }
-        catch (Exception ex)
-        {
-            _logService.LogException(ex, "加载设置失败");
-        }
-        return null;
+        MaxChartDataPoints = _chartConfig.MaxChartDataPoints;
+        ChartUpdateInterval = _chartConfig.ChartUpdateInterval;
     }
 
     protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)

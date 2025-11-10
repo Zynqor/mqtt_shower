@@ -19,6 +19,8 @@ public class MainViewModel : INotifyPropertyChanged
     private readonly LogService _logService;
     private readonly CsvDataStorageService _csvStorageService;
     private readonly EncryptionService _encryptionService;
+    private readonly LayoutSettingsService _layoutSettingsService;
+    private readonly MqttSettings _mqttSettings;
     private string _connectionStatusText = "未连接";
     private bool _isConnecting = false;
     private int _selectedTabIndex = 0;
@@ -129,13 +131,18 @@ public class MainViewModel : INotifyPropertyChanged
     public ICommand SubscribeTopicCommand { get; }
     public ICommand UnsubscribeTopicCommand { get; }
 
-    public MainViewModel(MqttService mqttService, DataProcessingService dataProcessingService, LogService logService, CsvDataStorageService csvStorageService, EncryptionService encryptionService)
+    public MainViewModel(MqttService mqttService, DataProcessingService dataProcessingService, LogService logService, CsvDataStorageService csvStorageService, EncryptionService encryptionService, LayoutSettingsService layoutSettingsService, MqttSettings mqttSettings)
     {
         _mqttService = mqttService;
         _dataProcessingService = dataProcessingService;
         _logService = logService;
         _csvStorageService = csvStorageService;
         _encryptionService = encryptionService;
+        _layoutSettingsService = layoutSettingsService;
+        _mqttSettings = mqttSettings;
+
+        // 从 MqttSettings 获取标题
+        Title = mqttSettings.Title;
 
         // 订阅 MQTT 服务的属性变化
         _mqttService.PropertyChanged += OnMqttServicePropertyChanged;
@@ -867,30 +874,28 @@ CSV 文件位置：
     {
         try
         {
-            var settingsViewModel = App.ServiceProvider?.GetService<SettingsViewModel>();
-            var settings = settingsViewModel?.LoadSettingsFromFile();
-            if (settings != null)
+            var layoutSettings = _layoutSettingsService.LoadLayoutSettings();
+
+            // 恢复窗口大小
+            if (layoutSettings.WindowWidth > 0)
+                window.Width = layoutSettings.WindowWidth;
+            if (layoutSettings.WindowHeight > 0)
+                window.Height = layoutSettings.WindowHeight;
+
+            // 恢复窗口位置
+            if (!double.IsNaN(layoutSettings.WindowLeft) && !double.IsNaN(layoutSettings.WindowTop))
             {
-                Title = settings.Title;
-                // 恢复窗口大小
-                if (settings.WindowWidth > 0)
-                    window.Width = settings.WindowWidth;
-                if (settings.WindowHeight > 0)
-                    window.Height = settings.WindowHeight;
-
-                // 恢复窗口位置
-                if (!double.IsNaN(settings.WindowLeft) && !double.IsNaN(settings.WindowTop))
-                {
-                    window.Left = settings.WindowLeft;
-                    window.Top = settings.WindowTop;
-                }
-
-                // 恢复窗口状态
-                if (Enum.TryParse<System.Windows.WindowState>(settings.WindowState, out var windowState))
-                {
-                    window.WindowState = windowState;
-                }
+                window.Left = layoutSettings.WindowLeft;
+                window.Top = layoutSettings.WindowTop;
             }
+
+            // 恢复窗口状态
+            if (Enum.TryParse<System.Windows.WindowState>(layoutSettings.WindowState, out var windowState))
+            {
+                window.WindowState = windowState;
+            }
+
+            _logService.LogInfo("已恢复窗口布局");
         }
         catch (Exception ex)
         {
@@ -905,33 +910,21 @@ CSV 文件位置：
     {
         try
         {
-            var settingsViewModel = App.ServiceProvider?.GetService<SettingsViewModel>();
-            var settings = settingsViewModel?.LoadSettingsFromFile();
-            if (settings != null)
+            var layoutSettings = _layoutSettingsService.LoadLayoutSettings();
+
+            // 保存窗口大小和位置（仅在非最小化和非最大化时保存）
+            if (window.WindowState == System.Windows.WindowState.Normal)
             {
-                // 保存窗口大小和位置（仅在非最小化和非最大化时保存）
-                if (window.WindowState == System.Windows.WindowState.Normal)
-                {
-                    settings.WindowWidth = window.Width;
-                    settings.WindowHeight = window.Height;
-                    settings.WindowLeft = window.Left;
-                    settings.WindowTop = window.Top;
-                }
-
-                settings.WindowState = window.WindowState.ToString();
-                // 不修改订阅列表，保留原有配置
-                // settings.SubscribedTopics 保持不变
-
-                // 加密密码（如果有密码且未加密）
-                if (!string.IsNullOrEmpty(settings.Password) &&
-                    !_encryptionService.IsEncrypted(settings.Password))
-                {
-                    settings.Password = _encryptionService.Encrypt(settings.Password);
-                }
-
-                var json = Newtonsoft.Json.JsonConvert.SerializeObject(settings, Newtonsoft.Json.Formatting.Indented);
-                System.IO.File.WriteAllText("config.json", json);
+                layoutSettings.WindowWidth = window.Width;
+                layoutSettings.WindowHeight = window.Height;
+                layoutSettings.WindowLeft = window.Left;
+                layoutSettings.WindowTop = window.Top;
             }
+
+            layoutSettings.WindowState = window.WindowState.ToString();
+
+            _layoutSettingsService.SaveLayoutSettings(layoutSettings);
+            _logService.LogInfo("已保存窗口布局");
         }
         catch (Exception ex)
         {

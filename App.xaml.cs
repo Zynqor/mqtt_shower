@@ -196,8 +196,8 @@ public partial class App : Application
             sp.GetRequiredService<MqttSettings>())); // Transient for new instance each time
         services.AddTransient<ChartSettingsViewModel>(sp => new ChartSettingsViewModel(
             sp.GetRequiredService<LogService>(),
-            sp.GetRequiredService<MqttSettings>(),
-            sp.GetRequiredService<EncryptionService>())); // Transient for new instance each time
+            sp.GetRequiredService<ChartConfig>(),
+            sp.GetRequiredService<ChartConfigService>())); // Transient for new instance each time
         services.AddTransient<AlarmConfigViewModel>();
         services.AddTransient<AlertSettingsViewModel>();
         services.AddTransient<HistoryQueryViewModel>(); // Transient for new instance each time
@@ -212,7 +212,8 @@ public partial class App : Application
         services.AddSingleton<AlarmView>();
         services.AddTransient<SettingsWindow>(); // Transient for new instance each time
         services.AddTransient<ChartSettingsWindow>(); // Transient for new instance each time
-        services.AddTransient<ContactUsWindow>(); // Transient for new instance each time
+        services.AddTransient<ContactUsWindow>(sp => new ContactUsWindow(
+            sp.GetRequiredService<CompanyInfo>())); // Transient for new instance each time
         services.AddTransient<AlarmConfigWindow>(); // Transient for new instance each time
         services.AddTransient<AlertSettingsWindow>(); // Transient for new instance each time
         services.AddTransient<HistoryQueryWindow>(); // Transient for new instance each time

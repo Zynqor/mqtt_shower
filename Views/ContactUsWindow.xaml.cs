@@ -8,9 +8,9 @@ namespace MqttMonitor.Views;
 /// </summary>
 public partial class ContactUsWindow : Window
 {
-    public ContactUsWindow(MqttSettings settings)
+    public ContactUsWindow(CompanyInfo companyInfo)
     {
         InitializeComponent();
-        DataContext = settings;
+        DataContext = companyInfo;
     }
 }

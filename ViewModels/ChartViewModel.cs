@@ -19,7 +19,7 @@ public class ChartViewModel : INotifyPropertyChanged
     private readonly DataProcessingService _dataProcessingService;
     private readonly LogService _logService;
     private readonly ChartLegendConfigService _configService;
-    private readonly MqttSettings _mqttSettings;
+    private readonly ChartConfig _chartConfig;
     private readonly Dictionary<string, Dictionary<string, ScatterPlotData>> _seriesMap = new();
     private readonly Dictionary<string, Dictionary<string, ChartLegendItem>> _legendItemsMap = new();
     private readonly Dictionary<string, Dictionary<string, ChartLegendConfig>> _loadedConfig = new();
@@ -91,16 +91,16 @@ public class ChartViewModel : INotifyPropertyChanged
     }
 
     public ChartViewModel(DataProcessingService dataProcessingService, LogService logService,
-        ChartLegendConfigService configService, MqttSettings mqttSettings)
+        ChartLegendConfigService configService, ChartConfig chartConfig)
     {
         _dataProcessingService = dataProcessingService;
         _logService = logService;
         _configService = configService;
-        _mqttSettings = mqttSettings;
-        _maxChartDataPoints = _mqttSettings.MaxChartDataPoints;
+        _chartConfig = chartConfig;
+        _maxChartDataPoints = _chartConfig.MaxChartDataPoints;
 
-        // Subscribe to MqttSettings changes
-        _mqttSettings.PropertyChanged += OnMqttSettingsPropertyChanged;
+        // Subscribe to ChartConfig changes
+        _chartConfig.PropertyChanged += OnChartConfigPropertyChanged;
 
         // 加载配置
         _loadedConfig = _configService.LoadConfig();
@@ -108,7 +108,7 @@ public class ChartViewModel : INotifyPropertyChanged
         // 初始化批量更新定时器
         _updateTimer = new DispatcherTimer(DispatcherPriority.Background)
         {
-            Interval = TimeSpan.FromMilliseconds(_mqttSettings.ChartUpdateInterval)
+            Interval = TimeSpan.FromMilliseconds(_chartConfig.ChartUpdateInterval)
         };
         _updateTimer.Tick += OnUpdateTimerTick;
         _updateTimer.Start();
@@ -179,22 +179,22 @@ public class ChartViewModel : INotifyPropertyChanged
         }
     }
 
-    private void OnMqttSettingsPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    private void OnChartConfigPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(MqttSettings.MaxChartDataPoints))
+        if (e.PropertyName == nameof(ChartConfig.MaxChartDataPoints))
         {
             Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
-                MaxChartDataPoints = _mqttSettings.MaxChartDataPoints;
+                MaxChartDataPoints = _chartConfig.MaxChartDataPoints;
                 RefreshChartDataPointsLimit();
             }), DispatcherPriority.Normal);
         }
-        else if (e.PropertyName == nameof(MqttSettings.ChartUpdateInterval))
+        else if (e.PropertyName == nameof(ChartConfig.ChartUpdateInterval))
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                _updateTimer.Interval = TimeSpan.FromMilliseconds(_mqttSettings.ChartUpdateInterval);
-                _logService.LogInfo($"图表更新间隔已更新为: {_mqttSettings.ChartUpdateInterval}ms");
+                _updateTimer.Interval = TimeSpan.FromMilliseconds(_chartConfig.ChartUpdateInterval);
+                _logService.LogInfo($"图表更新间隔已更新为: {_chartConfig.ChartUpdateInterval}ms");
             });
         }
     }
@@ -277,7 +277,7 @@ public class ChartViewModel : INotifyPropertyChanged
                         plotData.YData.Add(metric.Value + offset);
 
                         // 限制数据点数量
-                        if (plotData.XData.Count > _mqttSettings.MaxChartDataPoints)
+                        if (plotData.XData.Count > _chartConfig.MaxChartDataPoints)
                         {
                             plotData.XData.RemoveAt(0);
                             plotData.YData.RemoveAt(0);
