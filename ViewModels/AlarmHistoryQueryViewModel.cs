@@ -326,7 +326,7 @@ public class AlarmHistoryQueryViewModel : INotifyPropertyChanged
 
             var statusText = record.Status switch
             {
-                AlarmStatus.Triggered => "进行中",
+                AlarmStatus.Active => "进行中",
                 AlarmStatus.Recovered => "已恢复",
                 _ => "未知"
             };
