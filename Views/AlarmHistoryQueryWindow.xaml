@@ -92,11 +92,11 @@
                 <ComboBox Grid.Row="0" Grid.Column="1"
                           ItemsSource="{Binding AvailableDevices}"
                           SelectedItem="{Binding SelectedDevice}"
-                          Height="36" FontSize="13" Margin="0,0,10,0"
-                          VerticalContentAlignment="Center"/>
+                          Style="{StaticResource ModernComboBox}"
+                          Margin="0,0,10,0"/>
                 <Button Grid.Row="0" Grid.Column="2" Content="刷新设备"
                         Command="{Binding RefreshDevicesCommand}"
-                        Style="{StaticResource SecondaryButton}" Height="36"/>
+                        Style="{StaticResource SecondaryButton}"/>
 
                 <!-- 告警类型选择 -->
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="告警类型:" VerticalAlignment="Center"
@@ -104,20 +104,20 @@
                 <ComboBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
                           ItemsSource="{Binding AlarmTypes}"
                           SelectedItem="{Binding SelectedAlarmType}"
-                          Height="36" FontSize="13" Margin="0,15,0,0"
-                          VerticalContentAlignment="Center"/>
+                          Style="{StaticResource ModernComboBox}"
+                          Margin="0,15,0,0"/>
 
                 <!-- 开始时间 -->
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="开始时间:" VerticalAlignment="Center"
                            FontWeight="SemiBold" FontSize="13" Margin="0,15,0,0"/>
                 <StackPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,15,0,0">
                     <DatePicker SelectedDate="{Binding StartDateTime, UpdateSourceTrigger=PropertyChanged}"
-                                Width="200" Height="36" FontSize="13" Margin="0,0,10,0"
-                                VerticalContentAlignment="Center"/>
+                                Style="{StaticResource ModernDatePicker}"
+                                Width="200" Margin="0,0,10,0"/>
                     <TextBlock Text="时间:" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="13" Margin="0,0,10,0"/>
                     <TextBox Text="{Binding StartDateTime, StringFormat='HH:mm:ss', UpdateSourceTrigger=LostFocus}"
-                             Width="100" Height="36" FontSize="13"
-                             VerticalContentAlignment="Center"/>
+                             Style="{StaticResource ModernTextBox}"
+                             Width="100"/>
                 </StackPanel>
 
                 <!-- 结束时间 -->
@@ -125,12 +125,12 @@
                            FontWeight="SemiBold" FontSize="13" Margin="0,15,0,0"/>
                 <StackPanel Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,15,0,0">
                     <DatePicker SelectedDate="{Binding EndDateTime, UpdateSourceTrigger=PropertyChanged}"
-                                Width="200" Height="36" FontSize="13" Margin="0,0,10,0"
-                                VerticalContentAlignment="Center"/>
+                                Style="{StaticResource ModernDatePicker}"
+                                Width="200" Margin="0,0,10,0"/>
                     <TextBlock Text="时间:" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="13" Margin="0,0,10,0"/>
                     <TextBox Text="{Binding EndDateTime, StringFormat='HH:mm:ss', UpdateSourceTrigger=LostFocus}"
-                             Width="100" Height="36" FontSize="13"
-                             VerticalContentAlignment="Center"/>
+                             Style="{StaticResource ModernTextBox}"
+                             Width="100"/>
                 </StackPanel>
             </Grid>
         </Border>
