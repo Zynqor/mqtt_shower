@@ -29,6 +29,9 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
+        // 初始化路径管理器（创建目录结构并迁移旧配置）
+        PathManager.Initialize();
+
         // Configure dependency injection
         var serviceCollection = new ServiceCollection();
         ConfigureServices(serviceCollection);
@@ -49,7 +52,7 @@ public partial class App : Application
         {
             var logService = sp.GetRequiredService<LogService>();
             var encryptionService = sp.GetRequiredService<EncryptionService>();
-            var configFilePath = "config.json";
+            var configFilePath = PathManager.MqttConfigFile;
             try
             {
                 if (File.Exists(configFilePath))
@@ -142,11 +145,39 @@ public partial class App : Application
         services.AddTransient<AlarmHistoryQueryWindow>(); // Transient for new instance each time
     }
 
-    protected override void OnExit(ExitEventArgs e)
+    protected override async void OnExit(ExitEventArgs e)
     {
-        // Cleanup CsvDataStorageService
-        var csvStorage = ServiceProvider?.GetService<CsvDataStorageService>();
-        csvStorage?.Dispose();
+        try
+        {
+            // 1. 断开MQTT连接
+            var mqttService = ServiceProvider?.GetService<MqttService>();
+            if (mqttService != null && mqttService.IsConnected)
+            {
+                await mqttService.DisconnectAsync();
+            }
+
+            // 2. 释放CSV数据存储服务（会刷新所有缓存）
+            var csvStorage = ServiceProvider?.GetService<CsvDataStorageService>();
+            csvStorage?.Dispose();
+
+            // 3. 释放告警数据库服务
+            var alarmDatabase = ServiceProvider?.GetService<AlarmDatabaseService>();
+            alarmDatabase?.Dispose();
+
+            // 4. 释放告警历史存储服务
+            var alarmHistoryStorage = ServiceProvider?.GetService<AlarmHistoryStorageService>();
+            alarmHistoryStorage?.Dispose();
+
+            // 5. 日志记录
+            var logService = ServiceProvider?.GetService<LogService>();
+            logService?.LogInfo("应用程序正常退出，所有资源已释放");
+        }
+        catch (Exception ex)
+        {
+            // 退出时发生错误，记录但不阻止退出
+            System.IO.File.AppendAllText("shutdown_error.log",
+                $"[{DateTime.Now}] Shutdown error: {ex.Message}\n{ex.StackTrace}\n");
+        }
 
         base.OnExit(e);
     }

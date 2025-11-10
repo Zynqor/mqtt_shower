@@ -155,17 +155,43 @@
                                 <Button x:Name="PART_Button"
                                         Grid.Column="1"
                                         Width="30"
+                                        Height="30"
                                         Background="Transparent"
                                         BorderThickness="0"
                                         Padding="0"
                                         Margin="0,0,2,0"
-                                        Cursor="Hand">
-                                    <Path Data="M6,0 L12,0 L12,1 L6,1 Z M0,3 L18,3 L18,18 L0,18 Z M2,5 L2,16 L16,16 L16,5 Z M4,7 L6,7 L6,9 L4,9 Z M8,7 L10,7 L10,9 L8,9 Z M12,7 L14,7 L14,9 L12,9 Z M4,11 L6,11 L6,13 L4,13 Z M8,11 L10,11 L10,13 L8,13 Z M12,11 L14,11 L14,13 L12,13 Z"
-                                          Fill="#6C757D"
-                                          Width="14"
-                                          Height="14"
-                                          Stretch="Uniform"/>
+                                        Cursor="Hand"
+                                        Focusable="False"
+                                        VerticalAlignment="Center">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}"
+                                                    Padding="{TemplateBinding Padding}">
+                                                <Path Data="M6,0 L12,0 L12,1 L6,1 Z M0,3 L18,3 L18,18 L0,18 Z M2,5 L2,16 L16,16 L16,5 Z M4,7 L6,7 L6,9 L4,9 Z M8,7 L10,7 L10,9 L8,9 Z M12,7 L14,7 L14,9 L12,9 Z M4,11 L6,11 L6,13 L4,13 Z M8,11 L10,11 L10,13 L8,13 Z M12,11 L14,11 L14,13 L12,13 Z"
+                                                      Fill="#6C757D"
+                                                      Width="14"
+                                                      Height="14"
+                                                      Stretch="Uniform"
+                                                      HorizontalAlignment="Center"
+                                                      VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#F8F9FA"/>
+                                                </Trigger>
+                                                <Trigger Property="IsPressed" Value="True">
+                                                    <Setter Property="Background" Value="#E9ECEF"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Button.Template>
                                 </Button>
+
+                                <Popup x:Name="PART_Popup"
+                                       AllowsTransparency="True"
+                                       Placement="Bottom"
+                                       PlacementTarget="{Binding ElementName=PART_TextBox}"
+                                       StaysOpen="False"/>
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
