@@ -29,8 +29,12 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
-        // 初始化路径管理器（创建目录结构并迁移旧配置）
-        PathManager.Initialize();
+        // 确保所有必要的目录存在
+        Directory.CreateDirectory("configs");
+        Directory.CreateDirectory("data");
+        Directory.CreateDirectory(Path.Combine("data", "csv"));
+        Directory.CreateDirectory("logs");
+        Directory.CreateDirectory("Sounds");
 
         // Configure dependency injection
         var serviceCollection = new ServiceCollection();
@@ -52,7 +56,7 @@ public partial class App : Application
         {
             var logService = sp.GetRequiredService<LogService>();
             var encryptionService = sp.GetRequiredService<EncryptionService>();
-            var configFilePath = PathManager.MqttConfigFile;
+            var configFilePath = Path.Combine("configs", "mqtt_config.json");
             try
             {
                 if (File.Exists(configFilePath))
@@ -103,11 +107,11 @@ public partial class App : Application
             var chartConfig = chartConfigService.LoadChartConfig();
 
             // 如果chart_config.json不存在，尝试从旧的config.json迁移
-            if (!File.Exists(PathManager.ChartConfigFile) && File.Exists(PathManager.LegacyConfigFile))
+            if (!File.Exists(Path.Combine("configs", "chart_config.json")) && File.Exists("config.json"))
             {
                 try
                 {
-                    var oldConfigJson = File.ReadAllText(PathManager.LegacyConfigFile);
+                    var oldConfigJson = File.ReadAllText("config.json");
                     dynamic? oldConfig = JsonConvert.DeserializeObject(oldConfigJson);
                     if (oldConfig != null)
                     {
@@ -137,11 +141,11 @@ public partial class App : Application
             var companyInfo = companyInfoService.LoadCompanyInfo();
 
             // 如果company_info.json不存在，尝试从旧的config.json迁移
-            if (!File.Exists(PathManager.CompanyInfoFile) && File.Exists(PathManager.LegacyConfigFile))
+            if (!File.Exists(Path.Combine("configs", "company_info.json")) && File.Exists("config.json"))
             {
                 try
                 {
-                    var oldConfigJson = File.ReadAllText(PathManager.LegacyConfigFile);
+                    var oldConfigJson = File.ReadAllText("config.json");
                     dynamic? oldConfig = JsonConvert.DeserializeObject(oldConfigJson);
                     if (oldConfig != null)
                     {

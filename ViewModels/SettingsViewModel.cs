@@ -367,7 +367,7 @@ public class SettingsViewModel : INotifyPropertyChanged
                 settingsToSave.Password = _encryptionService.Encrypt(settingsToSave.Password);
             }
 
-            var configFilePath = PathManager.MqttConfigFile;
+            var configFilePath = Path.Combine("configs", "mqtt_config.json");
             var json = JsonConvert.SerializeObject(settingsToSave, Formatting.Indented);
             File.WriteAllText(configFilePath, json);
 
