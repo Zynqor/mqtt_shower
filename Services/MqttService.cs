@@ -204,12 +204,16 @@ public class MqttService : INotifyPropertyChanged
                 _logService.LogInfo("正在断开 MQTT 连接...");
                 await _mqttClient.StopAsync();
 
+                // 释放 MQTT 客户端资源
+                _mqttClient.Dispose();
+                _mqttClient = null;
+
                 // 清空活动订阅列表，以便重新连接时能够重新订阅
                 _activeSubscriptions.Clear();
                 UpdateSortedSubscriptions(); // Update sorted list after clearing
 
                 CurrentState = ConnectionState.Disconnected;
-                _logService.LogInfo("已断开 MQTT 连接");
+                _logService.LogInfo("已断开 MQTT 连接并释放资源");
             }
         }
         catch (Exception ex)

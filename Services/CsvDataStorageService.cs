@@ -36,7 +36,7 @@ public class CsvDataStorageService : IDisposable
 
         // 获取exe所在目录
         var exePath = AppDomain.CurrentDomain.BaseDirectory;
-        _dataDirectory = Path.Combine(exePath, "datas");
+        _dataDirectory = Path.Combine(exePath, "data");
 
         // 创建数据目录
         if (!Directory.Exists(_dataDirectory))

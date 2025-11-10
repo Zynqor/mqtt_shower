@@ -152,7 +152,7 @@ public class HistoryQueryViewModel : INotifyPropertyChanged
 
         // 获取数据目录
         var exePath = AppDomain.CurrentDomain.BaseDirectory;
-        _dataDirectory = Path.Combine(exePath, "datas");
+        _dataDirectory = Path.Combine(exePath, "data");
 
         // 初始化命令
         QueryCommand = new RelayCommand(OnQuery);

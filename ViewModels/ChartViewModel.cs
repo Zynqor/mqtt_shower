@@ -14,7 +14,7 @@ namespace MqttMonitor.ViewModels;
 /// <summary>
 /// 图表视图 ViewModel - ScottPlot 版本
 /// </summary>
-public class ChartViewModel : INotifyPropertyChanged
+public class ChartViewModel : INotifyPropertyChanged, IDisposable
 {
     private readonly DataProcessingService _dataProcessingService;
     private readonly LogService _logService;
@@ -736,5 +736,22 @@ public class ChartViewModel : INotifyPropertyChanged
     protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    public void Dispose()
+    {
+        // 停止并释放定时器
+        _updateTimer?.Stop();
+
+        // 取消订阅事件
+        _dataProcessingService.OnUpstreamDataParsed -= OnUpstreamDataParsed;
+        _dataProcessingService.OnDataCleared -= OnDataCleared;
+
+        if (_chartConfig != null)
+        {
+            _chartConfig.PropertyChanged -= OnChartConfigPropertyChanged;
+        }
+
+        _logService.LogInfo("ChartViewModel 已释放资源");
     }
 }

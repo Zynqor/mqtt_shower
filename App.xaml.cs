@@ -228,26 +228,30 @@ public partial class App : Application
     {
         try
         {
-            // 1. 断开MQTT连接
+            // 1. 停止所有 ViewModel 的定时器和事件订阅
+            var chartViewModel = ServiceProvider?.GetService<ChartViewModel>();
+            chartViewModel?.Dispose();
+
+            // 2. 断开MQTT连接
             var mqttService = ServiceProvider?.GetService<MqttService>();
             if (mqttService != null && mqttService.CurrentState == Services.ConnectionState.Connected)
             {
                 await mqttService.DisconnectAsync();
             }
 
-            // 2. 释放CSV数据存储服务（会刷新所有缓存）
+            // 3. 释放CSV数据存储服务（会刷新所有缓存）
             var csvStorage = ServiceProvider?.GetService<CsvDataStorageService>();
             csvStorage?.Dispose();
 
-            // 3. 释放告警数据库服务
+            // 4. 释放告警数据库服务
             var alarmDatabase = ServiceProvider?.GetService<AlarmDatabaseService>();
             alarmDatabase?.Dispose();
 
-            // 4. 释放告警历史存储服务
+            // 5. 释放告警历史存储服务
             var alarmHistoryStorage = ServiceProvider?.GetService<AlarmHistoryStorageService>();
             alarmHistoryStorage?.Dispose();
 
-            // 5. 日志记录
+            // 6. 日志记录
             var logService = ServiceProvider?.GetService<LogService>();
             logService?.LogInfo("应用程序正常退出，所有资源已释放");
         }
