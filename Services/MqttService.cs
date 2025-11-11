@@ -394,7 +394,7 @@ public class MqttService : INotifyPropertyChanged
     /// <summary>
     /// A thread-safe hash set implementation.
     /// </summary>
-    private class ConcurrentHashSet<T> : System.Collections.Generic.ICollection<T>
+    private class ConcurrentHashSet<T> : System.Collections.Generic.ICollection<T> where T : notnull
     {
         private readonly System.Collections.Concurrent.ConcurrentDictionary<T, byte> _dictionary;
 

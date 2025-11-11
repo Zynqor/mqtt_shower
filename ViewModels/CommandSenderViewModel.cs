@@ -373,6 +373,31 @@ public class CommandSenderViewModel : INotifyPropertyChanged, IDisposable
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
+
+    // IDisposable实现
+    private bool _disposed = false;
+
+    public void Dispose()
+    {
+        if (_disposed) return;
+        _disposed = true;
+
+        try
+        {
+            // 停止并释放定时器
+            _timeoutTimer?.Stop();
+            _timeoutTimer?.Dispose();
+
+            // 取消事件订阅
+            _dataProcessingService.OnCommandResponseParsed -= OnCommandResponseReceived;
+
+            _logService.LogInfo("CommandSenderViewModel 已释放资源");
+        }
+        catch (Exception ex)
+        {
+            _logService.LogException(ex, "CommandSenderViewModel 释放资源时出错");
+        }
+    }
 }
 
 /// <summary>
@@ -436,30 +461,5 @@ public class CommandHistoryItem : INotifyPropertyChanged
     protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    // IDisposable实现
-    private bool _disposed = false;
-
-    public void Dispose()
-    {
-        if (_disposed) return;
-        _disposed = true;
-
-        try
-        {
-            // 停止并释放定时器
-            _timeoutTimer?.Stop();
-            _timeoutTimer?.Dispose();
-
-            // 取消事件订阅
-            _dataProcessingService.OnCommandResponseParsed -= OnCommandResponseReceived;
-
-            _logService.LogInfo("CommandSenderViewModel 已释放资源");
-        }
-        catch (Exception ex)
-        {
-            _logService.LogException(ex, "CommandSenderViewModel 释放资源时出错");
-        }
     }
 }
