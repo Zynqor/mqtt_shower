@@ -458,6 +458,53 @@ public class AlarmDatabaseService : IDisposable
         };
     }
 
+    /// <summary>
+    /// 启动时恢复所有未完成的Active告警（处理异常退出场景）
+    /// </summary>
+    public async Task RecoverAllActiveAlarmsOnStartupAsync()
+    {
+        await _writeSemaphore.WaitAsync();
+        try
+        {
+            using var connection = new SqliteConnection($"Data Source={_databasePath}");
+            await connection.OpenAsync();
+
+            // 查询所有Active状态的告警
+            var countSql = "SELECT COUNT(*) FROM alarm_records WHERE status = @active";
+            using var countCmd = new SqliteCommand(countSql, connection);
+            countCmd.Parameters.AddWithValue("@active", (int)AlarmStatus.Active);
+            var activeCount = Convert.ToInt32(await countCmd.ExecuteScalarAsync());
+
+            if (activeCount > 0)
+            {
+                // 将所有Active告警标记为Recovered
+                var updateSql = @"
+                    UPDATE alarm_records
+                    SET status = @recovered,
+                        recovered_time = @recoveredTime
+                    WHERE status = @active
+                ";
+
+                using var command = new SqliteCommand(updateSql, connection);
+                command.Parameters.AddWithValue("@recovered", (int)AlarmStatus.Recovered);
+                command.Parameters.AddWithValue("@active", (int)AlarmStatus.Active);
+                command.Parameters.AddWithValue("@recoveredTime", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+
+                await command.ExecuteNonQueryAsync();
+
+                _logService.LogInfo($"启动时自动恢复了 {activeCount} 个未完成的告警（处理异常退出场景）");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logService.LogException(ex, "启动时恢复未完成告警失败");
+        }
+        finally
+        {
+            _writeSemaphore.Release();
+        }
+    }
+
     public void Dispose()
     {
         _writeSemaphore?.Dispose();

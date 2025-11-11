@@ -57,6 +57,9 @@ public class AlarmDetectionService : IDisposable
         // 加载告警配置
         LoadConfigs();
 
+        // 启动时恢复未完成的告警（处理异常退出场景）
+        RecoverUnfinishedAlarmsOnStartup();
+
         // 加载历史告警记录
         LoadHistoryFromDatabase();
 
@@ -71,6 +74,21 @@ public class AlarmDetectionService : IDisposable
     {
         _alarmConfigs = _alarmConfigService.LoadAlarmConfigs();
         _logService.LogInfo($"告警检测服务已加载 {_alarmConfigs.Count} 个配置");
+    }
+
+    /// <summary>
+    /// 启动时恢复未完成的告警（处理异常退出场景）
+    /// </summary>
+    private async void RecoverUnfinishedAlarmsOnStartup()
+    {
+        try
+        {
+            await _alarmDatabaseService.RecoverAllActiveAlarmsOnStartupAsync();
+        }
+        catch (Exception ex)
+        {
+            _logService.LogException(ex, "启动时恢复未完成告警失败");
+        }
     }
 
     /// <summary>
