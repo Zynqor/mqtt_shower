@@ -22,6 +22,7 @@ public class MainViewModel : INotifyPropertyChanged, IDisposable
     private readonly EncryptionService _encryptionService;
     private readonly LayoutSettingsService _layoutSettingsService;
     private readonly MqttSettings _mqttSettings;
+    private readonly DeviceManagementService _deviceManagementService;
     private string _connectionStatusText = "未连接";
     private bool _isConnecting = false;
     private int _selectedTabIndex = 0;
@@ -123,6 +124,7 @@ public class MainViewModel : INotifyPropertyChanged, IDisposable
     public ICommand ShowAlertSettingsCommand { get; }
     public ICommand ShowHistoryQueryCommand { get; }
     public ICommand ShowAlarmHistoryQueryCommand { get; }
+    public ICommand ShowDeviceListCommand { get; }
     public ICommand ClearDataCommand { get; }
     public ICommand ShowChartViewCommand { get; }
     public ICommand ShowTableViewCommand { get; }
@@ -133,7 +135,7 @@ public class MainViewModel : INotifyPropertyChanged, IDisposable
     public ICommand SubscribeTopicCommand { get; }
     public ICommand UnsubscribeTopicCommand { get; }
 
-    public MainViewModel(MqttService mqttService, DataProcessingService dataProcessingService, LogService logService, CsvDataStorageService csvStorageService, EncryptionService encryptionService, LayoutSettingsService layoutSettingsService, MqttSettings mqttSettings)
+    public MainViewModel(MqttService mqttService, DataProcessingService dataProcessingService, LogService logService, CsvDataStorageService csvStorageService, EncryptionService encryptionService, LayoutSettingsService layoutSettingsService, MqttSettings mqttSettings, DeviceManagementService deviceManagementService)
     {
         _mqttService = mqttService;
         _dataProcessingService = dataProcessingService;
@@ -142,6 +144,7 @@ public class MainViewModel : INotifyPropertyChanged, IDisposable
         _encryptionService = encryptionService;
         _layoutSettingsService = layoutSettingsService;
         _mqttSettings = mqttSettings;
+        _deviceManagementService = deviceManagementService;
 
         // 从 MqttSettings 获取标题
         Title = mqttSettings.Title;
@@ -159,6 +162,7 @@ public class MainViewModel : INotifyPropertyChanged, IDisposable
         ShowAlertSettingsCommand = new RelayCommand(OnShowAlertSettings);
         ShowHistoryQueryCommand = new RelayCommand(OnShowHistoryQuery);
         ShowAlarmHistoryQueryCommand = new RelayCommand(OnShowAlarmHistoryQuery);
+        ShowDeviceListCommand = new RelayCommand(OnShowDeviceList);
         ClearDataCommand = new RelayCommand(OnClearData);
         ShowChartViewCommand = new RelayCommand(() => SelectedTabIndex = 0);
         ShowTableViewCommand = new RelayCommand(() => SelectedTabIndex = 1);
@@ -248,6 +252,19 @@ public class MainViewModel : INotifyPropertyChanged, IDisposable
         {
             chartSettingsWindow.Owner = System.Windows.Application.Current.MainWindow;
             chartSettingsWindow.ShowDialog();
+        }
+    }
+
+    /// <summary>
+    /// 显示设备列表窗口
+    /// </summary>
+    private void OnShowDeviceList()
+    {
+        var deviceListWindow = App.ServiceProvider?.GetService<Views.DeviceListWindow>();
+        if (deviceListWindow != null)
+        {
+            deviceListWindow.Owner = System.Windows.Application.Current.MainWindow;
+            deviceListWindow.ShowDialog();
         }
     }
 
@@ -360,6 +377,8 @@ public class MainViewModel : INotifyPropertyChanged, IDisposable
 
 
     /// <summary>
+=======
+>>>>>>> ddef04b (添加设备自动发现和管理功能)
     /// 连接到 MQTT 服务器
     /// </summary>
     private async void OnConnect()
@@ -415,6 +434,15 @@ public class MainViewModel : INotifyPropertyChanged, IDisposable
                     await _mqttService.SubscribeAsync(topic);
                 }
             }
+
+            // 启用设备自动发现功能
+            if (settings.EnableDeviceDiscovery)
+            {
+                _deviceManagementService.HeartbeatTopic = settings.HeartbeatTopic;
+                _deviceManagementService.HeartbeatTimeoutSeconds = settings.HeartbeatTimeoutSeconds;
+                await _deviceManagementService.EnableAsync();
+                _logService.LogInfo("设备自动发现功能已启用");
+            }
         }
         catch (Exception ex)
         {
@@ -431,6 +459,9 @@ public class MainViewModel : INotifyPropertyChanged, IDisposable
     {
         try
         {
+            // 禁用设备管理服务
+            await _deviceManagementService.DisableAsync();
+
             await _mqttService.DisconnectAsync();
 
             // 禁用CSV数据存储，释放文件权限

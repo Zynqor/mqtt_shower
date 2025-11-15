@@ -52,6 +52,21 @@ public class MqttSettings : INotifyPropertyChanged
     public ObservableCollection<string> SubscribedTopics { get; set; } = new ObservableCollection<string>();
 
     /// <summary>
+    /// 设备心跳 Topic
+    /// </summary>
+    public string HeartbeatTopic { get; set; } = "iot/devices/heartbeat";
+
+    /// <summary>
+    /// 心跳超时时间（秒）
+    /// </summary>
+    public int HeartbeatTimeoutSeconds { get; set; } = 60;
+
+    /// <summary>
+    /// 是否启用设备自动发现
+    /// </summary>
+    public bool EnableDeviceDiscovery { get; set; } = true;
+
+    /// <summary>
     /// 启用TLS/SSL加密连接
     /// </summary>
     public bool UseTls { get; set; } = false;

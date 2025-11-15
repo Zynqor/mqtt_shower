@@ -13,6 +13,9 @@
     "iot/devices/7777/datas",
     "iot/devices/8000/datas"
   ],
+  "HeartbeatTopic": "iot/devices/heartbeat",
+  "HeartbeatTimeoutSeconds": 60,
+  "EnableDeviceDiscovery": true,
   "WindowWidth": 1000.0,
   "WindowHeight": 600.0,
   "WindowLeft": "NaN",

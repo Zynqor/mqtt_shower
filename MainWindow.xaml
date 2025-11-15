@@ -136,6 +136,9 @@
                 <MenuItem Header="使用说明(_U)" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowUserManualCommand}"/>
                 <MenuItem Header="联系我们(_C)" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowContactUsCommand}"/>
             </MenuItem>
+            <MenuItem Header="设备(_D)" Padding="10,5">
+                <MenuItem Header="设备管理(_M)" Command="{Binding ShowDeviceListCommand}"/>
+            </MenuItem>
         </Menu>
 
         <!-- 状态栏 -->

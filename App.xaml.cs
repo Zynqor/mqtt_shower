@@ -186,6 +186,7 @@ public partial class App : Application
         services.AddSingleton<LayoutSettingsService>();
         services.AddSingleton<ChartConfigService>();
         services.AddSingleton<CompanyInfoService>();
+        services.AddSingleton<DeviceManagementService>();
 
         // Register ViewModels
         services.AddSingleton<MainViewModel>();
@@ -195,6 +196,7 @@ public partial class App : Application
         services.AddSingleton<CommandSenderViewModel>();
         services.AddSingleton<AlarmViewModel>();
         services.AddSingleton<AlarmStatisticsViewModel>();
+        services.AddSingleton<DeviceListViewModel>();
         services.AddTransient<SettingsViewModel>(sp => new SettingsViewModel(
             sp.GetRequiredService<LogService>(),
             sp.GetRequiredService<EncryptionService>(),
@@ -223,6 +225,7 @@ public partial class App : Application
         services.AddTransient<AlertSettingsWindow>(); // Transient for new instance each time
         services.AddTransient<HistoryQueryWindow>(); // Transient for new instance each time
         services.AddTransient<AlarmHistoryQueryWindow>(); // Transient for new instance each time
+        services.AddTransient<DeviceListWindow>(); // Transient for new instance each time
     }
 
     protected override async void OnExit(ExitEventArgs e)
@@ -277,7 +280,11 @@ public partial class App : Application
             var alarmHistoryStorage = ServiceProvider?.GetService<AlarmHistoryStorageService>();
             alarmHistoryStorage?.Dispose();
 
-            // 8. 日志记录
+            // 8. 释放设备管理服务
+            var deviceManagement = ServiceProvider?.GetService<DeviceManagementService>();
+            deviceManagement?.Dispose();
+
+            // 9. 日志记录
             logService?.LogInfo("应用程序正常退出，所有资源已释放");
         }
         catch (Exception ex)

@@ -29,7 +29,8 @@ public class MqttService : INotifyPropertyChanged
     private readonly LogService _logService;
     private IManagedMqttClient? _mqttClient;
     private ConnectionState _currentState = ConnectionState.Disconnected;
-    private readonly ConcurrentHashSet<string> _activeSubscriptions = new(); // Store active subscriptions
+    private readonly ConcurrentHashSet<string> _activeSubscriptions = new(); // Store manual subscriptions
+    private readonly ConcurrentHashSet<string> _autoSubscriptions = new(); // Store auto subscriptions (managed by DeviceManagementService)
     private ObservableCollection<string> _sortedActiveSubscriptions = new();
 
     public ObservableCollection<string> SortedActiveSubscriptions
@@ -217,6 +218,7 @@ public class MqttService : INotifyPropertyChanged
 
                 // 清空活动订阅列表，以便重新连接时能够重新订阅
                 _activeSubscriptions.Clear();
+                _autoSubscriptions.Clear();
                 UpdateSortedSubscriptions(); // Update sorted list after clearing
 
                 CurrentState = ConnectionState.Disconnected;
@@ -329,18 +331,78 @@ public class MqttService : INotifyPropertyChanged
         }
     }
 
+    /// <summary>
+    /// 自动订阅 MQTT 主题（由设备管理服务使用，不显示在手动订阅列表中）
+    /// </summary>
+    public async Task SubscribeAutoAsync(string topic)
+    {
+        try
+        {
+            if (_mqttClient == null)
+            {
+                throw new InvalidOperationException("MQTT 客户端未初始化");
+            }
+
+            _logService.LogInfo($"[自动] 正在订阅主题: {topic}");
+            await _mqttClient.SubscribeAsync(topic);
+            _autoSubscriptions.Add(topic);
+            _logService.LogInfo($"[自动] 成功订阅主题: {topic}");
+        }
+        catch (Exception ex)
+        {
+            _logService.LogException(ex, $"[自动] 订阅主题失败: {topic}");
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// 取消自动订阅 MQTT 主题
+    /// </summary>
+    public async Task UnsubscribeAutoAsync(string topic)
+    {
+        try
+        {
+            if (_mqttClient == null)
+            {
+                throw new InvalidOperationException("MQTT 客户端未初始化");
+            }
+
+            _logService.LogInfo($"[自动] 正在取消订阅主题: {topic}");
+            await _mqttClient.UnsubscribeAsync(topic);
+            _autoSubscriptions.TryRemove(topic);
+            _logService.LogInfo($"[自动] 成功取消订阅主题: {topic}");
+        }
+        catch (Exception ex)
+        {
+            _logService.LogException(ex, $"[自动] 取消订阅主题失败: {topic}");
+            throw;
+        }
+    }
+
     // 事件处理器
     private async Task OnConnectedAsync(MqttClientConnectedEventArgs args)
     {
         CurrentState = ConnectionState.Connected;
         _logService.LogInfo("MQTT 连接成功");
 
-        // Re-subscribe to all active subscriptions
+        // Re-subscribe to all manual subscriptions
         if (_activeSubscriptions.Any())
         {
-            _logService.LogInfo($"正在重新订阅 { _activeSubscriptions.Count} 个主题...");
+            _logService.LogInfo($"正在重新订阅 {_activeSubscriptions.Count} 个手动主题...");
             await SubscribeTopicsAsync(_activeSubscriptions);
             UpdateSortedSubscriptions(); // Ensure sorted list is updated after re-subscription
+        }
+
+        // Re-subscribe to all auto subscriptions
+        if (_autoSubscriptions.Any())
+        {
+            _logService.LogInfo($"正在重新订阅 {_autoSubscriptions.Count} 个自动主题...");
+            var tasks = new List<Task>();
+            foreach (var topic in _autoSubscriptions)
+            {
+                tasks.Add(_mqttClient!.SubscribeAsync(topic));
+            }
+            await Task.WhenAll(tasks);
         }
     }
 
