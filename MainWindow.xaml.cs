@@ -47,10 +47,13 @@ public partial class MainWindow : Window
     }
 
     /// <summary>
-    /// 窗口关闭时保存窗口状态
+    /// 窗口关闭时保存窗口状态并释放资源
     /// </summary>
     private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
     {
         _viewModel.SaveWindowState(this);
+
+        // 释放 ViewModel 资源（包括设备管理服务）
+        _viewModel?.Dispose();
     }
 }

@@ -435,7 +435,22 @@ public class MainViewModel : INotifyPropertyChanged, IDisposable
             // 启用设备自动发现功能
             if (settings.EnableDeviceDiscovery)
             {
-                _deviceManagementService.HeartbeatTopic = settings.HeartbeatTopic;
+                // 根据 BaseTopic 自动构建 HeartbeatTopic
+                // 如果 HeartbeatTopic 为空或为默认值，则自动基于 BaseTopic 构建
+                string heartbeatTopic;
+                if (string.IsNullOrEmpty(settings.HeartbeatTopic) ||
+                    settings.HeartbeatTopic == "iot/devices/heartbeat")
+                {
+                    heartbeatTopic = $"{settings.BaseTopic}/heartbeat";
+                    _logService.LogInfo($"自动构建心跳Topic: {heartbeatTopic} (基于 BaseTopic: {settings.BaseTopic})");
+                }
+                else
+                {
+                    heartbeatTopic = settings.HeartbeatTopic;
+                    _logService.LogInfo($"使用配置的心跳Topic: {heartbeatTopic}");
+                }
+
+                _deviceManagementService.HeartbeatTopic = heartbeatTopic;
                 _deviceManagementService.HeartbeatTimeoutSeconds = settings.HeartbeatTimeoutSeconds;
                 await _deviceManagementService.EnableAsync();
                 _logService.LogInfo("设备自动发现功能已启用");
@@ -726,9 +741,19 @@ public class MainViewModel : INotifyPropertyChanged, IDisposable
 
         _disposed = true;
 
-        // 取消事件订阅
-        _mqttService.PropertyChanged -= OnMqttServicePropertyChanged;
+        try
+        {
+            // 取消事件订阅
+            _mqttService.PropertyChanged -= OnMqttServicePropertyChanged;
 
-        _logService.LogInfo("MainViewModel 已释放资源");
+            // 释放设备管理服务
+            _deviceManagementService?.Dispose();
+
+            _logService.LogInfo("MainViewModel 已释放资源");
+        }
+        catch (Exception ex)
+        {
+            _logService?.LogException(ex, "MainViewModel 释放资源时出错");
+        }
     }
 }

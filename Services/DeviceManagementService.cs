@@ -24,6 +24,7 @@ public class DeviceManagementService : INotifyPropertyChanged, IDisposable
     private string _heartbeatTopic = "iot/devices/heartbeat";
     private int _heartbeatTimeoutSeconds = 60; // 默认60秒超时
     private bool _isEnabled = false;
+    private bool _disposed = false;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -384,6 +385,30 @@ public class DeviceManagementService : INotifyPropertyChanged, IDisposable
 
     public void Dispose()
     {
-        _heartbeatCheckTimer?.Dispose();
+        if (_disposed)
+            return;
+
+        try
+        {
+            // 同步调用 DisableAsync 以确保资源被释放
+            if (_isEnabled)
+            {
+                DisableAsync().GetAwaiter().GetResult();
+            }
+
+            // 停止并释放定时器
+            _heartbeatCheckTimer?.Stop();
+            _heartbeatCheckTimer?.Dispose();
+
+            _logService?.LogInfo("设备管理服务资源已释放");
+        }
+        catch (Exception ex)
+        {
+            _logService?.LogException(ex, "释放设备管理服务资源时出错");
+        }
+        finally
+        {
+            _disposed = true;
+        }
     }
 }
