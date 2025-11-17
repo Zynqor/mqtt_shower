@@ -375,10 +375,7 @@ public class MainViewModel : INotifyPropertyChanged, IDisposable
         }
     }
 
-
     /// <summary>
-=======
->>>>>>> ddef04b (添加设备自动发现和管理功能)
     /// 连接到 MQTT 服务器
     /// </summary>
     private async void OnConnect()
