@@ -19,12 +19,14 @@ public class CommandSenderViewModel : INotifyPropertyChanged, IDisposable
     private readonly DataProcessingService _dataProcessingService;
     private readonly MqttService _mqttService;
     private readonly LogService _logService;
+    private readonly DeviceManagementService _deviceManagementService;
     private readonly Dictionary<string, CommandState> _pendingCommands = new();
     private readonly System.Timers.Timer _timeoutTimer;
     private readonly HashSet<string> _autoSubscribedTopics = new(); // 记录自动订阅的topic
 
     private const int CommandTimeoutSeconds = 10;
     private string _selectedDeviceId = string.Empty;
+    private DeviceInfo? _selectedDevice = null;
     private string _commandName = string.Empty;
     private string _commandParams = string.Empty;
     private CommandTemplate? _selectedCommandTemplate;
@@ -60,6 +62,33 @@ public class CommandSenderViewModel : INotifyPropertyChanged, IDisposable
     /// 命令历史记录
     /// </summary>
     public ObservableCollection<CommandHistoryItem> CommandHistory { get; } = new();
+
+    /// <summary>
+    /// 设备列表（从DeviceManagementService获取）
+    /// </summary>
+    public ObservableCollection<DeviceInfo> DeviceList => _deviceManagementService.DeviceList;
+
+    /// <summary>
+    /// 选中的设备
+    /// </summary>
+    public DeviceInfo? SelectedDevice
+    {
+        get => _selectedDevice;
+        set
+        {
+            if (_selectedDevice != value)
+            {
+                _selectedDevice = value;
+                OnPropertyChanged();
+
+                // 自动更新SelectedDeviceId
+                if (_selectedDevice != null)
+                {
+                    SelectedDeviceId = _selectedDevice.DeviceId;
+                }
+            }
+        }
+    }
 
     /// <summary>
     /// 选中的设备ID
@@ -113,11 +142,13 @@ public class CommandSenderViewModel : INotifyPropertyChanged, IDisposable
     public CommandSenderViewModel(
         DataProcessingService dataProcessingService,
         MqttService mqttService,
-        LogService logService)
+        LogService logService,
+        DeviceManagementService deviceManagementService)
     {
         _dataProcessingService = dataProcessingService;
         _mqttService = mqttService;
         _logService = logService;
+        _deviceManagementService = deviceManagementService;
 
         // 按钮始终可点击，不检查状态
         SendCommandCommand = new RelayCommand(OnSendCommand);

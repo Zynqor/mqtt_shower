@@ -108,10 +108,28 @@
                 <TextBlock Grid.Row="1" Grid.Column="0"
                           Text="目标设备:" VerticalAlignment="Center"
                           Foreground="#495057" FontSize="13" Margin="0,0,10,12"/>
-                <TextBox Grid.Row="1" Grid.Column="1"
-                        Text="{Binding SelectedDeviceId, UpdateSourceTrigger=PropertyChanged}"
-                        Height="36" Margin="0,0,0,12"
-                        FontSize="13"/>
+                <ComboBox Grid.Row="1" Grid.Column="1"
+                         ItemsSource="{Binding DeviceList}"
+                         SelectedItem="{Binding SelectedDevice}"
+                         Height="36" Margin="0,0,0,12"
+                         FontSize="13"
+                         IsEditable="True"
+                         Text="{Binding SelectedDeviceId, UpdateSourceTrigger=PropertyChanged}"
+                         Padding="8,6"
+                         VerticalContentAlignment="Center">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding DeviceId}" FontWeight="SemiBold" Margin="0,0,10,0"/>
+                                <TextBlock Text="-" Foreground="#6C757D" Margin="0,0,5,0"/>
+                                <TextBlock Text="{Binding DeviceName}" Foreground="#6C757D"/>
+                                <TextBlock Text="(" Foreground="#6C757D" Margin="5,0,2,0"/>
+                                <TextBlock Text="{Binding StatusText}" Foreground="{Binding StatusColor}" FontWeight="SemiBold"/>
+                                <TextBlock Text=")" Foreground="#6C757D" Margin="0,0,5,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
 
                 <!-- 选择命令 -->
                 <TextBlock Grid.Row="2" Grid.Column="0"

@@ -125,6 +125,9 @@
                 <Separator Style="{StaticResource ModernSeparator}"/>
                 <MenuItem Header="退出(_X)" Style="{StaticResource ModernMenuItem}" Command="{Binding ExitCommand}"/>
             </MenuItem>
+            <MenuItem Header="设备(_D)" Style="{StaticResource ModernMenuItem}">
+                <MenuItem Header="设备管理(_M)" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowDeviceListCommand}"/>
+            </MenuItem>
             <MenuItem Header="数据监控(_M)" Style="{StaticResource ModernMenuItem}">
                 <MenuItem Header="历史数据查询(_H)" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowHistoryQueryCommand}"/>
                 <MenuItem Header="历史告警查询(_L)" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowAlarmHistoryQueryCommand}"/>
@@ -135,9 +138,6 @@
             <MenuItem Header="帮助(_H)" Style="{StaticResource ModernMenuItem}">
                 <MenuItem Header="使用说明(_U)" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowUserManualCommand}"/>
                 <MenuItem Header="联系我们(_C)" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowContactUsCommand}"/>
-            </MenuItem>
-            <MenuItem Header="设备(_D)" Padding="10,5">
-                <MenuItem Header="设备管理(_M)" Command="{Binding ShowDeviceListCommand}"/>
             </MenuItem>
         </Menu>
 
