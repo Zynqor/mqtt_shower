@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="图表设置" Height="360" Width="480"
+        Title="{DynamicResource ChartSettings.WindowTitle}" Height="360" Width="480"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         Background="#F8F9FA">
@@ -21,26 +21,26 @@
             </Grid.RowDefinitions>
 
             <!-- 标题 -->
-            <TextBlock Grid.Row="0" Text="图表显示配置"
+            <TextBlock Grid.Row="0" Text="{DynamicResource ChartSettings.Title}"
                        FontSize="18" FontWeight="Bold" Foreground="#212529" Margin="0,0,0,20"/>
 
             <!-- 设置表单 -->
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                 <StackPanel>
                     <!-- 图表最大数据点数量 -->
-                    <Label Content="图表最大数据点数量:" Style="{StaticResource ModernLabel}"/>
+                    <Label Content="{DynamicResource ChartSettings.MaxDataPoints}" Style="{StaticResource ModernLabel}"/>
                     <TextBox Text="{Binding MaxChartDataPoints, UpdateSourceTrigger=PropertyChanged}"
                              Style="{StaticResource ModernTextBox}" Margin="0,0,0,5"/>
-                    <TextBlock Text="图表将显示最近的数据点数量"
+                    <TextBlock Text="{DynamicResource ChartSettings.MaxDataPointsHint}"
                                Foreground="#6C757D" FontSize="11" Margin="0,0,0,20"/>
 
                     <!-- 图表更新间隔 -->
-                    <Label Content="图表更新间隔 (毫秒):" Style="{StaticResource ModernLabel}"/>
+                    <Label Content="{DynamicResource ChartSettings.UpdateInterval}" Style="{StaticResource ModernLabel}"/>
                     <TextBox Text="{Binding ChartUpdateInterval, UpdateSourceTrigger=PropertyChanged}"
                              Style="{StaticResource ModernTextBox}" Margin="0,0,0,5"/>
                     <Border Background="#FFF8E1" BorderBrush="#FFD54F" BorderThickness="1"
                             CornerRadius="4" Padding="10" Margin="0,0,0,10">
-                        <TextBlock Text="💡 建议值: 200-2000 (数值越大性能越好，但实时性越低)"
+                        <TextBlock Text="{DynamicResource ChartSettings.UpdateIntervalHint}"
                                    Foreground="#F57C00" FontSize="11" TextWrapping="Wrap"/>
                     </Border>
                 </StackPanel>
@@ -49,11 +49,11 @@
             <!-- 按钮 -->
             <StackPanel Grid.Row="2" Orientation="Horizontal"
                         HorizontalAlignment="Right" Margin="0,20,0,0">
-                <Button Content="保存" Width="90"
+                <Button Content="{DynamicResource Settings.Save}" Width="90"
                         Command="{Binding SaveCommand}"
                         Style="{StaticResource SuccessButton}"
                         Margin="0,0,10,0"/>
-                <Button Content="取消" Width="90"
+                <Button Content="{DynamicResource Settings.Cancel}" Width="90"
                         Command="{Binding CancelCommand}"
                         Style="{StaticResource SecondaryButton}"/>
             </StackPanel>

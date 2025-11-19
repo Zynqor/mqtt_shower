@@ -130,4 +130,49 @@
     <sys:String x:Key="AlarmStats.AvgDuration">平均持续</sys:String>
     <sys:String x:Key="AlarmStats.NoData">暂无数据</sys:String>
 
+    <!-- Settings Window (MQTT连接设置) -->
+    <sys:String x:Key="Settings.WindowTitle">MQTT 连接设置</sys:String>
+    <sys:String x:Key="Settings.Title">MQTT 服务器连接配置</sys:String>
+    <sys:String x:Key="Settings.Server">服务器地址:</sys:String>
+    <sys:String x:Key="Settings.Port">端口:</sys:String>
+    <sys:String x:Key="Settings.Username">用户名 (可选):</sys:String>
+    <sys:String x:Key="Settings.Password">密码 (可选):</sys:String>
+    <sys:String x:Key="Settings.PasswordToggle">显示/隐藏密码</sys:String>
+    <sys:String x:Key="Settings.ClientId">客户端ID (可选，留空则自动生成):</sys:String>
+    <sys:String x:Key="Settings.BaseTopic">基础 Topic:</sys:String>
+    <sys:String x:Key="Settings.BaseTopicHint">用于命令发送和响应，例如: iot/devices</sys:String>
+    <sys:String x:Key="Settings.TlsConfig">TLS/SSL 加密配置</sys:String>
+    <sys:String x:Key="Settings.EnableTls">启用 TLS/SSL 加密连接 (通常使用8883端口)</sys:String>
+    <sys:String x:Key="Settings.CaCertPath">CA 证书路径 (用于验证服务器):</sys:String>
+    <sys:String x:Key="Settings.ClientCertPath">客户端证书路径 (可选，双向认证时使用):</sys:String>
+    <sys:String x:Key="Settings.ClientKeyPath">客户端私钥路径 (可选，双向认证时使用):</sys:String>
+    <sys:String x:Key="Settings.IgnoreCertErrors">忽略证书错误 (仅用于测试，不推荐生产环境使用)</sys:String>
+    <sys:String x:Key="Settings.Browse">浏览...</sys:String>
+    <sys:String x:Key="Settings.Save">保存</sys:String>
+    <sys:String x:Key="Settings.Cancel">取消</sys:String>
+
+    <!-- Chart Settings Window -->
+    <sys:String x:Key="ChartSettings.WindowTitle">图表设置</sys:String>
+    <sys:String x:Key="ChartSettings.Title">图表显示配置</sys:String>
+    <sys:String x:Key="ChartSettings.MaxDataPoints">图表最大数据点数量:</sys:String>
+    <sys:String x:Key="ChartSettings.MaxDataPointsHint">图表将显示最近的数据点数量</sys:String>
+    <sys:String x:Key="ChartSettings.UpdateInterval">图表更新间隔 (毫秒):</sys:String>
+    <sys:String x:Key="ChartSettings.UpdateIntervalHint">💡 建议值: 200-2000 (数值越大性能越好，但实时性越低)</sys:String>
+
+    <!-- Alert Settings Window -->
+    <sys:String x:Key="AlertSettings.WindowTitle">提醒设置</sys:String>
+    <sys:String x:Key="AlertSettings.Title">告警提醒设置</sys:String>
+    <sys:String x:Key="AlertSettings.SoundSettings">声音设置</sys:String>
+    <sys:String x:Key="AlertSettings.EnableSound">启用声音提醒</sys:String>
+    <sys:String x:Key="AlertSettings.Volume">音量:</sys:String>
+    <sys:String x:Key="AlertSettings.RepeatSound">重复播放告警音</sys:String>
+    <sys:String x:Key="AlertSettings.DefaultRepeatInterval">默认重复间隔:</sys:String>
+    <sys:String x:Key="AlertSettings.Minutes">分钟</sys:String>
+    <sys:String x:Key="AlertSettings.RepeatHint">注意：可在告警配置中单独设置每个测点的重复间隔</sys:String>
+    <sys:String x:Key="AlertSettings.SoundTest">音效测试</sys:String>
+    <sys:String x:Key="AlertSettings.SoundTestHint">点击下方按钮测试音效（使用系统默认音）</sys:String>
+    <sys:String x:Key="AlertSettings.TestAlarm">测试告警音</sys:String>
+    <sys:String x:Key="AlertSettings.TestRecovery">测试恢复音</sys:String>
+    <sys:String x:Key="AlertSettings.CustomSoundHint">提示：您可以将自定义音效文件（WAV格式）放置在程序目录下的Sounds文件夹中，文件名分别为 alarm.wav（告警音）和 recovery.wav（恢复音）</sys:String>
+
 </ResourceDictionary>

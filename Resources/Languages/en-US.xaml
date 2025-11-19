@@ -130,4 +130,49 @@
     <sys:String x:Key="AlarmStats.AvgDuration">Avg Duration</sys:String>
     <sys:String x:Key="AlarmStats.NoData">No Data</sys:String>
 
+    <!-- Settings Window (MQTT Settings) -->
+    <sys:String x:Key="Settings.WindowTitle">MQTT Settings</sys:String>
+    <sys:String x:Key="Settings.Title">MQTT Server Configuration</sys:String>
+    <sys:String x:Key="Settings.Server">Server Address:</sys:String>
+    <sys:String x:Key="Settings.Port">Port:</sys:String>
+    <sys:String x:Key="Settings.Username">Username (Optional):</sys:String>
+    <sys:String x:Key="Settings.Password">Password (Optional):</sys:String>
+    <sys:String x:Key="Settings.PasswordToggle">Show/Hide Password</sys:String>
+    <sys:String x:Key="Settings.ClientId">Client ID (Optional, auto-generated if empty):</sys:String>
+    <sys:String x:Key="Settings.BaseTopic">Base Topic:</sys:String>
+    <sys:String x:Key="Settings.BaseTopicHint">Used for command sending and response, e.g.: iot/devices</sys:String>
+    <sys:String x:Key="Settings.TlsConfig">TLS/SSL Encryption Configuration</sys:String>
+    <sys:String x:Key="Settings.EnableTls">Enable TLS/SSL Encrypted Connection (typically port 8883)</sys:String>
+    <sys:String x:Key="Settings.CaCertPath">CA Certificate Path (for server verification):</sys:String>
+    <sys:String x:Key="Settings.ClientCertPath">Client Certificate Path (Optional, for mutual authentication):</sys:String>
+    <sys:String x:Key="Settings.ClientKeyPath">Client Private Key Path (Optional, for mutual authentication):</sys:String>
+    <sys:String x:Key="Settings.IgnoreCertErrors">Ignore Certificate Errors (for testing only, not recommended for production)</sys:String>
+    <sys:String x:Key="Settings.Browse">Browse...</sys:String>
+    <sys:String x:Key="Settings.Save">Save</sys:String>
+    <sys:String x:Key="Settings.Cancel">Cancel</sys:String>
+
+    <!-- Chart Settings Window -->
+    <sys:String x:Key="ChartSettings.WindowTitle">Chart Settings</sys:String>
+    <sys:String x:Key="ChartSettings.Title">Chart Display Configuration</sys:String>
+    <sys:String x:Key="ChartSettings.MaxDataPoints">Maximum Data Points:</sys:String>
+    <sys:String x:Key="ChartSettings.MaxDataPointsHint">The chart will display the most recent data points</sys:String>
+    <sys:String x:Key="ChartSettings.UpdateInterval">Update Interval (ms):</sys:String>
+    <sys:String x:Key="ChartSettings.UpdateIntervalHint">💡 Suggested: 200-2000 (Higher values improve performance but reduce real-time responsiveness)</sys:String>
+
+    <!-- Alert Settings Window -->
+    <sys:String x:Key="AlertSettings.WindowTitle">Alert Settings</sys:String>
+    <sys:String x:Key="AlertSettings.Title">Alarm Alert Settings</sys:String>
+    <sys:String x:Key="AlertSettings.SoundSettings">Sound Settings</sys:String>
+    <sys:String x:Key="AlertSettings.EnableSound">Enable Sound Alerts</sys:String>
+    <sys:String x:Key="AlertSettings.Volume">Volume:</sys:String>
+    <sys:String x:Key="AlertSettings.RepeatSound">Repeat Alarm Sound</sys:String>
+    <sys:String x:Key="AlertSettings.DefaultRepeatInterval">Default Repeat Interval:</sys:String>
+    <sys:String x:Key="AlertSettings.Minutes">Minutes</sys:String>
+    <sys:String x:Key="AlertSettings.RepeatHint">Note: Repeat intervals can be configured individually for each metric in alarm configuration</sys:String>
+    <sys:String x:Key="AlertSettings.SoundTest">Sound Test</sys:String>
+    <sys:String x:Key="AlertSettings.SoundTestHint">Click the buttons below to test sound effects (using system default sounds)</sys:String>
+    <sys:String x:Key="AlertSettings.TestAlarm">Test Alarm Sound</sys:String>
+    <sys:String x:Key="AlertSettings.TestRecovery">Test Recovery Sound</sys:String>
+    <sys:String x:Key="AlertSettings.CustomSoundHint">Tip: You can place custom sound files (WAV format) in the Sounds folder under the program directory, named alarm.wav (alarm sound) and recovery.wav (recovery sound)</sys:String>
+
 </ResourceDictionary>
