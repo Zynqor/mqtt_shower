@@ -175,4 +175,53 @@
     <sys:String x:Key="AlertSettings.TestRecovery">Test Recovery Sound</sys:String>
     <sys:String x:Key="AlertSettings.CustomSoundHint">Tip: You can place custom sound files (WAV format) in the Sounds folder under the program directory, named alarm.wav (alarm sound) and recovery.wav (recovery sound)</sys:String>
 
+    <!-- Device List Window -->
+    <sys:String x:Key="DeviceList.WindowTitle">Device Management</sys:String>
+    <sys:String x:Key="DeviceList.Title">Device Management</sys:String>
+    <sys:String x:Key="DeviceList.Description">Automatically discover and manage IoT devices via heartbeat reporting</sys:String>
+    <sys:String x:Key="DeviceList.Refresh">Refresh</sys:String>
+    <sys:String x:Key="DeviceList.HeartbeatTimeout">Heartbeat Timeout:</sys:String>
+    <sys:String x:Key="DeviceList.Seconds">seconds</sys:String>
+    <sys:String x:Key="DeviceList.ServiceRunning">Service Running</sys:String>
+    <sys:String x:Key="DeviceList.ServiceNotEnabled">Service Not Enabled</sys:String>
+    <sys:String x:Key="DeviceList.DeviceId">Device ID</sys:String>
+    <sys:String x:Key="DeviceList.DeviceName">Device Name</sys:String>
+    <sys:String x:Key="DeviceList.DeviceType">Device Type</sys:String>
+    <sys:String x:Key="DeviceList.DataTopic">Data Topic</sys:String>
+    <sys:String x:Key="DeviceList.LastHeartbeat">Last Heartbeat</sys:String>
+    <sys:String x:Key="DeviceList.Status">Status</sys:String>
+    <sys:String x:Key="DeviceList.TipTitle">💡 Tips</sys:String>
+
+    <!-- History Query Window -->
+    <sys:String x:Key="HistoryQuery.WindowTitle">History Data Query</sys:String>
+    <sys:String x:Key="HistoryQuery.SelectDevice">Select Device:</sys:String>
+    <sys:String x:Key="HistoryQuery.RefreshDevices">Refresh Devices</sys:String>
+    <sys:String x:Key="HistoryQuery.StartDate">Start Date:</sys:String>
+    <sys:String x:Key="HistoryQuery.EndDate">End Date:</sys:String>
+    <sys:String x:Key="HistoryQuery.Loading">Loading data...</sys:String>
+    <sys:String x:Key="HistoryQuery.Time">Time</sys:String>
+    <sys:String x:Key="HistoryQuery.Query">Query</sys:String>
+    <sys:String x:Key="HistoryQuery.ExportCSV">Export CSV</sys:String>
+
+    <!-- Alarm History Query Window -->
+    <sys:String x:Key="AlarmHistoryQuery.WindowTitle">Alarm History Query</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.SelectDevice">Select Device:</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.RefreshDevices">Refresh Devices</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.AlarmType">Alarm Type:</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.StartTime">Start Time:</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.EndTime">End Time:</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.TimeLabel">Time:</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.Loading">Loading data...</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.TriggerTime">Trigger Time</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.DeviceId">Device ID</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.MetricName">Metric Name</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.AlarmTypeColumn">Alarm Type</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.TriggerValue">Trigger Value</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.Threshold">Threshold</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.Unit">Unit</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.RecoveryTime">Recovery Time</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.StatusColumn">Status</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.Query">Query</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.ExportCSV">Export CSV</sys:String>
+
 </ResourceDictionary>

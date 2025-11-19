@@ -175,4 +175,53 @@
     <sys:String x:Key="AlertSettings.TestRecovery">测试恢复音</sys:String>
     <sys:String x:Key="AlertSettings.CustomSoundHint">提示：您可以将自定义音效文件（WAV格式）放置在程序目录下的Sounds文件夹中，文件名分别为 alarm.wav（告警音）和 recovery.wav（恢复音）</sys:String>
 
+    <!-- Device List Window -->
+    <sys:String x:Key="DeviceList.WindowTitle">设备管理</sys:String>
+    <sys:String x:Key="DeviceList.Title">设备管理</sys:String>
+    <sys:String x:Key="DeviceList.Description">自动发现和管理通过心跳上报的IoT设备</sys:String>
+    <sys:String x:Key="DeviceList.Refresh">刷新</sys:String>
+    <sys:String x:Key="DeviceList.HeartbeatTimeout">心跳超时:</sys:String>
+    <sys:String x:Key="DeviceList.Seconds">秒</sys:String>
+    <sys:String x:Key="DeviceList.ServiceRunning">服务运行中</sys:String>
+    <sys:String x:Key="DeviceList.ServiceNotEnabled">服务未启用</sys:String>
+    <sys:String x:Key="DeviceList.DeviceId">设备ID</sys:String>
+    <sys:String x:Key="DeviceList.DeviceName">设备名称</sys:String>
+    <sys:String x:Key="DeviceList.DeviceType">设备类型</sys:String>
+    <sys:String x:Key="DeviceList.DataTopic">数据Topic</sys:String>
+    <sys:String x:Key="DeviceList.LastHeartbeat">最后心跳</sys:String>
+    <sys:String x:Key="DeviceList.Status">状态</sys:String>
+    <sys:String x:Key="DeviceList.TipTitle">💡 提示</sys:String>
+
+    <!-- History Query Window -->
+    <sys:String x:Key="HistoryQuery.WindowTitle">历史数据查询</sys:String>
+    <sys:String x:Key="HistoryQuery.SelectDevice">选择设备:</sys:String>
+    <sys:String x:Key="HistoryQuery.RefreshDevices">刷新设备</sys:String>
+    <sys:String x:Key="HistoryQuery.StartDate">开始日期:</sys:String>
+    <sys:String x:Key="HistoryQuery.EndDate">结束日期:</sys:String>
+    <sys:String x:Key="HistoryQuery.Loading">正在加载数据...</sys:String>
+    <sys:String x:Key="HistoryQuery.Time">时间</sys:String>
+    <sys:String x:Key="HistoryQuery.Query">查询</sys:String>
+    <sys:String x:Key="HistoryQuery.ExportCSV">导出CSV</sys:String>
+
+    <!-- Alarm History Query Window -->
+    <sys:String x:Key="AlarmHistoryQuery.WindowTitle">历史告警查询</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.SelectDevice">选择设备:</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.RefreshDevices">刷新设备</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.AlarmType">告警类型:</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.StartTime">开始时间:</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.EndTime">结束时间:</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.TimeLabel">时间:</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.Loading">正在加载数据...</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.TriggerTime">触发时间</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.DeviceId">设备ID</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.MetricName">指标名称</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.AlarmTypeColumn">告警类型</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.TriggerValue">触发值</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.Threshold">阈值</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.Unit">单位</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.RecoveryTime">恢复时间</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.StatusColumn">状态</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.Query">查询</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.ExportCSV">导出CSV</sys:String>
+
 </ResourceDictionary>
