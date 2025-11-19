@@ -76,4 +76,18 @@
     <sys:String x:Key="Message.Warning">Warning</sys:String>
     <sys:String x:Key="Message.Info">Info</sys:String>
 
+    <!-- Chart View -->
+    <sys:String x:Key="Chart.Title">Data Chart</sys:String>
+    <sys:String x:Key="Chart.RealtimePoints">(Realtime display of last</sys:String>
+    <sys:String x:Key="Chart.DataPoints">data points)</sys:String>
+    <sys:String x:Key="Chart.Legend">Legend</sys:String>
+    <sys:String x:Key="Chart.Device">Device:</sys:String>
+    <sys:String x:Key="Chart.ShowHide">Show/Hide</sys:String>
+
+    <!-- Table View -->
+    <sys:String x:Key="Table.Title">Device Data Table</sys:String>
+
+    <!-- Log View -->
+    <sys:String x:Key="Log.Title">System Log</sys:String>
+
 </ResourceDictionary>

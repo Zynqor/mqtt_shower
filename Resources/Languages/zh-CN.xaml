@@ -76,4 +76,18 @@
     <sys:String x:Key="Message.Warning">警告</sys:String>
     <sys:String x:Key="Message.Info">提示</sys:String>
 
+    <!-- 图表视图 -->
+    <sys:String x:Key="Chart.Title">数据图表</sys:String>
+    <sys:String x:Key="Chart.RealtimePoints">（实时显示最近</sys:String>
+    <sys:String x:Key="Chart.DataPoints">个数据点）</sys:String>
+    <sys:String x:Key="Chart.Legend">图例</sys:String>
+    <sys:String x:Key="Chart.Device">设备:</sys:String>
+    <sys:String x:Key="Chart.ShowHide">显示/隐藏</sys:String>
+
+    <!-- 表格视图 -->
+    <sys:String x:Key="Table.Title">设备数据表格</sys:String>
+
+    <!-- 日志视图 -->
+    <sys:String x:Key="Log.Title">系统日志</sys:String>
+
 </ResourceDictionary>
