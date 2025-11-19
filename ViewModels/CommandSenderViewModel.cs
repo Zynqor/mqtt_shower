@@ -157,6 +157,15 @@ public class CommandSenderViewModel : INotifyPropertyChanged, IDisposable
         // 订阅命令响应事件
         _dataProcessingService.OnCommandResponseParsed += OnCommandResponseReceived;
 
+        // 订阅设备管理服务的属性变化事件，以便更新DeviceList
+        _deviceManagementService.PropertyChanged += (s, e) =>
+        {
+            if (e.PropertyName == nameof(DeviceManagementService.DeviceList))
+            {
+                OnPropertyChanged(nameof(DeviceList));
+            }
+        };
+
         // 创建超时定时器（每秒检查一次）
         _timeoutTimer = new System.Timers.Timer(1000);
         _timeoutTimer.Elapsed += CheckCommandTimeouts;

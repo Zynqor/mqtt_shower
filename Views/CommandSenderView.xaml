@@ -113,19 +113,18 @@
                          SelectedItem="{Binding SelectedDevice}"
                          Height="36" Margin="0,0,0,12"
                          FontSize="13"
-                         IsEditable="True"
-                         Text="{Binding SelectedDeviceId, UpdateSourceTrigger=PropertyChanged}"
                          BorderBrush="#CED4DA"
                          BorderThickness="1"
-                         Background="White">
+                         Background="White"
+                         VerticalContentAlignment="Center">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" Margin="5,3">
-                                <TextBlock Text="{Binding DeviceId}" FontWeight="SemiBold" Margin="0,0,10,0" Foreground="#212529"/>
-                                <TextBlock Text="-" Foreground="#6C757D" Margin="0,0,5,0"/>
-                                <TextBlock Text="{Binding DeviceName}" Foreground="#495057" Margin="0,0,10,0"/>
-                                <TextBlock Text="[" Foreground="#6C757D" Margin="0,0,2,0"/>
-                                <TextBlock Text="{Binding StatusText}" FontWeight="SemiBold" FontSize="11">
+                                <TextBlock Text="{Binding DeviceId}" FontWeight="SemiBold" Margin="0,0,10,0" Foreground="#212529" VerticalAlignment="Center"/>
+                                <TextBlock Text="-" Foreground="#6C757D" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding DeviceName}" Foreground="#495057" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="[" Foreground="#6C757D" Margin="0,0,2,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding StatusText}" FontWeight="SemiBold" FontSize="11" VerticalAlignment="Center">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Foreground" Value="#DC3545"/>
@@ -137,7 +136,7 @@
                                         </Style>
                                     </TextBlock.Style>
                                 </TextBlock>
-                                <TextBlock Text="]" Foreground="#6C757D" Margin="2,0,0,0"/>
+                                <TextBlock Text="]" Foreground="#6C757D" Margin="2,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
