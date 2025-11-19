@@ -23,6 +23,7 @@ public class MainViewModel : INotifyPropertyChanged, IDisposable
     private readonly LayoutSettingsService _layoutSettingsService;
     private readonly MqttSettings _mqttSettings;
     private readonly DeviceManagementService _deviceManagementService;
+    private readonly LanguageService _languageService;
     private string _connectionStatusText = "未连接";
     private bool _isConnecting = false;
     private int _selectedTabIndex = 0;
@@ -134,8 +135,10 @@ public class MainViewModel : INotifyPropertyChanged, IDisposable
     public ICommand DisconnectCommand { get; }
     public ICommand SubscribeTopicCommand { get; }
     public ICommand UnsubscribeTopicCommand { get; }
+    public ICommand SwitchToChineseCommand { get; }
+    public ICommand SwitchToEnglishCommand { get; }
 
-    public MainViewModel(MqttService mqttService, DataProcessingService dataProcessingService, LogService logService, CsvDataStorageService csvStorageService, EncryptionService encryptionService, LayoutSettingsService layoutSettingsService, MqttSettings mqttSettings, DeviceManagementService deviceManagementService)
+    public MainViewModel(MqttService mqttService, DataProcessingService dataProcessingService, LogService logService, CsvDataStorageService csvStorageService, EncryptionService encryptionService, LayoutSettingsService layoutSettingsService, MqttSettings mqttSettings, DeviceManagementService deviceManagementService, LanguageService languageService)
     {
         _mqttService = mqttService;
         _dataProcessingService = dataProcessingService;
@@ -145,6 +148,7 @@ public class MainViewModel : INotifyPropertyChanged, IDisposable
         _layoutSettingsService = layoutSettingsService;
         _mqttSettings = mqttSettings;
         _deviceManagementService = deviceManagementService;
+        _languageService = languageService;
 
         // 从 MqttSettings 获取标题
         Title = mqttSettings.Title;
@@ -172,6 +176,8 @@ public class MainViewModel : INotifyPropertyChanged, IDisposable
         DisconnectCommand = new RelayCommand(OnDisconnect, CanDisconnect);
         SubscribeTopicCommand = new RelayCommand(OnSubscribeTopic);
         UnsubscribeTopicCommand = new RelayCommand<string>(OnUnsubscribeTopic);
+        SwitchToChineseCommand = new RelayCommand(() => _languageService.SwitchLanguage("zh-CN"));
+        SwitchToEnglishCommand = new RelayCommand(() => _languageService.SwitchLanguage("en-US"));
 
         // 初始化连接状态
         UpdateConnectionStatus();

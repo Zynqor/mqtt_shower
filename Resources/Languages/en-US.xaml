@@ -1,0 +1,79 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- Menu Bar -->
+    <sys:String x:Key="Menu.File">File(_F)</sys:String>
+    <sys:String x:Key="Menu.File.MqttSettings">MQTT Settings(_S)</sys:String>
+    <sys:String x:Key="Menu.File.ChartSettings">Chart Settings(_C)</sys:String>
+    <sys:String x:Key="Menu.File.Exit">Exit(_X)</sys:String>
+
+    <sys:String x:Key="Menu.Device">Device(_D)</sys:String>
+    <sys:String x:Key="Menu.Device.Management">Device Management(_M)</sys:String>
+
+    <sys:String x:Key="Menu.Monitor">Monitor(_M)</sys:String>
+    <sys:String x:Key="Menu.Monitor.HistoryQuery">History Query(_H)</sys:String>
+    <sys:String x:Key="Menu.Monitor.AlarmHistory">Alarm History(_L)</sys:String>
+    <sys:String x:Key="Menu.Monitor.AlarmConfig">Alarm Config(_A)</sys:String>
+    <sys:String x:Key="Menu.Monitor.AlertSettings">Alert Settings(_S)</sys:String>
+
+    <sys:String x:Key="Menu.Help">Help(_H)</sys:String>
+    <sys:String x:Key="Menu.Help.UserManual">User Manual(_U)</sys:String>
+    <sys:String x:Key="Menu.Help.ContactUs">Contact Us(_C)</sys:String>
+    <sys:String x:Key="Menu.Help.Language">Language(_L)</sys:String>
+    <sys:String x:Key="Menu.Help.Language.Chinese">中文</sys:String>
+    <sys:String x:Key="Menu.Help.Language.English">English</sys:String>
+
+    <!-- Status Bar -->
+    <sys:String x:Key="Status.Connection">Connection:</sys:String>
+    <sys:String x:Key="Status.OnlineDevices">Online:</sys:String>
+    <sys:String x:Key="Status.TotalDevices">Total:</sys:String>
+    <sys:String x:Key="Status.Connect">Connect</sys:String>
+    <sys:String x:Key="Status.Disconnect">Disconnect</sys:String>
+
+    <!-- Main Tab -->
+    <sys:String x:Key="Tab.ChartView">Chart View</sys:String>
+    <sys:String x:Key="Tab.TableView">Table View</sys:String>
+    <sys:String x:Key="Tab.CommandSender">Command Sender</sys:String>
+    <sys:String x:Key="Tab.Alarm">Alarm</sys:String>
+    <sys:String x:Key="Tab.Log">Log</sys:String>
+
+    <!-- Topic Subscription -->
+    <sys:String x:Key="Topic.Title">Topic Subscription</sys:String>
+    <sys:String x:Key="Topic.SubscribeNew">Subscribe New Topic:</sys:String>
+    <sys:String x:Key="Topic.Subscribe">Subscribe</sys:String>
+    <sys:String x:Key="Topic.SubscribedList">Subscribed Topics:</sys:String>
+    <sys:String x:Key="Topic.UnsubscribeSelected">Unsubscribe Selected</sys:String>
+
+    <!-- Command Sender Page -->
+    <sys:String x:Key="Command.Title">Command Sender (Lite)</sys:String>
+    <sys:String x:Key="Command.TargetDevice">Target Device:</sys:String>
+    <sys:String x:Key="Command.SelectOperation">Select Operation:</sys:String>
+    <sys:String x:Key="Command.Description">All parameters are pre-configured, just select and send</sys:String>
+    <sys:String x:Key="Command.SendButton">Send Command</sys:String>
+    <sys:String x:Key="Command.HistoryTitle">Command History</sys:String>
+    <sys:String x:Key="Command.ClearHistory">Clear History</sys:String>
+
+    <!-- Command History Table Columns -->
+    <sys:String x:Key="Command.History.Time">Time</sys:String>
+    <sys:String x:Key="Command.History.DeviceId">Device ID</sys:String>
+    <sys:String x:Key="Command.History.CommandName">Command</sys:String>
+    <sys:String x:Key="Command.History.CommandId">Command ID</sys:String>
+    <sys:String x:Key="Command.History.Status">Status</sys:String>
+    <sys:String x:Key="Command.History.ResponseTime">Response Time</sys:String>
+    <sys:String x:Key="Command.History.Result">Result</sys:String>
+
+    <!-- Common Buttons -->
+    <sys:String x:Key="Button.OK">OK</sys:String>
+    <sys:String x:Key="Button.Cancel">Cancel</sys:String>
+    <sys:String x:Key="Button.Apply">Apply</sys:String>
+    <sys:String x:Key="Button.Close">Close</sys:String>
+    <sys:String x:Key="Button.Save">Save</sys:String>
+
+    <!-- Messages -->
+    <sys:String x:Key="Message.Success">Success</sys:String>
+    <sys:String x:Key="Message.Error">Error</sys:String>
+    <sys:String x:Key="Message.Warning">Warning</sys:String>
+    <sys:String x:Key="Message.Info">Info</sys:String>
+
+</ResourceDictionary>

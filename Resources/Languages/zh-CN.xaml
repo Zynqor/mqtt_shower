@@ -1,0 +1,79 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- 菜单栏 -->
+    <sys:String x:Key="Menu.File">文件(_F)</sys:String>
+    <sys:String x:Key="Menu.File.MqttSettings">MQTT 连接设置(_S)</sys:String>
+    <sys:String x:Key="Menu.File.ChartSettings">图表设置(_C)</sys:String>
+    <sys:String x:Key="Menu.File.Exit">退出(_X)</sys:String>
+
+    <sys:String x:Key="Menu.Device">设备(_D)</sys:String>
+    <sys:String x:Key="Menu.Device.Management">设备管理(_M)</sys:String>
+
+    <sys:String x:Key="Menu.Monitor">数据监控(_M)</sys:String>
+    <sys:String x:Key="Menu.Monitor.HistoryQuery">历史数据查询(_H)</sys:String>
+    <sys:String x:Key="Menu.Monitor.AlarmHistory">历史告警查询(_L)</sys:String>
+    <sys:String x:Key="Menu.Monitor.AlarmConfig">告警配置(_A)</sys:String>
+    <sys:String x:Key="Menu.Monitor.AlertSettings">提醒设置(_S)</sys:String>
+
+    <sys:String x:Key="Menu.Help">帮助(_H)</sys:String>
+    <sys:String x:Key="Menu.Help.UserManual">使用说明(_U)</sys:String>
+    <sys:String x:Key="Menu.Help.ContactUs">联系我们(_C)</sys:String>
+    <sys:String x:Key="Menu.Help.Language">语言(_L)</sys:String>
+    <sys:String x:Key="Menu.Help.Language.Chinese">中文</sys:String>
+    <sys:String x:Key="Menu.Help.Language.English">English</sys:String>
+
+    <!-- 状态栏 -->
+    <sys:String x:Key="Status.Connection">连接状态:</sys:String>
+    <sys:String x:Key="Status.OnlineDevices">在线设备:</sys:String>
+    <sys:String x:Key="Status.TotalDevices">总设备数:</sys:String>
+    <sys:String x:Key="Status.Connect">连接</sys:String>
+    <sys:String x:Key="Status.Disconnect">断开</sys:String>
+
+    <!-- 主页面选项卡 -->
+    <sys:String x:Key="Tab.ChartView">图表视图</sys:String>
+    <sys:String x:Key="Tab.TableView">表格视图</sys:String>
+    <sys:String x:Key="Tab.CommandSender">命令发送</sys:String>
+    <sys:String x:Key="Tab.Alarm">告警</sys:String>
+    <sys:String x:Key="Tab.Log">日志</sys:String>
+
+    <!-- Topic订阅管理 -->
+    <sys:String x:Key="Topic.Title">Topic 订阅管理</sys:String>
+    <sys:String x:Key="Topic.SubscribeNew">订阅新 Topic:</sys:String>
+    <sys:String x:Key="Topic.Subscribe">订阅</sys:String>
+    <sys:String x:Key="Topic.SubscribedList">已订阅的 Topics:</sys:String>
+    <sys:String x:Key="Topic.UnsubscribeSelected">取消订阅选中项</sys:String>
+
+    <!-- 命令发送页面 -->
+    <sys:String x:Key="Command.Title">命令发送（极简版）</sys:String>
+    <sys:String x:Key="Command.TargetDevice">目标设备:</sys:String>
+    <sys:String x:Key="Command.SelectOperation">选择操作:</sys:String>
+    <sys:String x:Key="Command.Description">选择操作后直接点击发送，所有参数已预配置</sys:String>
+    <sys:String x:Key="Command.SendButton">发送命令</sys:String>
+    <sys:String x:Key="Command.HistoryTitle">命令历史记录</sys:String>
+    <sys:String x:Key="Command.ClearHistory">清空记录</sys:String>
+
+    <!-- 命令历史表格列 -->
+    <sys:String x:Key="Command.History.Time">时间</sys:String>
+    <sys:String x:Key="Command.History.DeviceId">设备ID</sys:String>
+    <sys:String x:Key="Command.History.CommandName">命令名称</sys:String>
+    <sys:String x:Key="Command.History.CommandId">命令ID</sys:String>
+    <sys:String x:Key="Command.History.Status">状态</sys:String>
+    <sys:String x:Key="Command.History.ResponseTime">响应时间</sys:String>
+    <sys:String x:Key="Command.History.Result">返回结果</sys:String>
+
+    <!-- 通用按钮 -->
+    <sys:String x:Key="Button.OK">确定</sys:String>
+    <sys:String x:Key="Button.Cancel">取消</sys:String>
+    <sys:String x:Key="Button.Apply">应用</sys:String>
+    <sys:String x:Key="Button.Close">关闭</sys:String>
+    <sys:String x:Key="Button.Save">保存</sys:String>
+
+    <!-- 消息提示 -->
+    <sys:String x:Key="Message.Success">成功</sys:String>
+    <sys:String x:Key="Message.Error">错误</sys:String>
+    <sys:String x:Key="Message.Warning">警告</sys:String>
+    <sys:String x:Key="Message.Info">提示</sys:String>
+
+</ResourceDictionary>

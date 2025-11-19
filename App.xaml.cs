@@ -41,6 +41,10 @@ public partial class App : Application
         ConfigureServices(serviceCollection);
         ServiceProvider = serviceCollection.BuildServiceProvider();
 
+        // 初始化语言服务
+        var languageService = ServiceProvider.GetRequiredService<LanguageService>();
+        languageService.Initialize();
+
         // 初始化告警检测服务（需要在启动时订阅事件）
         var alarmDetectionService = ServiceProvider.GetRequiredService<AlarmDetectionService>();
 
@@ -173,6 +177,7 @@ public partial class App : Application
 
         // Register Services
         services.AddSingleton<LogService>();
+        services.AddSingleton<LanguageService>();
         services.AddSingleton<EncryptionService>();
         services.AddSingleton<CsvDataStorageService>();
         services.AddSingleton<HistoryDataStorageService>();

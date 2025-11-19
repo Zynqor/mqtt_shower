@@ -101,12 +101,12 @@
 
                 <!-- 标题 -->
                 <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
-                          Text="命令发送（极简版）" FontSize="16" FontWeight="SemiBold"
+                          Text="{DynamicResource Command.Title}" FontSize="16" FontWeight="SemiBold"
                           Foreground="#212529" Margin="0,0,0,20"/>
 
                 <!-- 设备ID -->
                 <TextBlock Grid.Row="1" Grid.Column="0"
-                          Text="目标设备:" VerticalAlignment="Center"
+                          Text="{DynamicResource Command.TargetDevice}" VerticalAlignment="Center"
                           Foreground="#495057" FontSize="13" Margin="0,0,10,12"/>
                 <ComboBox Grid.Row="1" Grid.Column="1"
                          ItemsSource="{Binding DeviceList}"
@@ -144,7 +144,7 @@
 
                 <!-- 选择命令 -->
                 <TextBlock Grid.Row="2" Grid.Column="0"
-                          Text="选择操作:" VerticalAlignment="Center"
+                          Text="{DynamicResource Command.SelectOperation}" VerticalAlignment="Center"
                           Foreground="#495057" FontSize="13" Margin="0,0,10,12"/>
                 <ComboBox Grid.Row="2" Grid.Column="1"
                          ItemsSource="{Binding CommandTemplates}"
@@ -157,13 +157,13 @@
 
                 <!-- 说明文本 -->
                 <TextBlock Grid.Row="3" Grid.Column="1"
-                          Text="选择操作后直接点击发送，所有参数已预配置"
+                          Text="{DynamicResource Command.Description}"
                           TextWrapping="Wrap" Foreground="#6C757D" FontSize="11"
                           Margin="0,0,0,15"/>
 
                 <!-- 发送按钮 -->
                 <Button Grid.Row="5" Grid.Column="1"
-                       Content="发送命令" Command="{Binding SendCommandCommand}"
+                       Content="{DynamicResource Command.SendButton}" Command="{Binding SendCommandCommand}"
                        Width="130" HorizontalAlignment="Left" Height="36"
                        Style="{StaticResource SendButton}"/>
             </Grid>
@@ -180,9 +180,9 @@
             <Border Grid.Row="0" Background="White" Padding="15,12" CornerRadius="8,8,0,0"
                     BorderBrush="#E0E0E0" BorderThickness="1,1,1,0">
                 <Grid>
-                    <TextBlock Text="命令历史记录" FontSize="15" FontWeight="SemiBold"
+                    <TextBlock Text="{DynamicResource Command.HistoryTitle}" FontSize="15" FontWeight="SemiBold"
                               Foreground="#212529" VerticalAlignment="Center"/>
-                    <Button Content="清空记录" Command="{Binding ClearHistoryCommand}"
+                    <Button Content="{DynamicResource Command.ClearHistory}" Command="{Binding ClearHistoryCommand}"
                            HorizontalAlignment="Right" Width="90" Height="32"
                            Style="{StaticResource ClearButton}"/>
                 </Grid>
@@ -246,13 +246,62 @@
                         </Style>
                     </DataGrid.RowStyle>
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="时间" Binding="{Binding Time, StringFormat='yyyy-MM-dd HH:mm:ss'}" Width="150"/>
-                        <DataGridTextColumn Header="设备ID" Binding="{Binding DeviceId}" Width="150"/>
-                        <DataGridTextColumn Header="命令名称" Binding="{Binding CommandName}" Width="150"/>
-                        <DataGridTextColumn Header="命令ID" Binding="{Binding CommandId}" Width="200"/>
-                        <DataGridTextColumn Header="状态" Binding="{Binding Status}" Width="150"/>
-                        <DataGridTextColumn Header="响应时间" Binding="{Binding ResponseTime, StringFormat='yyyy-MM-dd HH:mm:ss'}" Width="150"/>
-                        <DataGridTextColumn Header="返回结果" Binding="{Binding Result}" Width="*"/>
+                        <DataGridTextColumn Width="150">
+                            <DataGridTextColumn.Header>
+                                <TextBlock Text="{DynamicResource Command.History.Time}"/>
+                            </DataGridTextColumn.Header>
+                            <DataGridTextColumn.Binding>
+                                <Binding Path="Time" StringFormat="yyyy-MM-dd HH:mm:ss"/>
+                            </DataGridTextColumn.Binding>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Width="150">
+                            <DataGridTextColumn.Header>
+                                <TextBlock Text="{DynamicResource Command.History.DeviceId}"/>
+                            </DataGridTextColumn.Header>
+                            <DataGridTextColumn.Binding>
+                                <Binding Path="DeviceId"/>
+                            </DataGridTextColumn.Binding>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Width="150">
+                            <DataGridTextColumn.Header>
+                                <TextBlock Text="{DynamicResource Command.History.CommandName}"/>
+                            </DataGridTextColumn.Header>
+                            <DataGridTextColumn.Binding>
+                                <Binding Path="CommandName"/>
+                            </DataGridTextColumn.Binding>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Width="200">
+                            <DataGridTextColumn.Header>
+                                <TextBlock Text="{DynamicResource Command.History.CommandId}"/>
+                            </DataGridTextColumn.Header>
+                            <DataGridTextColumn.Binding>
+                                <Binding Path="CommandId"/>
+                            </DataGridTextColumn.Binding>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Width="150">
+                            <DataGridTextColumn.Header>
+                                <TextBlock Text="{DynamicResource Command.History.Status}"/>
+                            </DataGridTextColumn.Header>
+                            <DataGridTextColumn.Binding>
+                                <Binding Path="Status"/>
+                            </DataGridTextColumn.Binding>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Width="150">
+                            <DataGridTextColumn.Header>
+                                <TextBlock Text="{DynamicResource Command.History.ResponseTime}"/>
+                            </DataGridTextColumn.Header>
+                            <DataGridTextColumn.Binding>
+                                <Binding Path="ResponseTime" StringFormat="yyyy-MM-dd HH:mm:ss"/>
+                            </DataGridTextColumn.Binding>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Width="*">
+                            <DataGridTextColumn.Header>
+                                <TextBlock Text="{DynamicResource Command.History.Result}"/>
+                            </DataGridTextColumn.Header>
+                            <DataGridTextColumn.Binding>
+                                <Binding Path="Result"/>
+                            </DataGridTextColumn.Binding>
+                        </DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
             </Border>

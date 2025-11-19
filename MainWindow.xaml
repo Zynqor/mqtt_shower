@@ -119,32 +119,37 @@
     <DockPanel>
         <!-- 菜单栏 -->
         <Menu DockPanel.Dock="Top" Style="{StaticResource ModernMenu}">
-            <MenuItem Header="文件(_F)" Style="{StaticResource ModernMenuItem}">
-                <MenuItem Header="MQTT 连接设置(_S)" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowSettingsCommand}"/>
-                <MenuItem Header="图表设置(_C)" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowChartSettingsCommand}"/>
+            <MenuItem Header="{DynamicResource Menu.File}" Style="{StaticResource ModernMenuItem}">
+                <MenuItem Header="{DynamicResource Menu.File.MqttSettings}" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowSettingsCommand}"/>
+                <MenuItem Header="{DynamicResource Menu.File.ChartSettings}" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowChartSettingsCommand}"/>
                 <Separator Style="{StaticResource ModernSeparator}"/>
-                <MenuItem Header="退出(_X)" Style="{StaticResource ModernMenuItem}" Command="{Binding ExitCommand}"/>
+                <MenuItem Header="{DynamicResource Menu.File.Exit}" Style="{StaticResource ModernMenuItem}" Command="{Binding ExitCommand}"/>
             </MenuItem>
-            <MenuItem Header="设备(_D)" Style="{StaticResource ModernMenuItem}">
-                <MenuItem Header="设备管理(_M)" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowDeviceListCommand}"/>
+            <MenuItem Header="{DynamicResource Menu.Device}" Style="{StaticResource ModernMenuItem}">
+                <MenuItem Header="{DynamicResource Menu.Device.Management}" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowDeviceListCommand}"/>
             </MenuItem>
-            <MenuItem Header="数据监控(_M)" Style="{StaticResource ModernMenuItem}">
-                <MenuItem Header="历史数据查询(_H)" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowHistoryQueryCommand}"/>
-                <MenuItem Header="历史告警查询(_L)" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowAlarmHistoryQueryCommand}"/>
+            <MenuItem Header="{DynamicResource Menu.Monitor}" Style="{StaticResource ModernMenuItem}">
+                <MenuItem Header="{DynamicResource Menu.Monitor.HistoryQuery}" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowHistoryQueryCommand}"/>
+                <MenuItem Header="{DynamicResource Menu.Monitor.AlarmHistory}" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowAlarmHistoryQueryCommand}"/>
                 <Separator Style="{StaticResource ModernSeparator}"/>
-                <MenuItem Header="告警配置(_A)" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowAlarmConfigCommand}"/>
-                <MenuItem Header="提醒设置(_S)" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowAlertSettingsCommand}"/>
+                <MenuItem Header="{DynamicResource Menu.Monitor.AlarmConfig}" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowAlarmConfigCommand}"/>
+                <MenuItem Header="{DynamicResource Menu.Monitor.AlertSettings}" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowAlertSettingsCommand}"/>
             </MenuItem>
-            <MenuItem Header="帮助(_H)" Style="{StaticResource ModernMenuItem}">
-                <MenuItem Header="使用说明(_U)" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowUserManualCommand}"/>
-                <MenuItem Header="联系我们(_C)" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowContactUsCommand}"/>
+            <MenuItem Header="{DynamicResource Menu.Help}" Style="{StaticResource ModernMenuItem}">
+                <MenuItem Header="{DynamicResource Menu.Help.UserManual}" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowUserManualCommand}"/>
+                <MenuItem Header="{DynamicResource Menu.Help.ContactUs}" Style="{StaticResource ModernMenuItem}" Command="{Binding ShowContactUsCommand}"/>
+                <Separator Style="{StaticResource ModernSeparator}"/>
+                <MenuItem Header="{DynamicResource Menu.Help.Language}" Style="{StaticResource ModernMenuItem}">
+                    <MenuItem Header="{DynamicResource Menu.Help.Language.Chinese}" Style="{StaticResource ModernMenuItem}" Command="{Binding SwitchToChineseCommand}"/>
+                    <MenuItem Header="{DynamicResource Menu.Help.Language.English}" Style="{StaticResource ModernMenuItem}" Command="{Binding SwitchToEnglishCommand}"/>
+                </MenuItem>
             </MenuItem>
         </Menu>
 
         <!-- 状态栏 -->
         <StatusBar DockPanel.Dock="Bottom" Background="White" BorderBrush="#E0E0E0" BorderThickness="0,1,0,0" Height="40">
             <StatusBarItem>
-                <TextBlock Text="连接状态:" Foreground="#6C757D" FontSize="12"/>
+                <TextBlock Text="{DynamicResource Status.Connection}" Foreground="#6C757D" FontSize="12"/>
             </StatusBarItem>
             <StatusBarItem>
                 <TextBlock Text="{Binding ConnectionStatusText}" FontWeight="Bold" FontSize="12"/>
@@ -156,10 +161,10 @@
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right">
                 <StackPanel Orientation="Horizontal">
-                    <Button Content="连接" Width="70" Margin="5,0"
+                    <Button Content="{DynamicResource Status.Connect}" Width="70" Margin="5,0"
                             Style="{StaticResource ModernButton}"
                             Command="{Binding ConnectCommand}"/>
-                    <Button Content="断开" Width="70" Margin="0,0,5,0"
+                    <Button Content="{DynamicResource Status.Disconnect}" Width="70" Margin="0,0,5,0"
                             Style="{StaticResource SecondaryButton}"
                             Command="{Binding DisconnectCommand}"/>
                 </StackPanel>
@@ -176,19 +181,19 @@
 
             <!-- 左侧：TabControl -->
             <TabControl Grid.Column="0" SelectedIndex="{Binding SelectedTabIndex}">
-                <TabItem x:Name="ChartTabItem" Header="图表视图">
+                <TabItem x:Name="ChartTabItem" Header="{DynamicResource Tab.ChartView}">
                     <!-- ChartView 将通过代码后置添加 -->
                 </TabItem>
-                <TabItem x:Name="TableTabItem" Header="表格视图">
+                <TabItem x:Name="TableTabItem" Header="{DynamicResource Tab.TableView}">
                     <!-- TableView 将通过代码后置添加 -->
                 </TabItem>
-                <TabItem x:Name="CommandSenderTabItem" Header="命令发送">
+                <TabItem x:Name="CommandSenderTabItem" Header="{DynamicResource Tab.CommandSender}">
                     <!-- CommandSenderView 将通过代码后置添加 -->
                 </TabItem>
-                <TabItem x:Name="AlarmTabItem" Header="告警">
+                <TabItem x:Name="AlarmTabItem" Header="{DynamicResource Tab.Alarm}">
                     <!-- AlarmView 将通过代码后置添加 -->
                 </TabItem>
-                <TabItem x:Name="LogTabItem" Header="日志">
+                <TabItem x:Name="LogTabItem" Header="{DynamicResource Tab.Log}">
                     <!-- LogView 将通过代码后置添加 -->
                 </TabItem>
             </TabControl>
@@ -211,22 +216,22 @@
                     </Grid.RowDefinitions>
 
                     <!-- 标题 -->
-                    <TextBlock Grid.Row="0" Text="Topic 订阅管理" FontSize="15" FontWeight="SemiBold"
+                    <TextBlock Grid.Row="0" Text="{DynamicResource Topic.Title}" FontSize="15" FontWeight="SemiBold"
                                Foreground="#212529" Margin="0,0,0,15"/>
 
                     <!-- 订阅输入 -->
                     <StackPanel Grid.Row="1" Margin="0,0,0,15">
-                        <TextBlock Text="订阅新 Topic:" FontWeight="SemiBold" FontSize="12"
+                        <TextBlock Text="{DynamicResource Topic.SubscribeNew}" FontWeight="SemiBold" FontSize="12"
                                    Foreground="#495057" Margin="0,0,0,8"/>
                         <TextBox Text="{Binding NewTopic, UpdateSourceTrigger=PropertyChanged}"
                                  Height="36" Margin="0,0,0,10"/>
-                        <Button Content="订阅" Command="{Binding SubscribeTopicCommand}"
+                        <Button Content="{DynamicResource Topic.Subscribe}" Command="{Binding SubscribeTopicCommand}"
                                 Height="32" Style="{StaticResource ModernButton}"/>
                     </StackPanel>
 
                     <!-- 已订阅列表 -->
                     <DockPanel Grid.Row="2">
-                        <TextBlock DockPanel.Dock="Top" Text="已订阅的 Topics:" FontWeight="SemiBold"
+                        <TextBlock DockPanel.Dock="Top" Text="{DynamicResource Topic.SubscribedList}" FontWeight="SemiBold"
                                    FontSize="12" Foreground="#495057" Margin="0,0,0,8"/>
                         <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4">
                             <ListBox ItemsSource="{Binding SubscribedTopics}"
@@ -244,7 +249,7 @@
                     </DockPanel>
 
                     <!-- 取消订阅按钮 -->
-                    <Button Grid.Row="3" Content="取消订阅选中项" Margin="0,15,0,0" Height="32"
+                    <Button Grid.Row="3" Content="{DynamicResource Topic.UnsubscribeSelected}" Margin="0,15,0,0" Height="32"
                             Style="{StaticResource SecondaryButton}"
                             Command="{Binding UnsubscribeTopicCommand}"
                             CommandParameter="{Binding SelectedItem, ElementName=TopicsListBox}"/>
