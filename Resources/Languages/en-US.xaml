@@ -285,4 +285,36 @@
     <sys:String x:Key="Confirm.Yes">Yes</sys:String>
     <sys:String x:Key="Confirm.No">No</sys:String>
 
+    <!-- Table View -->
+    <sys:String x:Key="Table.DeviceId">Device ID</sys:String>
+
+    <!-- Alarm History Query ComboBox Items -->
+    <sys:String x:Key="AlarmHistoryQuery.AllDevices">All Devices</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.AllTypes">All Types</sys:String>
+
+    <!-- Query Result Messages -->
+    <sys:String x:Key="Query.LoadedRecords">Loaded {0} records</sys:String>
+    <sys:String x:Key="Query.NoRecords">No records found matching the criteria</sys:String>
+
+    <!-- Status Messages -->
+    <sys:String x:Key="Status.DeviceListRefreshed">Device list refreshed</sys:String>
+    <sys:String x:Key="Status.Querying">Querying...</sys:String>
+    <sys:String x:Key="Status.QueryCancelled">Query cancelled</sys:String>
+    <sys:String x:Key="Error.InvalidDateRange">Start time cannot be later than end time</sys:String>
+    <sys:String x:Key="Error.PleaseSelectDevice">Please select a device</sys:String>
+
+    <!-- Chart Labels -->
+    <sys:String x:Key="Chart.AlarmCountTitle">Device/Metric Alarm Count Statistics (Top 20)</sys:String>
+    <sys:String x:Key="Chart.AlarmCountYAxis">Alarm Count</sys:String>
+    <sys:String x:Key="Chart.AlarmTrendTitle">Alarm Trend</sys:String>
+    <sys:String x:Key="Chart.TimeXAxis">Time</sys:String>
+    <sys:String x:Key="Chart.AlarmTypeTitle">Alarm Type Distribution</sys:String>
+    <sys:String x:Key="Chart.TimesUnit">times</sys:String>
+    <sys:String x:Key="Chart.AlarmCountLabel">Alarm Count</sys:String>
+    <sys:String x:Key="Chart.Device">Device</sys:String>
+    <sys:String x:Key="Chart.Metric">Metric</sys:String>
+    <sys:String x:Key="Chart.Time">Time</sys:String>
+    <sys:String x:Key="Chart.Value">Value</sys:String>
+    <sys:String x:Key="Chart.Offset">Offset</sys:String>
+
 </ResourceDictionary>

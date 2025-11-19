@@ -285,4 +285,36 @@
     <sys:String x:Key="Confirm.Yes">是</sys:String>
     <sys:String x:Key="Confirm.No">否</sys:String>
 
+    <!-- Table View -->
+    <sys:String x:Key="Table.DeviceId">设备ID</sys:String>
+
+    <!-- Alarm History Query ComboBox Items -->
+    <sys:String x:Key="AlarmHistoryQuery.AllDevices">全部设备</sys:String>
+    <sys:String x:Key="AlarmHistoryQuery.AllTypes">全部类型</sys:String>
+
+    <!-- Query Result Messages -->
+    <sys:String x:Key="Query.LoadedRecords">已加载 {0} 条记录</sys:String>
+    <sys:String x:Key="Query.NoRecords">未找到符合条件的记录</sys:String>
+
+    <!-- Status Messages -->
+    <sys:String x:Key="Status.DeviceListRefreshed">设备列表已刷新</sys:String>
+    <sys:String x:Key="Status.Querying">正在查询...</sys:String>
+    <sys:String x:Key="Status.QueryCancelled">查询已取消</sys:String>
+    <sys:String x:Key="Error.InvalidDateRange">开始时间不能晚于结束时间</sys:String>
+    <sys:String x:Key="Error.PleaseSelectDevice">请选择设备</sys:String>
+
+    <!-- Chart Labels -->
+    <sys:String x:Key="Chart.AlarmCountTitle">设备/测点告警次数统计（Top 20）</sys:String>
+    <sys:String x:Key="Chart.AlarmCountYAxis">告警次数</sys:String>
+    <sys:String x:Key="Chart.AlarmTrendTitle">告警趋势</sys:String>
+    <sys:String x:Key="Chart.TimeXAxis">时间</sys:String>
+    <sys:String x:Key="Chart.AlarmTypeTitle">告警类型分布</sys:String>
+    <sys:String x:Key="Chart.TimesUnit">次</sys:String>
+    <sys:String x:Key="Chart.AlarmCountLabel">告警次数</sys:String>
+    <sys:String x:Key="Chart.Device">设备</sys:String>
+    <sys:String x:Key="Chart.Metric">测点</sys:String>
+    <sys:String x:Key="Chart.Time">时间</sys:String>
+    <sys:String x:Key="Chart.Value">数值</sys:String>
+    <sys:String x:Key="Chart.Offset">偏移</sys:String>
+
 </ResourceDictionary>

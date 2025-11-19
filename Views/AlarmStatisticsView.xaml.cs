@@ -14,6 +14,11 @@ public partial class AlarmStatisticsView : UserControl
     private Crosshair? _trendChartCrosshair;
     private Text? _trendChartLabel;
 
+    private static string GetResourceString(string key, string fallback = "")
+    {
+        return System.Windows.Application.Current?.TryFindResource(key) as string ?? fallback;
+    }
+
     public AlarmStatisticsView(AlarmStatisticsViewModel viewModel)
     {
         InitializeComponent();
@@ -53,8 +58,8 @@ public partial class AlarmStatisticsView : UserControl
 
         // 设置柱状图样式
         AlarmCountChart.Plot.Font.Automatic();
-        AlarmCountChart.Plot.Title("设备/测点告警次数统计（Top 20）");
-        AlarmCountChart.Plot.YLabel("告警次数");
+        AlarmCountChart.Plot.Title(GetResourceString("Chart.AlarmCountTitle", "设备/测点告警次数统计（Top 20）"));
+        AlarmCountChart.Plot.YLabel(GetResourceString("Chart.AlarmCountYAxis", "告警次数"));
         AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.Rotation = 0;
         AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.Alignment = Alignment.UpperCenter;
         AlarmCountChart.Plot.Axes.Bottom.TickLabelStyle.FontName = fontName;
@@ -65,15 +70,15 @@ public partial class AlarmStatisticsView : UserControl
 
         // 设置折线图样式
         AlarmTrendChart.Plot.Font.Automatic();
-        AlarmTrendChart.Plot.Title("告警趋势");
-        AlarmTrendChart.Plot.XLabel("时间");
-        AlarmTrendChart.Plot.YLabel("告警次数");
+        AlarmTrendChart.Plot.Title(GetResourceString("Chart.AlarmTrendTitle", "告警趋势"));
+        AlarmTrendChart.Plot.XLabel(GetResourceString("Chart.TimeXAxis", "时间"));
+        AlarmTrendChart.Plot.YLabel(GetResourceString("Chart.AlarmCountYAxis", "告警次数"));
         AlarmTrendChart.Plot.Axes.Bottom.TickLabelStyle.FontName = fontName;
         AlarmTrendChart.Plot.Axes.Left.TickLabelStyle.FontName = fontName;
 
         // 设置饼图样式
         AlarmTypeChart.Plot.Font.Automatic();
-        AlarmTypeChart.Plot.Title("告警类型分布");
+        AlarmTypeChart.Plot.Title(GetResourceString("Chart.AlarmTypeTitle", "告警类型分布"));
     }
 
     private void OnAlarmCountsChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -229,7 +234,8 @@ public partial class AlarmStatisticsView : UserControl
 
         // 准备数据
         var values = data.Select(x => (double)x.Count).ToArray();
-        var labels = data.Select(x => $"{x.TypeName}\n{x.Count}次 ({x.Percentage:F1}%)").ToArray();
+        var timesUnit = GetResourceString("Chart.TimesUnit", "次");
+        var labels = data.Select(x => $"{x.TypeName}\n{x.Count}{timesUnit} ({x.Percentage:F1}%)").ToArray();
 
         // 添加饼图
         var pie = AlarmTypeChart.Plot.Add.Pie(values);
@@ -302,7 +308,8 @@ public partial class AlarmStatisticsView : UserControl
                 // 更新标签
                 var time = data[nearestIndex].Time;
                 var count = data[nearestIndex].Count;
-                _trendChartLabel.LabelText = $"{time:yyyy-MM-dd HH:mm}\n告警次数: {count}";
+                var countLabel = GetResourceString("Chart.AlarmCountLabel", "告警次数");
+                _trendChartLabel.LabelText = $"{time:yyyy-MM-dd HH:mm}\n{countLabel}: {count}";
                 _trendChartLabel.Location = new Coordinates(times[nearestIndex], counts[nearestIndex]);
                 _trendChartLabel.OffsetY = -40; // 向上偏移，避免遮挡数据点
                 _trendChartLabel.IsVisible = true;

@@ -37,6 +37,11 @@ public class ChartViewModel : INotifyPropertyChanged, IDisposable
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
+    private static string GetResourceString(string key, string fallback = "")
+    {
+        return System.Windows.Application.Current?.TryFindResource(key) as string ?? fallback;
+    }
+
     /// <summary>
     /// 存储每条曲线的绘图对象和数据
     /// </summary>
@@ -692,14 +697,20 @@ public class ChartViewModel : INotifyPropertyChanged, IDisposable
                     var time = DateTime.FromOADate(nearestX);
 
                     // 更新标签
-                    var labelText = $"设备: {nearestDeviceId}\n" +
-                                  $"测点: {nearestMetricName}\n" +
-                                  $"时间: {time:HH:mm:ss}\n" +
-                                  $"数值: {originalValue:F2}";
+                    var deviceLabel = GetResourceString("Chart.Device", "设备");
+                    var metricLabel = GetResourceString("Chart.Metric", "测点");
+                    var timeLabel = GetResourceString("Chart.Time", "时间");
+                    var valueLabel = GetResourceString("Chart.Value", "数值");
+                    var offsetLabel = GetResourceString("Chart.Offset", "偏移");
+
+                    var labelText = $"{deviceLabel}: {nearestDeviceId}\n" +
+                                  $"{metricLabel}: {nearestMetricName}\n" +
+                                  $"{timeLabel}: {time:HH:mm:ss}\n" +
+                                  $"{valueLabel}: {originalValue:F2}";
 
                     if (Math.Abs(offset) > 0.001)
                     {
-                        labelText += $"\n偏移: {offset:+0.##;-0.##;0}";
+                        labelText += $"\n{offsetLabel}: {offset:+0.##;-0.##;0}";
                     }
 
                     _hoverLabel.LabelText = labelText;

@@ -31,6 +31,11 @@ public class HistoryQueryViewModel : INotifyPropertyChanged, IDisposable
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
+    private static string GetResourceString(string key, string fallback = "")
+    {
+        return System.Windows.Application.Current?.TryFindResource(key) as string ?? fallback;
+    }
+
     /// <summary>
     /// 开始日期
     /// </summary>
@@ -196,7 +201,7 @@ public class HistoryQueryViewModel : INotifyPropertyChanged, IDisposable
     private void OnRefreshDevices()
     {
         LoadAvailableDevices();
-        StatusMessage = "设备列表已刷新";
+        StatusMessage = GetResourceString("Status.DeviceListRefreshed", "设备列表已刷新");
     }
 
     /// <summary>
@@ -206,13 +211,13 @@ public class HistoryQueryViewModel : INotifyPropertyChanged, IDisposable
     {
         if (string.IsNullOrEmpty(SelectedDevice))
         {
-            StatusMessage = "请选择设备";
+            StatusMessage = GetResourceString("Error.PleaseSelectDevice", "请选择设备");
             return;
         }
 
         if (StartDate > EndDate)
         {
-            StatusMessage = "开始日期不能晚于结束日期";
+            StatusMessage = GetResourceString("Error.InvalidDateRange", "开始日期不能晚于结束日期");
             return;
         }
 
@@ -225,7 +230,7 @@ public class HistoryQueryViewModel : INotifyPropertyChanged, IDisposable
         try
         {
             IsLoading = true;
-            StatusMessage = "正在查询SQLite数据库...";
+            StatusMessage = GetResourceString("Status.Querying", "正在查询...");
             HistoryData.Clear();
 
             // 设置时间范围：开始日期 00:00:00，结束日期 23:59:59
@@ -268,13 +273,22 @@ public class HistoryQueryViewModel : INotifyPropertyChanged, IDisposable
                 .ToList();
 
             HistoryData = new ObservableCollection<HistoryDataRow>(groupedData);
-            StatusMessage = $"查询完成，共 {HistoryData.Count} 条记录（{StartDate:yyyy-MM-dd} 00:00:00 至 {EndDate:yyyy-MM-dd} 23:59:59）";
+
+            if (HistoryData.Count > 0)
+            {
+                var template = GetResourceString("Query.LoadedRecords", "已加载 {0} 条记录");
+                StatusMessage = string.Format(template, HistoryData.Count);
+            }
+            else
+            {
+                StatusMessage = GetResourceString("Query.NoRecords", "未找到符合条件的记录");
+            }
 
             (ExportCommand as RelayCommand)?.NotifyCanExecuteChanged();
         }
         catch (OperationCanceledException)
         {
-            StatusMessage = "查询已取消";
+            StatusMessage = GetResourceString("Status.QueryCancelled", "查询已取消");
             _logService.LogInfo("历史数据查询被取消");
         }
         catch (Exception ex)

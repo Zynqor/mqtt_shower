@@ -21,8 +21,8 @@ public class AlarmHistoryQueryViewModel : INotifyPropertyChanged, IDisposable
     private readonly AlarmDatabaseService _alarmDatabaseService;
     private DateTime _startDateTime = DateTime.Today;
     private DateTime _endDateTime = DateTime.Now;
-    private string _selectedDevice = "全部";
-    private string _selectedAlarmType = "全部";
+    private string _selectedDevice = GetResourceString("AlarmHistoryQuery.AllDevices");
+    private string _selectedAlarmType = GetResourceString("AlarmHistoryQuery.AllTypes");
     private ObservableCollection<string> _availableDevices = new();
     private ObservableCollection<AlarmRecord> _alarmRecords = new();
     private bool _isLoading = false;
@@ -114,12 +114,12 @@ public class AlarmHistoryQueryViewModel : INotifyPropertyChanged, IDisposable
     /// <summary>
     /// 告警类型列表
     /// </summary>
-    public ObservableCollection<string> AlarmTypes { get; } = new()
+    public ObservableCollection<string> AlarmTypes { get; }
+
+    private static string GetResourceString(string key, string fallback = "")
     {
-        "全部",
-        "上限告警",
-        "下限告警"
-    };
+        return System.Windows.Application.Current?.TryFindResource(key) as string ?? fallback;
+    }
 
     /// <summary>
     /// 告警记录
@@ -179,6 +179,14 @@ public class AlarmHistoryQueryViewModel : INotifyPropertyChanged, IDisposable
         _logService = logService;
         _alarmDatabaseService = alarmDatabaseService;
 
+        // 初始化告警类型列表
+        AlarmTypes = new ObservableCollection<string>
+        {
+            GetResourceString("AlarmHistoryQuery.AllTypes", "全部"),
+            GetResourceString("AlarmType.UpperLimit", "上限告警"),
+            GetResourceString("AlarmType.LowerLimit", "下限告警")
+        };
+
         // 初始化命令
         QueryCommand = new RelayCommand(OnQuery);
         ExportCommand = new RelayCommand(OnExport, CanExport);
@@ -197,9 +205,10 @@ public class AlarmHistoryQueryViewModel : INotifyPropertyChanged, IDisposable
         {
             var devices = await _alarmDatabaseService.GetAllDeviceIdsAsync();
 
-            AvailableDevices = new ObservableCollection<string>(new[] { "全部" }.Concat(devices.OrderBy(d => d)));
+            var allDevicesText = GetResourceString("AlarmHistoryQuery.AllDevices", "全部");
+            AvailableDevices = new ObservableCollection<string>(new[] { allDevicesText }.Concat(devices.OrderBy(d => d)));
 
-            if (AvailableDevices.Count > 0 && SelectedDevice == "全部")
+            if (AvailableDevices.Count > 0 && SelectedDevice == allDevicesText)
             {
                 // 保持"全部"选中
             }
@@ -218,7 +227,7 @@ public class AlarmHistoryQueryViewModel : INotifyPropertyChanged, IDisposable
     private void OnRefreshDevices()
     {
         LoadAvailableDevices();
-        StatusMessage = "设备列表已刷新";
+        StatusMessage = GetResourceString("Status.DeviceListRefreshed", "设备列表已刷新");
     }
 
     /// <summary>
@@ -228,7 +237,7 @@ public class AlarmHistoryQueryViewModel : INotifyPropertyChanged, IDisposable
     {
         if (StartDateTime > EndDateTime)
         {
-            StatusMessage = "开始时间不能晚于结束时间";
+            StatusMessage = GetResourceString("Error.InvalidDateRange", "开始时间不能晚于结束时间");
             return;
         }
 
@@ -241,19 +250,19 @@ public class AlarmHistoryQueryViewModel : INotifyPropertyChanged, IDisposable
         try
         {
             IsLoading = true;
-            StatusMessage = "正在查询...";
+            StatusMessage = GetResourceString("Status.Querying", "正在查询...");
             AlarmRecords.Clear();
 
             // 确定查询的设备ID
-            string? deviceId = SelectedDevice == "全部" ? null : SelectedDevice;
+            var allDevicesText = GetResourceString("AlarmHistoryQuery.AllDevices", "全部");
+            string? deviceId = SelectedDevice == allDevicesText ? null : SelectedDevice;
 
             // 确定查询的告警类型
-            AlarmType? alarmType = SelectedAlarmType switch
-            {
-                "上限告警" => AlarmType.UpperLimit,
-                "下限告警" => AlarmType.LowerLimit,
-                _ => null
-            };
+            var upperLimitText = GetResourceString("AlarmType.UpperLimit", "上限告警");
+            var lowerLimitText = GetResourceString("AlarmType.LowerLimit", "下限告警");
+            AlarmType? alarmType = SelectedAlarmType == upperLimitText ? AlarmType.UpperLimit :
+                                   SelectedAlarmType == lowerLimitText ? AlarmType.LowerLimit :
+                                   null;
 
             // 查询数据库（使用Task.Run以支持取消）
             var records = await System.Threading.Tasks.Task.Run(async () =>
@@ -270,15 +279,24 @@ public class AlarmHistoryQueryViewModel : INotifyPropertyChanged, IDisposable
 
             AlarmRecords = new ObservableCollection<AlarmRecord>(records);
 
-            var deviceFilter = deviceId ?? "全部设备";
+            var deviceFilter = deviceId ?? GetResourceString("AlarmHistoryQuery.AllDevices", "全部设备");
             var typeFilter = SelectedAlarmType;
-            StatusMessage = $"查询完成，共 {AlarmRecords.Count} 条记录（{deviceFilter}，{typeFilter}，{StartDateTime:yyyy-MM-dd HH:mm:ss} 至 {EndDateTime:yyyy-MM-dd HH:mm:ss}）";
+
+            if (AlarmRecords.Count > 0)
+            {
+                var template = GetResourceString("Query.LoadedRecords", "已加载 {0} 条记录");
+                StatusMessage = string.Format(template, AlarmRecords.Count);
+            }
+            else
+            {
+                StatusMessage = GetResourceString("Query.NoRecords", "未找到符合条件的记录");
+            }
 
             (ExportCommand as RelayCommand)?.NotifyCanExecuteChanged();
         }
         catch (OperationCanceledException)
         {
-            StatusMessage = "查询已取消";
+            StatusMessage = GetResourceString("Status.QueryCancelled", "查询已取消");
             _logService.LogInfo("历史告警查询被取消");
         }
         catch (Exception ex)

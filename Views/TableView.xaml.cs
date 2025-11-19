@@ -41,9 +41,10 @@ public partial class TableView : UserControl
         DataGrid.Columns.Clear();
 
         // 添加设备ID列
+        var deviceIdHeader = System.Windows.Application.Current?.TryFindResource("Table.DeviceId") as string ?? "设备ID";
         DataGrid.Columns.Add(new DataGridTextColumn
         {
-            Header = "设备ID",
+            Header = deviceIdHeader,
             Binding = new Binding("DeviceId"),
             Width = new DataGridLength(150)
         });
