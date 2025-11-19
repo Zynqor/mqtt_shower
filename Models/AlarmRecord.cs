@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
 
 namespace MqttMonitor.Models;
 
@@ -144,12 +145,19 @@ public class AlarmRecord : INotifyPropertyChanged
     /// <summary>
     /// 状态文本
     /// </summary>
-    public string StatusText => Status switch
+    public string StatusText
     {
-        AlarmStatus.Active => "持续中",
-        AlarmStatus.Recovered => "已恢复",
-        _ => "未知"
-    };
+        get
+        {
+            var resourceKey = Status switch
+            {
+                AlarmStatus.Active => "AlarmStatus.Active",
+                AlarmStatus.Recovered => "AlarmStatus.Recovered",
+                _ => "AlarmStatus.Unknown"
+            };
+            return Application.Current?.TryFindResource(resourceKey) as string ?? resourceKey;
+        }
+    }
 
     /// <summary>
     /// 告警描述
@@ -158,7 +166,10 @@ public class AlarmRecord : INotifyPropertyChanged
     {
         get
         {
-            var typeText = AlarmType == AlarmType.UpperLimit ? "超上限" : "低于下限";
+            var resourceKey = AlarmType == AlarmType.UpperLimit
+                ? "AlarmDescription.ExceedsUpperLimit"
+                : "AlarmDescription.BelowLowerLimit";
+            var typeText = Application.Current?.TryFindResource(resourceKey) as string ?? resourceKey;
             return $"{DeviceId} - {MetricName} {typeText}";
         }
     }

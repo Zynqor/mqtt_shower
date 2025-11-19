@@ -191,6 +191,9 @@
     <sys:String x:Key="DeviceList.LastHeartbeat">最后心跳</sys:String>
     <sys:String x:Key="DeviceList.Status">状态</sys:String>
     <sys:String x:Key="DeviceList.TipTitle">💡 提示</sys:String>
+    <sys:String x:Key="DeviceList.Online">在线:</sys:String>
+    <sys:String x:Key="DeviceList.Total">总计:</sys:String>
+    <sys:String x:Key="DeviceList.NoActiveAlarms">✓ 当前无活动告警</sys:String>
 
     <!-- History Query Window -->
     <sys:String x:Key="HistoryQuery.WindowTitle">历史数据查询</sys:String>
@@ -223,5 +226,63 @@
     <sys:String x:Key="AlarmHistoryQuery.StatusColumn">状态</sys:String>
     <sys:String x:Key="AlarmHistoryQuery.Query">查询</sys:String>
     <sys:String x:Key="AlarmHistoryQuery.ExportCSV">导出CSV</sys:String>
+
+    <!-- Device List Tips -->
+    <sys:String x:Key="DeviceList.Tip1Part1">• 设备通过发送心跳消息到 Topic:</sys:String>
+    <sys:String x:Key="DeviceList.Tip1Part2">进行自动注册</sys:String>
+    <sys:String x:Key="DeviceList.Tip2">• 心跳消息格式: {"deviceId": "设备ID", "dataTopic": "数据Topic", "deviceName": "设备名称(可选)", "deviceType": "设备类型(可选)"}</sys:String>
+    <sys:String x:Key="DeviceList.Tip3Part1">• 设备超过</sys:String>
+    <sys:String x:Key="DeviceList.Tip3Part2">秒未发送心跳将被标记为离线</sys:String>
+    <sys:String x:Key="DeviceList.Tip4">• 系统会自动订阅设备的数据Topic，无需手动订阅</sys:String>
+
+    <!-- Alarm Config Window -->
+    <sys:String x:Key="AlarmConfig.WindowTitle">告警配置</sys:String>
+    <sys:String x:Key="AlarmConfig.DeviceMetricList">设备/测点列表</sys:String>
+    <sys:String x:Key="AlarmConfig.EnableAll">全部启用</sys:String>
+    <sys:String x:Key="AlarmConfig.DisableAll">全部禁用</sys:String>
+    <sys:String x:Key="AlarmConfig.SelectMetricHint">← 请在左侧选择一个测点以配置告警参数</sys:String>
+    <sys:String x:Key="AlarmConfig.ParameterSettings">告警参数设置</sys:String>
+    <sys:String x:Key="AlarmConfig.EnableAlarm">启用告警</sys:String>
+    <sys:String x:Key="AlarmConfig.UpperLimitAlarm">上限告警</sys:String>
+    <sys:String x:Key="AlarmConfig.EnableUpperLimit">启用上限告警</sys:String>
+    <sys:String x:Key="AlarmConfig.UpperValue">上限值:</sys:String>
+    <sys:String x:Key="AlarmConfig.LowerLimitAlarm">下限告警</sys:String>
+    <sys:String x:Key="AlarmConfig.EnableLowerLimit">启用下限告警</sys:String>
+    <sys:String x:Key="AlarmConfig.LowerValue">下限值:</sys:String>
+    <sys:String x:Key="AlarmConfig.DurationSettings">持续时长设置</sys:String>
+    <sys:String x:Key="AlarmConfig.DurationHint">避免瞬时波动触发告警</sys:String>
+    <sys:String x:Key="AlarmConfig.Duration">持续时长:</sys:String>
+    <sys:String x:Key="AlarmConfig.Seconds">秒</sys:String>
+    <sys:String x:Key="AlarmConfig.NotificationMethod">通知方式</sys:String>
+    <sys:String x:Key="AlarmConfig.VisualAlert">视觉提醒 (表格变红+闪烁)</sys:String>
+    <sys:String x:Key="AlarmConfig.SoundAlert">声音提醒</sys:String>
+    <sys:String x:Key="AlarmConfig.RepeatInterval">重复间隔:</sys:String>
+    <sys:String x:Key="AlarmConfig.Minutes">分钟</sys:String>
+    <sys:String x:Key="AlarmConfig.RepeatHint">告警音每隔N分钟重复提醒，直到用户确认或告警恢复</sys:String>
+
+    <!-- Contact Us Window -->
+    <sys:String x:Key="ContactUs.WindowTitle">联系我们</sys:String>
+    <sys:String x:Key="ContactUs.Title">联系方式</sys:String>
+    <sys:String x:Key="ContactUs.CompanyName">公司名称:</sys:String>
+    <sys:String x:Key="ContactUs.CompanyAddress">公司地址:</sys:String>
+    <sys:String x:Key="ContactUs.CompanyPhone">联系电话:</sys:String>
+    <sys:String x:Key="ContactUs.CompanyEmail">电子邮箱:</sys:String>
+    <sys:String x:Key="ContactUs.CopyHint">💡 提示：您可以选中并复制以上信息</sys:String>
+
+    <!-- Alarm Status and Type -->
+    <sys:String x:Key="AlarmStatus.Active">持续中</sys:String>
+    <sys:String x:Key="AlarmStatus.Recovered">已恢复</sys:String>
+    <sys:String x:Key="AlarmStatus.Unknown">未知</sys:String>
+    <sys:String x:Key="AlarmType.UpperLimit">上限告警</sys:String>
+    <sys:String x:Key="AlarmType.LowerLimit">下限告警</sys:String>
+    <sys:String x:Key="AlarmType.Unknown">未知</sys:String>
+    <sys:String x:Key="AlarmDescription.ExceedsUpperLimit">超上限</sys:String>
+    <sys:String x:Key="AlarmDescription.BelowLowerLimit">低于下限</sys:String>
+
+    <!-- Confirmation Dialog -->
+    <sys:String x:Key="Confirm.Title">确认</sys:String>
+    <sys:String x:Key="Confirm.ClearHistory">确定要清空所有历史告警记录吗？</sys:String>
+    <sys:String x:Key="Confirm.Yes">是</sys:String>
+    <sys:String x:Key="Confirm.No">否</sys:String>
 
 </ResourceDictionary>

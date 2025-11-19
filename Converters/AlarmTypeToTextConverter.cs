@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
 using MqttMonitor.Models;
 
@@ -14,14 +15,16 @@ public class AlarmTypeToTextConverter : IValueConverter
     {
         if (value is AlarmType alarmType)
         {
-            return alarmType switch
+            var resourceKey = alarmType switch
             {
-                AlarmType.UpperLimit => "上限告警",
-                AlarmType.LowerLimit => "下限告警",
-                _ => "未知"
+                AlarmType.UpperLimit => "AlarmType.UpperLimit",
+                AlarmType.LowerLimit => "AlarmType.LowerLimit",
+                _ => "AlarmType.Unknown"
             };
+
+            return Application.Current?.TryFindResource(resourceKey) as string ?? resourceKey;
         }
-        return "未知";
+        return Application.Current?.TryFindResource("AlarmType.Unknown") as string ?? "Unknown";
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

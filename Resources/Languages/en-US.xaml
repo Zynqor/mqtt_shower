@@ -191,6 +191,9 @@
     <sys:String x:Key="DeviceList.LastHeartbeat">Last Heartbeat</sys:String>
     <sys:String x:Key="DeviceList.Status">Status</sys:String>
     <sys:String x:Key="DeviceList.TipTitle">💡 Tips</sys:String>
+    <sys:String x:Key="DeviceList.Online">Online:</sys:String>
+    <sys:String x:Key="DeviceList.Total">Total:</sys:String>
+    <sys:String x:Key="DeviceList.NoActiveAlarms">✓ No active alarms</sys:String>
 
     <!-- History Query Window -->
     <sys:String x:Key="HistoryQuery.WindowTitle">History Data Query</sys:String>
@@ -223,5 +226,63 @@
     <sys:String x:Key="AlarmHistoryQuery.StatusColumn">Status</sys:String>
     <sys:String x:Key="AlarmHistoryQuery.Query">Query</sys:String>
     <sys:String x:Key="AlarmHistoryQuery.ExportCSV">Export CSV</sys:String>
+
+    <!-- Device List Tips -->
+    <sys:String x:Key="DeviceList.Tip1Part1">• Devices register automatically by sending heartbeat messages to Topic:</sys:String>
+    <sys:String x:Key="DeviceList.Tip1Part2"></sys:String>
+    <sys:String x:Key="DeviceList.Tip2">• Heartbeat message format: {"deviceId": "Device ID", "dataTopic": "Data Topic", "deviceName": "Device Name (Optional)", "deviceType": "Device Type (Optional)"}</sys:String>
+    <sys:String x:Key="DeviceList.Tip3Part1">• Devices that haven't sent heartbeat for more than</sys:String>
+    <sys:String x:Key="DeviceList.Tip3Part2">seconds will be marked as offline</sys:String>
+    <sys:String x:Key="DeviceList.Tip4">• The system automatically subscribes to device data topics, no manual subscription needed</sys:String>
+
+    <!-- Alarm Config Window -->
+    <sys:String x:Key="AlarmConfig.WindowTitle">Alarm Configuration</sys:String>
+    <sys:String x:Key="AlarmConfig.DeviceMetricList">Device/Metric List</sys:String>
+    <sys:String x:Key="AlarmConfig.EnableAll">Enable All</sys:String>
+    <sys:String x:Key="AlarmConfig.DisableAll">Disable All</sys:String>
+    <sys:String x:Key="AlarmConfig.SelectMetricHint">← Please select a metric on the left to configure alarm parameters</sys:String>
+    <sys:String x:Key="AlarmConfig.ParameterSettings">Alarm Parameter Settings</sys:String>
+    <sys:String x:Key="AlarmConfig.EnableAlarm">Enable Alarm</sys:String>
+    <sys:String x:Key="AlarmConfig.UpperLimitAlarm">Upper Limit Alarm</sys:String>
+    <sys:String x:Key="AlarmConfig.EnableUpperLimit">Enable Upper Limit Alarm</sys:String>
+    <sys:String x:Key="AlarmConfig.UpperValue">Upper Limit:</sys:String>
+    <sys:String x:Key="AlarmConfig.LowerLimitAlarm">Lower Limit Alarm</sys:String>
+    <sys:String x:Key="AlarmConfig.EnableLowerLimit">Enable Lower Limit Alarm</sys:String>
+    <sys:String x:Key="AlarmConfig.LowerValue">Lower Limit:</sys:String>
+    <sys:String x:Key="AlarmConfig.DurationSettings">Duration Settings</sys:String>
+    <sys:String x:Key="AlarmConfig.DurationHint">Avoid triggering alarms from momentary fluctuations</sys:String>
+    <sys:String x:Key="AlarmConfig.Duration">Duration:</sys:String>
+    <sys:String x:Key="AlarmConfig.Seconds">seconds</sys:String>
+    <sys:String x:Key="AlarmConfig.NotificationMethod">Notification Method</sys:String>
+    <sys:String x:Key="AlarmConfig.VisualAlert">Visual Alert (Red + Flashing Table)</sys:String>
+    <sys:String x:Key="AlarmConfig.SoundAlert">Sound Alert</sys:String>
+    <sys:String x:Key="AlarmConfig.RepeatInterval">Repeat Interval:</sys:String>
+    <sys:String x:Key="AlarmConfig.Minutes">minutes</sys:String>
+    <sys:String x:Key="AlarmConfig.RepeatHint">Alarm sound repeats every N minutes until acknowledged or recovered</sys:String>
+
+    <!-- Contact Us Window -->
+    <sys:String x:Key="ContactUs.WindowTitle">Contact Us</sys:String>
+    <sys:String x:Key="ContactUs.Title">Contact Information</sys:String>
+    <sys:String x:Key="ContactUs.CompanyName">Company Name:</sys:String>
+    <sys:String x:Key="ContactUs.CompanyAddress">Company Address:</sys:String>
+    <sys:String x:Key="ContactUs.CompanyPhone">Phone Number:</sys:String>
+    <sys:String x:Key="ContactUs.CompanyEmail">Email Address:</sys:String>
+    <sys:String x:Key="ContactUs.CopyHint">💡 Tip: You can select and copy the above information</sys:String>
+
+    <!-- Alarm Status and Type -->
+    <sys:String x:Key="AlarmStatus.Active">Active</sys:String>
+    <sys:String x:Key="AlarmStatus.Recovered">Recovered</sys:String>
+    <sys:String x:Key="AlarmStatus.Unknown">Unknown</sys:String>
+    <sys:String x:Key="AlarmType.UpperLimit">Upper Limit Alarm</sys:String>
+    <sys:String x:Key="AlarmType.LowerLimit">Lower Limit Alarm</sys:String>
+    <sys:String x:Key="AlarmType.Unknown">Unknown</sys:String>
+    <sys:String x:Key="AlarmDescription.ExceedsUpperLimit">Exceeds Upper Limit</sys:String>
+    <sys:String x:Key="AlarmDescription.BelowLowerLimit">Below Lower Limit</sys:String>
+
+    <!-- Confirmation Dialog -->
+    <sys:String x:Key="Confirm.Title">Confirmation</sys:String>
+    <sys:String x:Key="Confirm.ClearHistory">Are you sure you want to clear all alarm history records?</sys:String>
+    <sys:String x:Key="Confirm.Yes">Yes</sys:String>
+    <sys:String x:Key="Confirm.No">No</sys:String>
 
 </ResourceDictionary>

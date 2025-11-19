@@ -143,8 +143,15 @@
                 <!-- 设备统计 -->
                 <StackPanel Grid.Column="0" Orientation="Horizontal">
                     <TextBlock Text="📊" FontSize="16" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                    <TextBlock Text="{Binding StatisticsText}" FontSize="14" FontWeight="SemiBold"
-                               Foreground="#495057" VerticalAlignment="Center"/>
+                    <TextBlock FontSize="14" FontWeight="SemiBold" Foreground="#495057" VerticalAlignment="Center">
+                        <Run Text="{DynamicResource DeviceList.Online}"/>
+                        <Run Text=" "/>
+                        <Run Text="{Binding OnlineDeviceCount, Mode=OneWay}"/>
+                        <Run Text=" / "/>
+                        <Run Text="{DynamicResource DeviceList.Total}"/>
+                        <Run Text=" "/>
+                        <Run Text="{Binding TotalDeviceCount, Mode=OneWay}"/>
+                    </TextBlock>
                 </StackPanel>
 
                 <!-- 分隔线 -->
@@ -283,17 +290,17 @@
             <TextBlock Text="{DynamicResource DeviceList.TipTitle}" FontSize="12" FontWeight="SemiBold"
                        Foreground="#495057" Margin="0,0,0,5"/>
             <TextBlock TextWrapping="Wrap" FontSize="11" Foreground="#6C757D">
-                <Run Text="• 设备通过发送心跳消息到 Topic:"/>
+                <Run Text="{DynamicResource DeviceList.Tip1Part1}"/>
                 <Run Text="{Binding HeartbeatTopic, Mode=OneWay}" FontWeight="SemiBold"/>
-                <Run Text="进行自动注册"/>
+                <Run Text="{DynamicResource DeviceList.Tip1Part2}"/>
                 <LineBreak/>
-                <Run Text="• 心跳消息格式: {&quot;deviceId&quot;: &quot;设备ID&quot;, &quot;dataTopic&quot;: &quot;数据Topic&quot;, &quot;deviceName&quot;: &quot;设备名称(可选)&quot;, &quot;deviceType&quot;: &quot;设备类型(可选)&quot;}"/>
+                <Run Text="{DynamicResource DeviceList.Tip2}"/>
                 <LineBreak/>
-                <Run Text="• 设备超过"/>
+                <Run Text="{DynamicResource DeviceList.Tip3Part1}"/>
                 <Run Text="{Binding HeartbeatTimeoutSeconds, Mode=OneWay}" FontWeight="SemiBold"/>
-                <Run Text="秒未发送心跳将被标记为离线"/>
+                <Run Text="{DynamicResource DeviceList.Tip3Part2}"/>
                 <LineBreak/>
-                <Run Text="• 系统会自动订阅设备的数据Topic，无需手动订阅"/>
+                <Run Text="{DynamicResource DeviceList.Tip4}"/>
             </TextBlock>
         </StackPanel>
     </Grid>

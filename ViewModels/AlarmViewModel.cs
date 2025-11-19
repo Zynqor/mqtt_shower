@@ -146,13 +146,17 @@ public class AlarmViewModel : INotifyPropertyChanged
     /// </summary>
     private void OnClearHistory()
     {
-        var result = System.Windows.MessageBox.Show(
-            "确定要清空所有历史告警记录吗？",
-            "确认",
-            System.Windows.MessageBoxButton.YesNo,
-            System.Windows.MessageBoxImage.Question);
+        var message = System.Windows.Application.Current?.TryFindResource("Confirm.ClearHistory") as string
+                      ?? "确定要清空所有历史告警记录吗？";
 
-        if (result == System.Windows.MessageBoxResult.Yes)
+        var dialog = new Views.ConfirmationDialog(message)
+        {
+            Owner = System.Windows.Application.Current?.MainWindow
+        };
+
+        dialog.ShowDialog();
+
+        if (dialog.Result)
         {
             _alarmDetectionService.ClearHistory();
         }

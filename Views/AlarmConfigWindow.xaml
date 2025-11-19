@@ -6,7 +6,7 @@
         xmlns:vm="clr-namespace:MqttMonitor.ViewModels"
         xmlns:converters="clr-namespace:MqttMonitor.Converters"
         mc:Ignorable="d"
-        Title="告警配置" Height="600" Width="800"
+        Title="{DynamicResource AlarmConfig.WindowTitle}" Height="600" Width="800"
         WindowStartupLocation="CenterOwner"
         ResizeMode="CanResize"
         Background="#F8F9FA">
@@ -33,7 +33,7 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Text="设备/测点列表" FontWeight="SemiBold" FontSize="15"
+                <TextBlock Grid.Row="0" Text="{DynamicResource AlarmConfig.DeviceMetricList}" FontWeight="SemiBold" FontSize="15"
                            Foreground="#212529" Margin="0,0,0,15"/>
 
                 <TreeView Grid.Row="1" ItemsSource="{Binding DeviceGroups}"
@@ -55,9 +55,9 @@
                 </TreeView>
 
                 <StackPanel Grid.Row="2" Margin="0,15,0,0">
-                    <Button Content="全部启用" Command="{Binding EnableAllCommand}"
+                    <Button Content="{DynamicResource AlarmConfig.EnableAll}" Command="{Binding EnableAllCommand}"
                             Style="{StaticResource SuccessButton}" Margin="0,0,0,10"/>
-                    <Button Content="全部禁用" Command="{Binding DisableAllCommand}"
+                    <Button Content="{DynamicResource AlarmConfig.DisableAll}" Command="{Binding DisableAllCommand}"
                             Style="{StaticResource SecondaryButton}"/>
                 </StackPanel>
             </Grid>
@@ -65,7 +65,7 @@
             <!-- 右侧：告警参数设置 -->
             <Grid Grid.Column="1" Margin="20,0,0,0">
                 <!-- 未选中测点时的提示 -->
-                <TextBlock Text="← 请在左侧选择一个测点以配置告警参数"
+                <TextBlock Text="{DynamicResource AlarmConfig.SelectMetricHint}"
                            FontSize="14" Foreground="#6C757D"
                            HorizontalAlignment="Center" VerticalAlignment="Center"
                            Visibility="{Binding CurrentConfig, Converter={StaticResource NullToVisibilityConverter}}"/>
@@ -74,24 +74,24 @@
                 <ScrollViewer VerticalScrollBarVisibility="Auto"
                               Visibility="{Binding CurrentConfig, Converter={StaticResource NotNullToVisibilityConverter}}">
                     <StackPanel DataContext="{Binding CurrentConfig}">
-                        <TextBlock Text="告警参数设置" FontWeight="SemiBold" FontSize="15"
+                        <TextBlock Text="{DynamicResource AlarmConfig.ParameterSettings}" FontWeight="SemiBold" FontSize="15"
                                    Foreground="#212529" Margin="0,0,0,20"/>
 
-                        <CheckBox Content="启用告警" IsChecked="{Binding Enabled}"
+                        <CheckBox Content="{DynamicResource AlarmConfig.EnableAlarm}" IsChecked="{Binding Enabled}"
                                   Style="{StaticResource ModernCheckBox}"
                                   FontWeight="SemiBold" FontSize="14" Margin="0,0,0,20"/>
 
                         <!-- 上限告警 -->
-                        <GroupBox Header="上限告警" Style="{StaticResource ModernGroupBox}">
+                        <GroupBox Header="{DynamicResource AlarmConfig.UpperLimitAlarm}" Style="{StaticResource ModernGroupBox}">
                             <StackPanel>
-                                <CheckBox Content="启用上限告警" IsChecked="{Binding EnableUpperLimit}"
+                                <CheckBox Content="{DynamicResource AlarmConfig.EnableUpperLimit}" IsChecked="{Binding EnableUpperLimit}"
                                           Style="{StaticResource ModernCheckBox}" Margin="0,0,0,15"/>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Label Grid.Column="0" Content="上限值:" Style="{StaticResource ModernLabel}"
+                                    <Label Grid.Column="0" Content="{DynamicResource AlarmConfig.UpperValue}" Style="{StaticResource ModernLabel}"
                                            VerticalAlignment="Center" Width="80"/>
                                     <TextBox Grid.Column="1" Text="{Binding UpperLimit, UpdateSourceTrigger=PropertyChanged}"
                                              Style="{StaticResource ModernTextBox}"/>
@@ -100,16 +100,16 @@
                         </GroupBox>
 
                         <!-- 下限告警 -->
-                        <GroupBox Header="下限告警" Style="{StaticResource ModernGroupBox}">
+                        <GroupBox Header="{DynamicResource AlarmConfig.LowerLimitAlarm}" Style="{StaticResource ModernGroupBox}">
                             <StackPanel>
-                                <CheckBox Content="启用下限告警" IsChecked="{Binding EnableLowerLimit}"
+                                <CheckBox Content="{DynamicResource AlarmConfig.EnableLowerLimit}" IsChecked="{Binding EnableLowerLimit}"
                                           Style="{StaticResource ModernCheckBox}" Margin="0,0,0,15"/>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Label Grid.Column="0" Content="下限值:" Style="{StaticResource ModernLabel}"
+                                    <Label Grid.Column="0" Content="{DynamicResource AlarmConfig.LowerValue}" Style="{StaticResource ModernLabel}"
                                            VerticalAlignment="Center" Width="80"/>
                                     <TextBox Grid.Column="1" Text="{Binding LowerLimit, UpdateSourceTrigger=PropertyChanged}"
                                              Style="{StaticResource ModernTextBox}"/>
@@ -118,31 +118,31 @@
                         </GroupBox>
 
                         <!-- 持续时长 -->
-                        <GroupBox Header="持续时长设置" Style="{StaticResource ModernGroupBox}">
+                        <GroupBox Header="{DynamicResource AlarmConfig.DurationSettings}" Style="{StaticResource ModernGroupBox}">
                             <StackPanel>
-                                <TextBlock Text="避免瞬时波动触发告警" Foreground="#6C757D" FontSize="11" Margin="0,0,0,15"/>
+                                <TextBlock Text="{DynamicResource AlarmConfig.DurationHint}" Foreground="#6C757D" FontSize="11" Margin="0,0,0,15"/>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <Label Grid.Column="0" Content="持续时长:" Style="{StaticResource ModernLabel}"
+                                    <Label Grid.Column="0" Content="{DynamicResource AlarmConfig.Duration}" Style="{StaticResource ModernLabel}"
                                            VerticalAlignment="Center" Width="80"/>
                                     <TextBox Grid.Column="1" Text="{Binding DurationSeconds, UpdateSourceTrigger=PropertyChanged}"
                                              Style="{StaticResource ModernTextBox}"/>
-                                    <TextBlock Grid.Column="2" Text="秒" VerticalAlignment="Center"
+                                    <TextBlock Grid.Column="2" Text="{DynamicResource AlarmConfig.Seconds}" VerticalAlignment="Center"
                                                FontSize="13" Foreground="#495057" Margin="10,0,0,0"/>
                                 </Grid>
                             </StackPanel>
                         </GroupBox>
 
                         <!-- 通知方式 -->
-                        <GroupBox Header="通知方式" Style="{StaticResource ModernGroupBox}">
+                        <GroupBox Header="{DynamicResource AlarmConfig.NotificationMethod}" Style="{StaticResource ModernGroupBox}">
                             <StackPanel>
-                                <CheckBox Content="视觉提醒 (表格变红+闪烁)" IsChecked="{Binding EnableVisualAlert}"
+                                <CheckBox Content="{DynamicResource AlarmConfig.VisualAlert}" IsChecked="{Binding EnableVisualAlert}"
                                           Style="{StaticResource ModernCheckBox}" Margin="0,0,0,10"/>
-                                <CheckBox Content="声音提醒" IsChecked="{Binding EnableSoundAlert}"
+                                <CheckBox Content="{DynamicResource AlarmConfig.SoundAlert}" IsChecked="{Binding EnableSoundAlert}"
                                           Style="{StaticResource ModernCheckBox}" Margin="0,0,0,15"/>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -150,23 +150,23 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <Label Grid.Column="0" Content="重复间隔:" Style="{StaticResource ModernLabel}"
+                                    <Label Grid.Column="0" Content="{DynamicResource AlarmConfig.RepeatInterval}" Style="{StaticResource ModernLabel}"
                                            VerticalAlignment="Center" Width="80"/>
                                     <TextBox Grid.Column="1" Text="{Binding SoundRepeatMinutes, UpdateSourceTrigger=PropertyChanged}"
                                              Style="{StaticResource ModernTextBox}"/>
-                                    <TextBlock Grid.Column="2" Text="分钟" VerticalAlignment="Center"
+                                    <TextBlock Grid.Column="2" Text="{DynamicResource AlarmConfig.Minutes}" VerticalAlignment="Center"
                                                FontSize="13" Foreground="#495057" Margin="10,0,0,0"/>
                                 </Grid>
-                                <TextBlock Text="告警音每隔N分钟重复提醒，直到用户确认或告警恢复"
+                                <TextBlock Text="{DynamicResource AlarmConfig.RepeatHint}"
                                            Foreground="#6C757D" FontSize="11" Margin="0,10,0,0"/>
                             </StackPanel>
                         </GroupBox>
 
                         <!-- 按钮 -->
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                            <Button Content="保存" Width="90" Command="{Binding DataContext.SaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                            <Button Content="{DynamicResource Button.Save}" Width="90" Command="{Binding DataContext.SaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                     Style="{StaticResource SuccessButton}" Margin="0,0,10,0"/>
-                            <Button Content="取消" Width="90" Command="{Binding DataContext.CancelCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                            <Button Content="{DynamicResource Button.Cancel}" Width="90" Command="{Binding DataContext.CancelCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                     Style="{StaticResource SecondaryButton}"/>
                         </StackPanel>
                     </StackPanel>

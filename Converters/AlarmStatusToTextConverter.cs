@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
 using MqttMonitor.Models;
 
@@ -14,14 +15,16 @@ public class AlarmStatusToTextConverter : IValueConverter
     {
         if (value is AlarmStatus alarmStatus)
         {
-            return alarmStatus switch
+            var resourceKey = alarmStatus switch
             {
-                AlarmStatus.Active => "进行中",
-                AlarmStatus.Recovered => "已恢复",
-                _ => "未知"
+                AlarmStatus.Active => "AlarmStatus.Active",
+                AlarmStatus.Recovered => "AlarmStatus.Recovered",
+                _ => "AlarmStatus.Unknown"
             };
+
+            return Application.Current?.TryFindResource(resourceKey) as string ?? resourceKey;
         }
-        return "未知";
+        return Application.Current?.TryFindResource("AlarmStatus.Unknown") as string ?? "Unknown";
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

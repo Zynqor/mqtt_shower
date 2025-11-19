@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="联系我们" Height="480" Width="520"
+        Title="{DynamicResource ContactUs.WindowTitle}" Height="480" Width="520"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         Background="#F8F9FA">
@@ -21,35 +21,35 @@
             </Grid.RowDefinitions>
 
             <!-- 标题 -->
-            <TextBlock Grid.Row="0" Text="联系方式"
+            <TextBlock Grid.Row="0" Text="{DynamicResource ContactUs.Title}"
                        FontSize="20" FontWeight="Bold" Foreground="#212529"
                        Margin="0,0,0,25"/>
 
             <!-- 联系信息 -->
             <StackPanel Grid.Row="1">
                 <!-- 公司名称 -->
-                <Label Content="公司名称:" Style="{StaticResource ModernLabel}"/>
+                <Label Content="{DynamicResource ContactUs.CompanyName}" Style="{StaticResource ModernLabel}"/>
                 <TextBox Text="{Binding CompanyName, Mode=OneWay}"
                          Style="{StaticResource ReadOnlyTextBoxStyle}"
                          Height="42" Margin="0,0,0,20"
                          VerticalContentAlignment="Center"/>
 
                 <!-- 公司地址 -->
-                <Label Content="公司地址:" Style="{StaticResource ModernLabel}"/>
+                <Label Content="{DynamicResource ContactUs.CompanyAddress}" Style="{StaticResource ModernLabel}"/>
                 <TextBox Text="{Binding CompanyAddress, Mode=OneWay}"
                          Style="{StaticResource ReadOnlyTextBoxStyle}"
                          Height="42" Margin="0,0,0,20"
                          VerticalContentAlignment="Center"/>
 
                 <!-- 联系电话 -->
-                <Label Content="联系电话:" Style="{StaticResource ModernLabel}"/>
+                <Label Content="{DynamicResource ContactUs.CompanyPhone}" Style="{StaticResource ModernLabel}"/>
                 <TextBox Text="{Binding CompanyPhone, Mode=OneWay}"
                          Style="{StaticResource ReadOnlyTextBoxStyle}"
                          Height="42" Margin="0,0,0,20"
                          VerticalContentAlignment="Center"/>
 
                 <!-- 电子邮箱 -->
-                <Label Content="电子邮箱:" Style="{StaticResource ModernLabel}"/>
+                <Label Content="{DynamicResource ContactUs.CompanyEmail}" Style="{StaticResource ModernLabel}"/>
                 <TextBox Text="{Binding CompanyEmail, Mode=OneWay}"
                          Style="{StaticResource ReadOnlyTextBoxStyle}"
                          Height="42" Margin="0,0,0,0"
@@ -59,7 +59,7 @@
             <!-- 提示文本 -->
             <Border Grid.Row="2" Background="#F0F7FF" BorderBrush="#B3D9FF" BorderThickness="1"
                     CornerRadius="4" Padding="10" Margin="0,20,0,0">
-                <TextBlock Text="💡 提示：您可以选中并复制以上信息"
+                <TextBlock Text="{DynamicResource ContactUs.CopyHint}"
                            Foreground="#007BFF" FontSize="12" TextAlignment="Center"/>
             </Border>
         </Grid>

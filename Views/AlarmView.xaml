@@ -116,7 +116,7 @@
                 </ScrollViewer>
 
                 <!-- 无告警提示 -->
-                <TextBlock Grid.Row="1" Text="✓ 当前无活动告警" FontSize="14" Foreground="#28A745"
+                <TextBlock Grid.Row="1" Text="{DynamicResource DeviceList.NoActiveAlarms}" FontSize="14" Foreground="#28A745"
                            HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,20,0,20"
                            Visibility="{Binding HasActiveAlarms, Converter={StaticResource InvertedBooleanToVisibilityConverter}}"/>
             </Grid>
