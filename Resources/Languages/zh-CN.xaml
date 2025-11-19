@@ -90,4 +90,44 @@
     <!-- 日志视图 -->
     <sys:String x:Key="Log.Title">系统日志</sys:String>
 
+    <!-- 告警视图 -->
+    <sys:String x:Key="Alarm.ActiveAlarms">活动告警</sys:String>
+    <sys:String x:Key="Alarm.HistoryAlarms">历史告警</sys:String>
+    <sys:String x:Key="Alarm.CurrentActive">当前活动告警:</sys:String>
+    <sys:String x:Key="Alarm.AcknowledgeAll">全部确认</sys:String>
+    <sys:String x:Key="Alarm.TriggerTime">触发时间：</sys:String>
+    <sys:String x:Key="Alarm.CurrentValue">当前值：</sys:String>
+    <sys:String x:Key="Alarm.Threshold">阈值：</sys:String>
+    <sys:String x:Key="Alarm.Duration">持续时长：</sys:String>
+    <sys:String x:Key="Alarm.DeviceId">设备ID：</sys:String>
+    <sys:String x:Key="Alarm.DataKey">数据键：</sys:String>
+    <sys:String x:Key="Alarm.Acknowledge">确认</sys:String>
+    <sys:String x:Key="Alarm.Detail">详情</sys:String>
+    <sys:String x:Key="Alarm.TotalHistory">历史告警总数:</sys:String>
+    <sys:String x:Key="Alarm.ClearAll">全部清空</sys:String>
+    <sys:String x:Key="Alarm.AlarmTime">告警时间：</sys:String>
+    <sys:String x:Key="Alarm.RecoveryTime">恢复时间：</sys:String>
+    <sys:String x:Key="Alarm.PeakValue">峰值：</sys:String>
+
+    <!-- 告警统计视图 -->
+    <sys:String x:Key="AlarmStats.TimeRange">时间范围</sys:String>
+    <sys:String x:Key="AlarmStats.Today">今天</sys:String>
+    <sys:String x:Key="AlarmStats.Last7Days">最近7天</sys:String>
+    <sys:String x:Key="AlarmStats.Last30Days">最近30天</sys:String>
+    <sys:String x:Key="AlarmStats.StartTime">开始时间：</sys:String>
+    <sys:String x:Key="AlarmStats.EndTime">结束时间：</sys:String>
+    <sys:String x:Key="AlarmStats.Query">查询</sys:String>
+    <sys:String x:Key="AlarmStats.Loading">正在加载统计数据...</sys:String>
+    <sys:String x:Key="AlarmStats.AlarmCount">告警次数</sys:String>
+    <sys:String x:Key="AlarmStats.AlarmDuration">告警时长</sys:String>
+    <sys:String x:Key="AlarmStats.AlarmTrend">告警趋势</sys:String>
+    <sys:String x:Key="AlarmStats.TypeDistribution">类型分布</sys:String>
+    <sys:String x:Key="AlarmStats.TopDevices">Top设备</sys:String>
+    <sys:String x:Key="AlarmStats.Rank">排名</sys:String>
+    <sys:String x:Key="AlarmStats.DeviceId">设备ID</sys:String>
+    <sys:String x:Key="AlarmStats.MetricName">测点名称</sys:String>
+    <sys:String x:Key="AlarmStats.AlarmCountColumn">告警次数</sys:String>
+    <sys:String x:Key="AlarmStats.AvgDuration">平均持续</sys:String>
+    <sys:String x:Key="AlarmStats.NoData">暂无数据</sys:String>
+
 </ResourceDictionary>

@@ -90,4 +90,44 @@
     <!-- Log View -->
     <sys:String x:Key="Log.Title">System Log</sys:String>
 
+    <!-- Alarm View -->
+    <sys:String x:Key="Alarm.ActiveAlarms">Active Alarms</sys:String>
+    <sys:String x:Key="Alarm.HistoryAlarms">Alarm History</sys:String>
+    <sys:String x:Key="Alarm.CurrentActive">Current Active Alarms:</sys:String>
+    <sys:String x:Key="Alarm.AcknowledgeAll">Acknowledge All</sys:String>
+    <sys:String x:Key="Alarm.TriggerTime">Trigger Time:</sys:String>
+    <sys:String x:Key="Alarm.CurrentValue">Current Value:</sys:String>
+    <sys:String x:Key="Alarm.Threshold">Threshold:</sys:String>
+    <sys:String x:Key="Alarm.Duration">Duration:</sys:String>
+    <sys:String x:Key="Alarm.DeviceId">Device ID:</sys:String>
+    <sys:String x:Key="Alarm.DataKey">Data Key:</sys:String>
+    <sys:String x:Key="Alarm.Acknowledge">Acknowledge</sys:String>
+    <sys:String x:Key="Alarm.Detail">Detail</sys:String>
+    <sys:String x:Key="Alarm.TotalHistory">Total History:</sys:String>
+    <sys:String x:Key="Alarm.ClearAll">Clear All</sys:String>
+    <sys:String x:Key="Alarm.AlarmTime">Alarm Time:</sys:String>
+    <sys:String x:Key="Alarm.RecoveryTime">Recovery Time:</sys:String>
+    <sys:String x:Key="Alarm.PeakValue">Peak:</sys:String>
+
+    <!-- Alarm Statistics View -->
+    <sys:String x:Key="AlarmStats.TimeRange">Time Range</sys:String>
+    <sys:String x:Key="AlarmStats.Today">Today</sys:String>
+    <sys:String x:Key="AlarmStats.Last7Days">Last 7 Days</sys:String>
+    <sys:String x:Key="AlarmStats.Last30Days">Last 30 Days</sys:String>
+    <sys:String x:Key="AlarmStats.StartTime">Start Time:</sys:String>
+    <sys:String x:Key="AlarmStats.EndTime">End Time:</sys:String>
+    <sys:String x:Key="AlarmStats.Query">Query</sys:String>
+    <sys:String x:Key="AlarmStats.Loading">Loading statistics...</sys:String>
+    <sys:String x:Key="AlarmStats.AlarmCount">Alarm Count</sys:String>
+    <sys:String x:Key="AlarmStats.AlarmDuration">Alarm Duration</sys:String>
+    <sys:String x:Key="AlarmStats.AlarmTrend">Alarm Trend</sys:String>
+    <sys:String x:Key="AlarmStats.TypeDistribution">Type Distribution</sys:String>
+    <sys:String x:Key="AlarmStats.TopDevices">Top Devices</sys:String>
+    <sys:String x:Key="AlarmStats.Rank">Rank</sys:String>
+    <sys:String x:Key="AlarmStats.DeviceId">Device ID</sys:String>
+    <sys:String x:Key="AlarmStats.MetricName">Metric Name</sys:String>
+    <sys:String x:Key="AlarmStats.AlarmCountColumn">Alarm Count</sys:String>
+    <sys:String x:Key="AlarmStats.AvgDuration">Avg Duration</sys:String>
+    <sys:String x:Key="AlarmStats.NoData">No Data</sys:String>
+
 </ResourceDictionary>
