@@ -233,8 +233,38 @@ public class CommandSenderViewModel : INotifyPropertyChanged, IDisposable
 
         try
         {
+            // 构建命令Topic和响应Topic
+            string commandTopic;
+            string responseTopic;
+
+            if (SelectedDevice != null && !string.IsNullOrEmpty(SelectedDevice.DataTopic))
+            {
+                // 使用选中设备的DataTopic来构建命令Topic
+                // 例如: iot/devices/ENV-001/datas -> iot/devices/ENV-001/command/request
+                var baseTopic = SelectedDevice.DataTopic;
+                if (baseTopic.EndsWith("/datas"))
+                {
+                    var topicPrefix = baseTopic.Substring(0, baseTopic.Length - "/datas".Length);
+                    commandTopic = $"{topicPrefix}/command/request";
+                    responseTopic = $"{topicPrefix}/command/response";
+                }
+                else
+                {
+                    // 如果DataTopic不是以/datas结尾，则追加命令后缀
+                    commandTopic = $"{baseTopic}/command/request";
+                    responseTopic = $"{baseTopic}/command/response";
+                }
+                _logService.LogInfo($"使用设备DataTopic构建命令Topic: {commandTopic}");
+            }
+            else
+            {
+                // 如果没有选中设备或设备没有DataTopic，使用默认模式
+                commandTopic = $"iot/devices/{SelectedDeviceId}/command/request";
+                responseTopic = $"iot/devices/{SelectedDeviceId}/command/response";
+                _logService.LogInfo($"使用默认模式构建命令Topic: {commandTopic}");
+            }
+
             // 自动订阅响应Topic（如果还未订阅）
-            var responseTopic = $"iot/devices/{SelectedDeviceId}/command/response";
             if (!_autoSubscribedTopics.Contains(responseTopic))
             {
                 try
@@ -274,10 +304,9 @@ public class CommandSenderViewModel : INotifyPropertyChanged, IDisposable
             }
 
             // 发布到 MQTT
-            var topic = $"iot/devices/{SelectedDeviceId}/command/request";
             var payload = JsonConvert.SerializeObject(commandRequest);
 
-            await _mqttService.PublishAsync(topic, payload);
+            await _mqttService.PublishAsync(commandTopic, payload);
 
             // 添加到历史记录
             Application.Current.Dispatcher.InvokeAsync(() =>
