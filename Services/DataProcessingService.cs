@@ -14,7 +14,6 @@ public class DataProcessingService : IDisposable
 {
     private readonly MqttService _mqttService;
     private readonly LogService _logService;
-    private readonly CsvDataStorageService _csvStorageService;
     private readonly HistoryDataStorageService _historyDataStorageService;
     private readonly SemaphoreSlim _taskSemaphore = new(1, 1);
     private readonly List<Task> _runningTasks = new();
@@ -41,11 +40,10 @@ public class DataProcessingService : IDisposable
     /// </summary>
     public event Action? OnDataCleared;
 
-    public DataProcessingService(MqttService mqttService, LogService logService, CsvDataStorageService csvStorageService, HistoryDataStorageService historyDataStorageService)
+    public DataProcessingService(MqttService mqttService, LogService logService, HistoryDataStorageService historyDataStorageService)
     {
         _mqttService = mqttService;
         _logService = logService;
-        _csvStorageService = csvStorageService;
         _historyDataStorageService = historyDataStorageService;
 
         // 订阅 MQTT 消息接收事件
@@ -117,18 +115,15 @@ public class DataProcessingService : IDisposable
             // 触发事件
             OnUpstreamDataParsed?.Invoke(dataPacket);
 
-            // 保存数据到CSV和SQLite（跟踪后台任务）
+            // 保存数据到SQLite（跟踪后台任务）
             if (!_disposed)
             {
                 var task = Task.Run(async () =>
                 {
                     try
                     {
-                        // 同时保存到CSV和SQLite
-                        await Task.WhenAll(
-                            _csvStorageService.SaveDataAsync(dataPacket),
-                            _historyDataStorageService.SaveDataAsync(dataPacket)
-                        );
+                        // 保存到SQLite
+                        await _historyDataStorageService.SaveDataAsync(dataPacket);
                     }
                     catch (Exception ex)
                     {

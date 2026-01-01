@@ -44,6 +44,40 @@ public class ChartConfig : INotifyPropertyChanged
         }
     }
 
+    private int _maxColumnsPerRow = 6;
+    /// <summary>
+    /// 表格视图每行最大列数
+    /// </summary>
+    public int MaxColumnsPerRow
+    {
+        get => _maxColumnsPerRow;
+        set
+        {
+            if (_maxColumnsPerRow != value)
+            {
+                _maxColumnsPerRow = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    private int _deviceTimeoutSeconds = 300;
+    /// <summary>
+    /// 设备超时时间（秒），超过此时间未更新的设备将被自动清理，默认300秒（5分钟）
+    /// </summary>
+    public int DeviceTimeoutSeconds
+    {
+        get => _deviceTimeoutSeconds;
+        set
+        {
+            if (_deviceTimeoutSeconds != value)
+            {
+                _deviceTimeoutSeconds = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

@@ -43,6 +43,13 @@
                         <TextBlock Text="{DynamicResource ChartSettings.UpdateIntervalHint}"
                                    Foreground="#F57C00" FontSize="11" TextWrapping="Wrap"/>
                     </Border>
+
+                    <!-- 表格每行最大列数 -->
+                    <Label Content="{DynamicResource ChartSettings.MaxColumnsPerRow}" Style="{StaticResource ModernLabel}"/>
+                    <TextBox Text="{Binding MaxColumnsPerRow, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource ModernTextBox}" Margin="0,0,0,5"/>
+                    <TextBlock Text="{DynamicResource ChartSettings.MaxColumnsPerRowHint}"
+                               Foreground="#6C757D" FontSize="11" Margin="0,0,0,20"/>
                 </StackPanel>
             </ScrollViewer>
 

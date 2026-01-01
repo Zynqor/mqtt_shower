@@ -86,6 +86,7 @@
 
     <!-- Table View -->
     <sys:String x:Key="Table.Title">Device Data Table</sys:String>
+    <sys:String x:Key="Table.LastUpdate">Last Update</sys:String>
 
     <!-- Log View -->
     <sys:String x:Key="Log.Title">System Log</sys:String>
@@ -158,6 +159,8 @@
     <sys:String x:Key="ChartSettings.MaxDataPointsHint">The chart will display the most recent data points</sys:String>
     <sys:String x:Key="ChartSettings.UpdateInterval">Update Interval (ms):</sys:String>
     <sys:String x:Key="ChartSettings.UpdateIntervalHint">💡 Suggested: 200-2000 (Higher values improve performance but reduce real-time responsiveness)</sys:String>
+    <sys:String x:Key="ChartSettings.MaxColumnsPerRow">Max Columns Per Row:</sys:String>
+    <sys:String x:Key="ChartSettings.MaxColumnsPerRowHint">When there are too many parameters, columns exceeding this limit will wrap to the next row (each row has its own header)</sys:String>
 
     <!-- Alert Settings Window -->
     <sys:String x:Key="AlertSettings.WindowTitle">Alert Settings</sys:String>

@@ -1,18 +1,12 @@
 {
-  "Title": "伯意尔MQTT监控软件",
+  "Title": "Mqtt Monitor",
   "Server": "119.45.181.86",
   "Port": 1883,
   "Username": "admin",
   "Password": "ENCRYPTED:feuPH+4RDZvezfbP5rLVaniE0nz9xPdqhRVpMMh3mZo=",
   "ClientId": null,
   "BaseTopic": "iot/devices",
-  "SubscribedTopics": [
-    "iot/devices/1111/datas",
-    "iot/devices/2222/datas",
-    "iot/devices/4396/datas",
-    "iot/devices/7777/datas",
-    "iot/devices/8000/datas"
-  ],
+  "SubscribedTopics": [],
   "HeartbeatTopic": "iot/devices/heartbeat",
   "HeartbeatTimeoutSeconds": 60,
   "EnableDeviceDiscovery": true,

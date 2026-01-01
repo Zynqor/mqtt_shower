@@ -18,12 +18,12 @@ public class MainViewModel : INotifyPropertyChanged, IDisposable
     private readonly MqttService _mqttService;
     private readonly DataProcessingService _dataProcessingService;
     private readonly LogService _logService;
-    private readonly CsvDataStorageService _csvStorageService;
     private readonly EncryptionService _encryptionService;
     private readonly LayoutSettingsService _layoutSettingsService;
     private readonly MqttSettings _mqttSettings;
     private readonly DeviceManagementService _deviceManagementService;
     private readonly LanguageService _languageService;
+    private readonly TableViewModel _tableViewModel;
     private string _connectionStatusText = "未连接";
     private bool _isConnecting = false;
     private int _selectedTabIndex = 0;
@@ -138,17 +138,17 @@ public class MainViewModel : INotifyPropertyChanged, IDisposable
     public ICommand SwitchToChineseCommand { get; }
     public ICommand SwitchToEnglishCommand { get; }
 
-    public MainViewModel(MqttService mqttService, DataProcessingService dataProcessingService, LogService logService, CsvDataStorageService csvStorageService, EncryptionService encryptionService, LayoutSettingsService layoutSettingsService, MqttSettings mqttSettings, DeviceManagementService deviceManagementService, LanguageService languageService)
+    public MainViewModel(MqttService mqttService, DataProcessingService dataProcessingService, LogService logService, EncryptionService encryptionService, LayoutSettingsService layoutSettingsService, MqttSettings mqttSettings, DeviceManagementService deviceManagementService, LanguageService languageService, TableViewModel tableViewModel)
     {
         _mqttService = mqttService;
         _dataProcessingService = dataProcessingService;
         _logService = logService;
-        _csvStorageService = csvStorageService;
         _encryptionService = encryptionService;
         _layoutSettingsService = layoutSettingsService;
         _mqttSettings = mqttSettings;
         _deviceManagementService = deviceManagementService;
         _languageService = languageService;
+        _tableViewModel = tableViewModel;
 
         // 从 MqttSettings 获取标题
         Title = mqttSettings.Title;
@@ -256,6 +256,18 @@ public class MainViewModel : INotifyPropertyChanged, IDisposable
         var chartSettingsWindow = App.ServiceProvider?.GetService<ChartSettingsWindow>();
         if (chartSettingsWindow != null)
         {
+            var viewModel = chartSettingsWindow.DataContext as ChartSettingsViewModel;
+            if (viewModel != null)
+            {
+                // 订阅表格设置变化事件
+                viewModel.OnTableSettingsChanged += () =>
+                {
+                    // 刷新表格显示
+                    _tableViewModel.UpdateDeviceDisplayItems();
+                    _logService.LogInfo("表格视图已刷新");
+                };
+            }
+
             chartSettingsWindow.Owner = System.Windows.Application.Current.MainWindow;
             chartSettingsWindow.ShowDialog();
         }
@@ -399,22 +411,6 @@ public class MainViewModel : INotifyPropertyChanged, IDisposable
                 return;
             }
 
-            // 启用CSV数据存储
-            var csvEnabled = await _csvStorageService.EnableAsync();
-            if (!csvEnabled)
-            {
-                var result = System.Windows.MessageBox.Show(
-                    "无法启用CSV数据存储，可能是数据目录被占用或无权限访问。\n\n是否继续连接？",
-                    "警告",
-                    System.Windows.MessageBoxButton.YesNo,
-                    System.Windows.MessageBoxImage.Warning);
-
-                if (result != System.Windows.MessageBoxResult.Yes)
-                {
-                    return;
-                }
-            }
-
             await _mqttService.ConnectAsync(
                 settings.Server,
                 settings.Port,
@@ -482,10 +478,7 @@ public class MainViewModel : INotifyPropertyChanged, IDisposable
 
             await _mqttService.DisconnectAsync();
 
-            // 禁用CSV数据存储，释放文件权限
-            await _csvStorageService.DisableAsync();
-
-            _logService.LogInfo("已断开MQTT连接，CSV文件已关闭");
+            _logService.LogInfo("已断开MQTT连接");
         }
         catch (Exception ex)
         {

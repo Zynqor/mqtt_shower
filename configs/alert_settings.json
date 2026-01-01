@@ -1,0 +1,6 @@
+{
+  "SoundEnabled": true,
+  "SoundVolume": 80,
+  "DefaultRepeatMinutes": 5,
+  "RepeatSound": true
+}

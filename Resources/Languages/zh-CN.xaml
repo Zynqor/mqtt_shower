@@ -86,6 +86,7 @@
 
     <!-- 表格视图 -->
     <sys:String x:Key="Table.Title">设备数据表格</sys:String>
+    <sys:String x:Key="Table.LastUpdate">最后更新</sys:String>
 
     <!-- 日志视图 -->
     <sys:String x:Key="Log.Title">系统日志</sys:String>
@@ -158,6 +159,8 @@
     <sys:String x:Key="ChartSettings.MaxDataPointsHint">图表将显示最近的数据点数量</sys:String>
     <sys:String x:Key="ChartSettings.UpdateInterval">图表更新间隔 (毫秒):</sys:String>
     <sys:String x:Key="ChartSettings.UpdateIntervalHint">💡 建议值: 200-2000 (数值越大性能越好，但实时性越低)</sys:String>
+    <sys:String x:Key="ChartSettings.MaxColumnsPerRow">表格每行最大列数:</sys:String>
+    <sys:String x:Key="ChartSettings.MaxColumnsPerRowHint">当参数过多时，超过此列数的参数将显示在下一行（每行都有自己的表头）</sys:String>
 
     <!-- Alert Settings Window -->
     <sys:String x:Key="AlertSettings.WindowTitle">提醒设置</sys:String>

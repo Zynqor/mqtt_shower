@@ -1,0 +1,6 @@
+{
+  "MaxChartDataPoints": 100,
+  "ChartUpdateInterval": 800,
+  "MaxColumnsPerRow": 6,
+  "DeviceTimeoutSeconds": 300
+}

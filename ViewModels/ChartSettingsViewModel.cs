@@ -21,10 +21,12 @@ public class ChartSettingsViewModel : INotifyPropertyChanged
 
     private int _maxChartDataPoints = 1000;
     private int _chartUpdateInterval = 800;
+    private int _maxColumnsPerRow = 6;
 
     public event PropertyChangedEventHandler? PropertyChanged;
     public event Action? OnSettingsSaved;
     public event Action? OnCancelled;
+    public event Action? OnTableSettingsChanged;
 
     /// <summary>
     /// 图表最大数据点数量
@@ -58,6 +60,22 @@ public class ChartSettingsViewModel : INotifyPropertyChanged
         }
     }
 
+    /// <summary>
+    /// 表格视图每行最大列数
+    /// </summary>
+    public int MaxColumnsPerRow
+    {
+        get => _maxColumnsPerRow;
+        set
+        {
+            if (_maxColumnsPerRow != value)
+            {
+                _maxColumnsPerRow = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     // 命令
     public ICommand SaveCommand { get; }
     public ICommand CancelCommand { get; }
@@ -83,14 +101,25 @@ public class ChartSettingsViewModel : INotifyPropertyChanged
     {
         try
         {
+            // 检查列数是否变化
+            bool tableSettingsChanged = _chartConfig.MaxColumnsPerRow != MaxColumnsPerRow;
+
             // 更新单例实例
             _chartConfig.MaxChartDataPoints = MaxChartDataPoints;
             _chartConfig.ChartUpdateInterval = ChartUpdateInterval;
+            _chartConfig.MaxColumnsPerRow = MaxColumnsPerRow;
 
             // 保存到文件
             _chartConfigService.SaveChartConfig(_chartConfig);
 
             _logService.LogInfo("图表设置已保存");
+
+            // 如果表格设置变化，触发刷新事件
+            if (tableSettingsChanged)
+            {
+                OnTableSettingsChanged?.Invoke();
+            }
+
             OnSettingsSaved?.Invoke();
         }
         catch (Exception ex)
@@ -116,6 +145,7 @@ public class ChartSettingsViewModel : INotifyPropertyChanged
     {
         MaxChartDataPoints = _chartConfig.MaxChartDataPoints;
         ChartUpdateInterval = _chartConfig.ChartUpdateInterval;
+        MaxColumnsPerRow = _chartConfig.MaxColumnsPerRow;
     }
 
     protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)

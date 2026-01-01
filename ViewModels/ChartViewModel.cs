@@ -24,9 +24,9 @@ public class ChartViewModel : INotifyPropertyChanged, IDisposable
     private readonly Dictionary<string, Dictionary<string, ChartLegendItem>> _legendItemsMap = new();
     private readonly Dictionary<string, Dictionary<string, ChartLegendConfig>> _loadedConfig = new();
     private readonly Dictionary<string, ScottPlot.Color> _deviceBaseColors = new();
-    private readonly List<double> _baseHues = new() { 0, 30, 60, 120, 180, 210, 240, 270, 300, 330 };
     private readonly DispatcherTimer _updateTimer;
-    private int _nextDeviceColorIndex = 0;
+    private int _globalColorIndex = 0;
+    private const double GoldenAngle = 137.508; // 黄金分割角度，用于生成差异最大的色相
     private int _maxChartDataPoints;
     private bool _hasNewData = false;
     private WpfPlot? _chart;
@@ -464,45 +464,31 @@ public class ChartViewModel : INotifyPropertyChanged, IDisposable
     }
 
     /// <summary>
-    /// 生成默认颜色
+    /// 生成默认颜色 - 使用黄金分割角度确保颜色差异最大化
     /// </summary>
     private ScottPlot.Color GenerateDefaultColor(string deviceId, int metricIndex)
     {
-        // 获取或分配设备的基础颜色
-        if (!_deviceBaseColors.ContainsKey(deviceId))
+        // 使用黄金分割角度生成色相，确保每个新颜色与之前的颜色差异最大
+        var hue = (_globalColorIndex * GoldenAngle) % 360;
+        _globalColorIndex++;
+
+        // 使用预定义的饱和度和亮度组合，确保颜色鲜明
+        var saturationLightnessPairs = new (double s, double l)[]
         {
-            var hue = _baseHues[_nextDeviceColorIndex % _baseHues.Count];
-            _deviceBaseColors[deviceId] = ScottPlot.Color.FromHSL((float)hue, (float)0.8, (float)0.6);
-            _nextDeviceColorIndex++;
-            _logService.LogInfo($"为设备 [{deviceId}] 分配颜色，色调: {hue}°");
-        }
+            (0.85, 0.55), // 鲜艳
+            (0.75, 0.60), // 明亮
+            (0.90, 0.50), // 深邃
+            (0.70, 0.65), // 柔和
+            (0.80, 0.45), // 深色
+            (0.65, 0.70), // 浅色
+        };
 
-        var baseColor = _deviceBaseColors[deviceId];
+        var pair = saturationLightnessPairs[_globalColorIndex % saturationLightnessPairs.Length];
+        var color = ScottPlot.Color.FromHSL((float)hue, (float)pair.s, (float)pair.l);
 
-        // 为同一设备的不同指标创建颜色变体
-        return CreateColorVariant(baseColor, metricIndex);
-    }
+        _logService.LogInfo($"为 [{deviceId} - metric#{metricIndex}] 分配颜色: H={hue:F1}° S={pair.s:F2} L={pair.l:F2} ({color.ToHex()})");
 
-    /// <summary>
-    /// 创建颜色变体
-    /// </summary>
-    private ScottPlot.Color CreateColorVariant(ScottPlot.Color baseColor, int index)
-    {
-        var (h, s, l) = baseColor.ToHSL();
-
-        // 调整色调、饱和度和亮度
-        var hueOffset = (index * 10) % 20 - 10;
-        var newHue = (h + hueOffset + 360) % 360;
-
-        var saturation = index % 2 == 0
-            ? Math.Max(0.6, Math.Min(1.0, s - index * 0.05))
-            : Math.Max(0.5, Math.Min(0.9, s + index * 0.05));
-
-        var lightness = index % 2 == 0
-            ? Math.Max(0.5, Math.Min(0.7, l + index * 0.03))
-            : Math.Max(0.4, Math.Min(0.6, l - index * 0.03));
-
-        return ScottPlot.Color.FromHSL((float)newHue, (float)saturation, (float)lightness);
+        return color;
     }
 
     /// <summary>
@@ -606,7 +592,7 @@ public class ChartViewModel : INotifyPropertyChanged, IDisposable
             LegendItems.Clear();
             LegendGroups.Clear();
             _deviceBaseColors.Clear();
-            _nextDeviceColorIndex = 0;
+            _globalColorIndex = 0;
             _logService.LogInfo("图表数据已清空");
         });
     }

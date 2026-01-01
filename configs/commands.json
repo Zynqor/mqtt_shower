@@ -1,0 +1,108 @@
+[
+  {
+    "Description": "查询一天的数据",
+    "CommandName": "queryData",
+    "Parameters": {
+      "days": 1,
+      "format": "json"
+    }
+  },
+  {
+    "Description": "查询三天的数据",
+    "CommandName": "queryData",
+    "Parameters": {
+      "days": 3,
+      "format": "json"
+    }
+  },
+  {
+    "Description": "查询七天的数据",
+    "CommandName": "queryData",
+    "Parameters": {
+      "days": 7,
+      "format": "json"
+    }
+  },
+  {
+    "Description": "重启设备",
+    "CommandName": "restart",
+    "Parameters": {}
+  },
+  {
+    "Description": "设置上报间隔为30秒",
+    "CommandName": "updateInterval",
+    "Parameters": {
+      "intervalSeconds": 30
+    }
+  },
+  {
+    "Description": "设置上报间隔为60秒",
+    "CommandName": "updateInterval",
+    "Parameters": {
+      "intervalSeconds": 60
+    }
+  },
+  {
+    "Description": "设置上报间隔为5分钟",
+    "CommandName": "updateInterval",
+    "Parameters": {
+      "intervalSeconds": 300
+    }
+  },
+  {
+    "Description": "设置温度阈值为30度",
+    "CommandName": "setThreshold",
+    "Parameters": {
+      "metricName": "temperature",
+      "thresholdValue": 30
+    }
+  },
+  {
+    "Description": "设置温度阈值为50度",
+    "CommandName": "setThreshold",
+    "Parameters": {
+      "metricName": "temperature",
+      "thresholdValue": 50
+    }
+  },
+  {
+    "Description": "设置湿度阈值为70%",
+    "CommandName": "setThreshold",
+    "Parameters": {
+      "metricName": "humidity",
+      "thresholdValue": 70
+    }
+  },
+  {
+    "Description": "校准温度传感器（偏移+2）",
+    "CommandName": "calibrate",
+    "Parameters": {
+      "sensorType": "temperature",
+      "offset": 2
+    }
+  },
+  {
+    "Description": "校准温度传感器（偏移-2）",
+    "CommandName": "calibrate",
+    "Parameters": {
+      "sensorType": "temperature",
+      "offset": -2
+    }
+  },
+  {
+    "Description": "启用温度监测",
+    "CommandName": "enableMetric",
+    "Parameters": {
+      "metricName": "temperature",
+      "enabled": true
+    }
+  },
+  {
+    "Description": "禁用温度监测",
+    "CommandName": "enableMetric",
+    "Parameters": {
+      "metricName": "temperature",
+      "enabled": false
+    }
+  }
+]

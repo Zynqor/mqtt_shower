@@ -179,7 +179,6 @@ public partial class App : Application
         services.AddSingleton<LogService>();
         services.AddSingleton<LanguageService>();
         services.AddSingleton<EncryptionService>();
-        services.AddSingleton<CsvDataStorageService>();
         services.AddSingleton<HistoryDataStorageService>();
         services.AddSingleton<MqttService>();
         services.AddSingleton<DataProcessingService>();
@@ -269,11 +268,7 @@ public partial class App : Application
             var soundPlayerService = ServiceProvider?.GetService<SoundPlayerService>();
             soundPlayerService?.Dispose();
 
-            // 5. 释放CSV数据存储服务（会刷新所有缓存）
-            var csvStorage = ServiceProvider?.GetService<CsvDataStorageService>();
-            csvStorage?.Dispose();
-
-            // 5.1 释放历史数据存储服务（SQLite）
+            // 5. 释放历史数据存储服务（SQLite）
             var historyDataStorage = ServiceProvider?.GetService<HistoryDataStorageService>();
             historyDataStorage?.Dispose();
 

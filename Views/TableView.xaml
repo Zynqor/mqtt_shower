@@ -3,9 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:converters="clr-namespace:MqttMonitor.Converters"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              Background="Transparent">
+    <UserControl.Resources>
+        <converters:GroupIndexToBackgroundConverter x:Key="GroupIndexToBackgroundConverter"/>
+        <converters:DateTimeToStringConverter x:Key="DateTimeToStringConverter"/>
+    </UserControl.Resources>
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -24,65 +29,90 @@
             <Border.Effect>
                 <DropShadowEffect Color="#000000" Opacity="0.05" BlurRadius="10" ShadowDepth="2"/>
             </Border.Effect>
-            <DataGrid x:Name="DataGrid"
-                      ItemsSource="{Binding DataRows}"
-                      AutoGenerateColumns="False"
-                      IsReadOnly="True"
-                      GridLinesVisibility="Horizontal"
-                      HeadersVisibility="All"
-                      CanUserAddRows="False"
-                      CanUserDeleteRows="False"
-                      CanUserReorderColumns="True"
-                      CanUserResizeColumns="True"
-                      CanUserSortColumns="True"
-                      AlternatingRowBackground="#F8F9FA"
-                      Background="White"
-                      BorderThickness="0"
-                      RowHeight="35"
-                      ColumnHeaderHeight="40"
-                      HorizontalGridLinesBrush="#E9ECEF"
-                      EnableRowVirtualization="True"
-                      EnableColumnVirtualization="True"
-                      VirtualizingPanel.IsVirtualizing="True"
-                      VirtualizingPanel.VirtualizationMode="Recycling">
-                <DataGrid.ColumnHeaderStyle>
-                    <Style TargetType="DataGridColumnHeader">
-                        <Setter Property="Background" Value="#F8F9FA"/>
-                        <Setter Property="Foreground" Value="#495057"/>
-                        <Setter Property="FontWeight" Value="SemiBold"/>
-                        <Setter Property="FontSize" Value="12"/>
-                        <Setter Property="Padding" Value="12,8"/>
-                        <Setter Property="BorderBrush" Value="#DEE2E6"/>
-                        <Setter Property="BorderThickness" Value="0,0,1,1"/>
-                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                        <Setter Property="VerticalContentAlignment" Value="Center"/>
-                    </Style>
-                </DataGrid.ColumnHeaderStyle>
-                <DataGrid.CellStyle>
-                    <Style TargetType="DataGridCell">
-                        <Setter Property="Padding" Value="12,8"/>
-                        <Setter Property="BorderThickness" Value="0"/>
-                        <Setter Property="FontSize" Value="12"/>
-                        <Setter Property="Foreground" Value="#212529"/>
-                        <Setter Property="VerticalAlignment" Value="Center"/>
-                        <Style.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="Background" Value="#E7F3FF"/>
-                                <Setter Property="Foreground" Value="#212529"/>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </DataGrid.CellStyle>
-                <DataGrid.RowStyle>
-                    <Style TargetType="DataGridRow">
-                        <Style.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#F1F3F5"/>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </DataGrid.RowStyle>
-            </DataGrid>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding DeviceDisplayItems}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <!-- 每个设备 -->
+                            <Border BorderBrush="#E9ECEF" BorderThickness="0,0,0,2" Margin="0,0,0,10">
+                                <StackPanel>
+                                    <!-- 设备ID行 -->
+                                    <Border Background="#F8F9FA" Padding="12,10" BorderBrush="#DEE2E6" BorderThickness="0,0,0,1">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="{Binding DeviceId}" FontWeight="Bold" FontSize="13" Foreground="#212529"/>
+                                            <TextBlock Grid.Column="2" FontSize="11" Foreground="#6C757D" VerticalAlignment="Center">
+                                                <Run Text="{DynamicResource Table.LastUpdate}"/>
+                                                <Run Text=": "/>
+                                                <Run Text="{Binding LastUpdateTime, Converter={StaticResource DateTimeToStringConverter}}"/>
+                                            </TextBlock>
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- 数据行组 -->
+                                    <ItemsControl ItemsSource="{Binding DataRowGroups}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel>
+                                                    <!-- 表头行 -->
+                                                    <Grid Height="35">
+                                                        <Grid.Background>
+                                                            <Binding Path="GroupIndex" Converter="{StaticResource GroupIndexToBackgroundConverter}" ConverterParameter="header"/>
+                                                        </Grid.Background>
+                                                        <ItemsControl ItemsSource="{Binding Metrics}">
+                                                            <ItemsControl.ItemsPanel>
+                                                                <ItemsPanelTemplate>
+                                                                    <UniformGrid Rows="1"/>
+                                                                </ItemsPanelTemplate>
+                                                            </ItemsControl.ItemsPanel>
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <Border BorderBrush="#DEE2E6" BorderThickness="0,0,1,0" Padding="12,8">
+                                                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold"
+                                                                                   FontSize="12" Foreground="#495057"/>
+                                                                    </Border>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                    </Grid>
+
+                                                    <!-- 数据行 -->
+                                                    <Grid Height="35">
+                                                        <Grid.Background>
+                                                            <Binding Path="GroupIndex" Converter="{StaticResource GroupIndexToBackgroundConverter}" ConverterParameter="data"/>
+                                                        </Grid.Background>
+                                                        <ItemsControl ItemsSource="{Binding Metrics}">
+                                                            <ItemsControl.ItemsPanel>
+                                                                <ItemsPanelTemplate>
+                                                                    <UniformGrid Rows="1"/>
+                                                                </ItemsPanelTemplate>
+                                                            </ItemsControl.ItemsPanel>
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <Border BorderBrush="#DEE2E6" BorderThickness="0,0,1,0" Padding="12,8">
+                                                                        <TextBlock Text="{Binding Value}" FontSize="12" Foreground="#212529"/>
+                                                                    </Border>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                    </Grid>
+
+                                                    <!-- 组之间的分割线 -->
+                                                    <Border BorderBrush="#ADB5BD" BorderThickness="0,0,0,2" Margin="0,0,0,0"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
         </Border>
     </Grid>
 </UserControl>
